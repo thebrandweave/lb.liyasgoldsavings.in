@@ -5,7 +5,7 @@
  */
 
 // Maintenance mode status (true = enabled, false = disabled)
-$maintenance_enabled = true;
+$maintenance_enabled = false;
 
 // Maintenance message
 $maintenance_message = "Website is currently under maintenance. Please check back later.";
