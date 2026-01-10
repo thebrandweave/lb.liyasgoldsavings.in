@@ -1,15 +1,18 @@
 <?php
 
-class SMSAPI {
+class SMSAPI
+{
     private $conn;
     private $config;
 
-    public function __construct($database) {
+    public function __construct($database)
+    {
         $this->conn = $database->getConnection();
         $this->loadConfig();
     }
 
-    private function loadConfig() {
+    private function loadConfig()
+    {
         try {
             $stmt = $this->conn->prepare("SELECT * FROM SMSAPIConfig WHERE Status = 'Active' ORDER BY ConfigID DESC LIMIT 1");
             $stmt->execute();
@@ -20,11 +23,13 @@ class SMSAPI {
         }
     }
 
-    public function isConfigured() {
+    public function isConfigured()
+    {
         return $this->config && $this->config['Status'] === 'Active';
     }
 
-    public function sendSMS($phoneNumber, $message, $customerName = null, $amount = null) {
+    public function sendSMS($phoneNumber, $message, $customerName = null, $amount = null)
+    {
         if (!$this->isConfigured()) {
             error_log("SMS API is not configured or inactive");
             return false;
@@ -66,7 +71,7 @@ class SMSAPI {
             curl_setopt($ch, CURLOPT_USERPWD, $this->config['Username'] . ':' . $this->config['Password']);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            
+
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $curlError = curl_error($ch);
@@ -94,14 +99,14 @@ class SMSAPI {
                 error_log("SMS API HTTP Error: " . $httpCode . " - " . $response);
                 return false;
             }
-
         } catch (Exception $e) {
             error_log("Error sending SMS: " . $e->getMessage());
             return false;
         }
     }
 
-    public function sendBulkSMS($phoneNumbers, $message, $customerNames = null, $amounts = null) {
+    public function sendBulkSMS($phoneNumbers, $message, $customerNames = null, $amounts = null)
+    {
         if (!$this->isConfigured()) {
             error_log("SMS API is not configured or inactive");
             return false;
@@ -120,35 +125,35 @@ class SMSAPI {
             // For bulk SMS, we'll send individual messages with templates
             $successCount = 0;
             $totalCount = count($phoneNumbers);
-            
+
             for ($i = 0; $i < $totalCount; $i++) {
                 $phone = $phoneNumbers[$i];
                 $customerName = $customerNames ? ($customerNames[$i] ?? null) : null;
                 $amount = $amounts ? ($amounts[$i] ?? null) : null;
-                
+
                 if ($this->sendSMS($phone, $message, $customerName, $amount)) {
                     $successCount++;
                 }
-                
+
                 // Add small delay to avoid rate limiting
                 usleep(100000); // 0.1 second delay
             }
-            
-            return $successCount === $totalCount;
 
+            return $successCount === $totalCount;
         } catch (Exception $e) {
             error_log("Error sending bulk SMS: " . $e->getMessage());
             return false;
         }
     }
 
-    private function formatTemplateMessage($customerName, $amount) {
+    private function formatTemplateMessage($customerName, $amount)
+    {
         $template = $this->config['MessageTemplate'];
-        
+
         // Replace variables in the template
         $message = str_replace('{var1}', $customerName, $template);
         $message = str_replace('{var2}', $amount, $message);
-        
+
         return $message;
     }
 
@@ -159,7 +164,8 @@ class SMSAPI {
      * @param string $customerUniqueID Customer unique ID
      * @return bool Success status
      */
-    public function sendWelcomeSMS($phoneNumber, $customerName, $customerUniqueID) {
+    public function sendWelcomeSMS($phoneNumber, $customerName, $customerUniqueID)
+    {
         if (!$this->isConfigured()) {
             error_log("SMS API is not configured or inactive");
             return false;
@@ -173,12 +179,12 @@ class SMSAPI {
 
             // Welcome template details from screenshot
             // Template ID: 1007289085098641045
-            // Template: "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is var. Visit https://goldendream.in/ for more details."
+            // Template: "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is var. Visit https://la.goldendream.in/ for more details."
             // Source Address: PGDVTR
             // Variables: var1 = Customer Name, var2 = Customer Unique ID
-            
-            $welcomeTemplate = "Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://goldendream.in/ for more details.";
-            
+
+            $welcomeTemplate = "Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://la.goldendream.in/ for more details.";
+
             // Format the welcome message
             $message = str_replace('{var1}', $customerName, $welcomeTemplate);
             $message = str_replace('{var2}', $customerUniqueID, $message);
@@ -208,7 +214,7 @@ class SMSAPI {
             curl_setopt($ch, CURLOPT_USERPWD, $this->config['Username'] . ':' . $this->config['Password']);
             curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
             curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-            
+
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
             $curlError = curl_error($ch);
@@ -236,18 +242,19 @@ class SMSAPI {
                 error_log("Welcome SMS API HTTP Error: " . $httpCode . " - " . $response);
                 return false;
             }
-
         } catch (Exception $e) {
             error_log("Error sending welcome SMS: " . $e->getMessage());
             return false;
         }
     }
 
-    public function getConfig() {
+    public function getConfig()
+    {
         return $this->config;
     }
 
-    public function testConnection() {
+    public function testConnection()
+    {
         if (!$this->isConfigured()) {
             return ['success' => false, 'message' => 'SMS API is not configured'];
         }
@@ -261,4 +268,3 @@ class SMSAPI {
         }
     }
 }
-?>

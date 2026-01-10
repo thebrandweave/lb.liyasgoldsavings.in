@@ -3,6 +3,7 @@
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,59 +17,59 @@
     <meta name="robots" content="index, follow">
     <meta name="language" content="English">
     <meta name="revisit-after" content="7 days">
-    
 
-    
+
+
     <!-- Open Graph Meta Tags -->
     <meta property="og:title" content="GoldenDream - Building Tomorrow's Market Leaders">
     <meta property="og:description" content="Strategic investments across high-growth sectors that are shaping tomorrow's economy.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://goldendream.in">
+    <meta property="og:url" content="https://la.goldendream.in">
     <meta property="og:image" content="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1200&auto=format&fit=crop">
     <meta property="og:site_name" content="GoldenDream">
-    
+
     <!-- Twitter Card Meta Tags -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="GoldenDream - Building Tomorrow's Market Leaders">
     <meta name="twitter:description" content="Strategic investments across high-growth sectors that are shaping tomorrow's economy.">
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1200&auto=format&fit=crop">
-    
+
     <!-- Structured Data -->
     <script type="application/ld+json">
-    {
-        "@context": "https://schema.org",
-        "@type": "Organization",
-        "name": "GoldenDream",
-        "description": "Strategic investments across high-growth sectors that are shaping tomorrow's economy.",
-        "url": "https://goldendream.in",
-        "logo": "https://placehold.co/200x200/0a2540/ffffff?text=GD&font=raleway",
-        "address": {
-            "@type": "PostalAddress",
-            "streetAddress": "2-108/C-7, Ground Floor, Sri Mantame Complex, Near Soorya Infotech Park, Kurnadu Post, Mudipu Road, Bantwal- 574153",
-            "addressLocality": "Bantwal",
-            "addressRegion": "Karnataka",
-            "postalCode": "574153",
-            "addressCountry": "IN"
-        },
-        "contactPoint": {
-            "@type": "ContactPoint",
-            "telephone": "+91-99951-94472",
-            "contactType": "customer service",
-            "email": "goldendream175@gmail.com"
-        },
-        "sameAs": [
-            "https://linkedin.com/company/goldendream",
-            "https://twitter.com/goldendream"
-        ]
-    }
+        {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            "name": "GoldenDream",
+            "description": "Strategic investments across high-growth sectors that are shaping tomorrow's economy.",
+            "url": "https://la.goldendream.in",
+            "logo": "https://placehold.co/200x200/0a2540/ffffff?text=GD&font=raleway",
+            "address": {
+                "@type": "PostalAddress",
+                "streetAddress": "2-108/C-7, Ground Floor, Sri Mantame Complex, Near Soorya Infotech Park, Kurnadu Post, Mudipu Road, Bantwal- 574153",
+                "addressLocality": "Bantwal",
+                "addressRegion": "Karnataka",
+                "postalCode": "574153",
+                "addressCountry": "IN"
+            },
+            "contactPoint": {
+                "@type": "ContactPoint",
+                "telephone": "+91-99951-94472",
+                "contactType": "customer service",
+                "email": "goldendream175@gmail.com"
+            },
+            "sameAs": [
+                "https://linkedin.com/company/goldendream",
+                "https://twitter.com/goldendream"
+            ]
+        }
     </script>
-    
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --c-primary: #0a0a0a;
@@ -94,7 +95,9 @@
             --success: #00d4aa;
         }
 
-        * { box-sizing: border-box; }
+        * {
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -638,68 +641,68 @@
             margin-top: -100px;
             padding-top: 80px;
         }
-        
+
         .hero .carousel {
             position: relative;
             z-index: 1;
         }
-        
+
         .hero .carousel-inner {
             position: relative;
             z-index: 1;
         }
-        
+
         .hero .carousel-item {
             position: relative;
             z-index: 1;
             transition: all 0.5s ease;
         }
-        
+
         .carousel-item {
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .carousel-item.active,
         .carousel-item-next,
         .carousel-item-prev {
             display: block;
         }
-        
+
         .carousel-item-next:not(.carousel-item-start),
         .active.carousel-item-end {
             transform: translateX(100%);
         }
-        
+
         .carousel-item-prev:not(.carousel-item-end),
         .active.carousel-item-start {
             transform: translateX(-100%);
         }
-        
+
         .carousel {
             overflow: hidden;
         }
-        
+
         .carousel-inner {
             transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        
+
         .carousel-item {
             width: 100%;
             height: 100%;
         }
-        
+
         .hero-title,
         .hero-subtitle,
         .hero-card {
             will-change: opacity, transform;
         }
-        
+
         .carousel-item .row {
             min-height: 400px;
             align-items: center;
             padding: 2rem 0;
         }
-        
+
         .carousel-item .col-lg-6 {
             display: flex;
             flex-direction: column;
@@ -733,7 +736,7 @@
             height: 400px;
             object-fit: cover;
             border-radius: 1.5rem;
-            box-shadow: 0 8px 32px rgba(99,91,255,0.10);
+            box-shadow: 0 8px 32px rgba(99, 91, 255, 0.10);
             transition: all 0.5s ease;
         }
 
@@ -760,7 +763,8 @@
             color: white;
         }
 
-        .carousel-control-prev, .carousel-control-next {
+        .carousel-control-prev,
+        .carousel-control-next {
             top: 50%;
             transform: translateY(-50%);
             width: 48px;
@@ -773,7 +777,8 @@
             transition: all 0.3s ease;
         }
 
-        .carousel-control-prev:hover, .carousel-control-next:hover {
+        .carousel-control-prev:hover,
+        .carousel-control-next:hover {
             background: rgba(0, 0, 0, 0.6);
             opacity: 1;
         }
@@ -830,7 +835,7 @@
             position: relative;
             border-radius: 12px;
             overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             aspect-ratio: 16/9;
         }
 
@@ -839,7 +844,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(255,0,0,0.9);
+            background: rgba(255, 0, 0, 0.9);
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -855,16 +860,17 @@
                 margin-top: -150px !important;
                 padding-top: 0 !important;
             }
+
             .hero-img {
                 width: 100%;
                 height: 300px;
                 margin-bottom: 1rem;
             }
-            
+
             .carousel-item .row {
                 min-height: 300px;
             }
-            
+
             .carousel-item .col-lg-6 {
                 min-height: 200px;
             }
@@ -876,19 +882,20 @@
                 margin-top: -150px !important;
                 padding-top: 0 !important;
             }
+
             .hero-title {
                 font-size: clamp(1.5rem, 3vw, 2rem);
                 line-height: 1.4;
                 margin-bottom: 0.75rem;
             }
-            
+
             .hero-subtitle {
                 font-size: 0.9rem;
                 line-height: 1.3;
                 margin-bottom: 1rem;
                 max-width: 350px;
             }
-            
+
             .carousel-item .row {
                 min-height: 250px;
                 padding: 1rem 0;
@@ -896,6 +903,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header>
@@ -959,7 +967,7 @@
                     </div>
                 </a>
                 <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                    <!-- <p style="color: var(--subtext-color); margin-bottom: 15px;">Don't have an account? <a href="https://goldendream.in//refer?id=GDP0001&ref=NTAw" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Register Now</a></p> -->
+                    <!-- <p style="color: var(--subtext-color); margin-bottom: 15px;">Don't have an account? <a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Register Now</a></p> -->
                 </div>
             </div>
         </div>
@@ -1045,7 +1053,7 @@
                                             </p>
 
                                             <div class="hero-cta mt-4">
-                                                <a href="https://goldendream.in/" target="_blank" class="btn btn-primary btn-lg me-3">
+                                                <a href="https://la.goldendream.in/" target="_blank" class="btn btn-primary btn-lg me-3">
                                                     <i class="fas fa-external-link-alt me-2"></i>
                                                     Visit Website
                                                 </a>
@@ -1178,43 +1186,43 @@
         </section>
 
         <!-- Gallery Section -->
-<section id="gallery" class="section bg-white">
-    <div class="container">
-        <h2 class="section-title text-center mb-4">Our Gallery</h2>
-        <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" data-bs-wrap="true" data-bs-pause="false" data-bs-touch="true" data-bs-keyboard="false">
-            <div class="carousel-inner">
-                <?php
-                $galleryDir = __DIR__ . '/assets/gallery/';
-                $galleryUrl = './assets/gallery/';
-                $images = array_values(array_filter(scandir($galleryDir), function($file) use ($galleryDir) {
-                    return !is_dir($galleryDir . $file) && preg_match('/\\.(jpg|jpeg|png|gif)$/i', $file);
-                }));
-                $chunked = array_chunk($images, 3);
-                foreach ($chunked as $i => $row) {
-                ?>
-                <div class="carousel-item<?php if($i==0) echo ' active'; ?>">
-                    <div class="row g-4 justify-content-center">
-                        <?php foreach ($row as $img): ?>
-                        <div class="col-md-4">
-                            <div class="card h-100 shadow-sm">
-                                <img src="<?php echo $galleryUrl . $img; ?>" class="card-img-top img-fluid" alt="Gallery Image" style="object-fit:cover; width:100%; height:320px;" loading="lazy">
+        <section id="gallery" class="section bg-white">
+            <div class="container">
+                <h2 class="section-title text-center mb-4">Our Gallery</h2>
+                <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" data-bs-wrap="true" data-bs-pause="false" data-bs-touch="true" data-bs-keyboard="false">
+                    <div class="carousel-inner">
+                        <?php
+                        $galleryDir = __DIR__ . '/assets/gallery/';
+                        $galleryUrl = './assets/gallery/';
+                        $images = array_values(array_filter(scandir($galleryDir), function ($file) use ($galleryDir) {
+                            return !is_dir($galleryDir . $file) && preg_match('/\\.(jpg|jpeg|png|gif)$/i', $file);
+                        }));
+                        $chunked = array_chunk($images, 3);
+                        foreach ($chunked as $i => $row) {
+                        ?>
+                            <div class="carousel-item<?php if ($i == 0) echo ' active'; ?>">
+                                <div class="row g-4 justify-content-center">
+                                    <?php foreach ($row as $img): ?>
+                                        <div class="col-md-4">
+                                            <div class="card h-100 shadow-sm">
+                                                <img src="<?php echo $galleryUrl . $img; ?>" class="card-img-top img-fluid" alt="Gallery Image" style="object-fit:cover; width:100%; height:320px;" loading="lazy">
+                                            </div>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
                             </div>
-                        </div>
-                        <?php endforeach; ?>
+                        <?php } ?>
                     </div>
+                    <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Previous</span>
+                    </button>
+                    <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
+                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                        <span class="visually-hidden">Next</span>
+                    </button>
                 </div>
-                <?php } ?>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Previous</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Next</span>
-            </button>
-        </div>
-</section>
+        </section>
 
         <!-- YouTube Video Section -->
         <section id="youtube-video" class="section">
@@ -1223,18 +1231,18 @@
                     <div class="col-lg-10 text-center fade-in-up">
                         <h2 class="section-title mb-4">Watch Our Latest Videos</h2>
                         <p class="section-subtitle mb-5">Discover our vision and mission through our latest presentations</p>
-                        
+
                         <div class="row g-4">
                             <!-- Video 1 -->
                             <div class="col-lg-4 col-md-6">
                                 <div class="video-card h-100">
                                     <div class="video-thumbnail position-relative" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); aspect-ratio: 16/9;" onclick="openVideoModal('NYHDu0_5afQ', 'Gee Dee Ventures Presentation')">
-                                        <img src="https://img.youtube.com/vi/NYHDu0_5afQ/maxresdefault.jpg" 
-                                             alt="Gee Dee Ventures Video" 
-                                             class="img-fluid w-100 h-100" 
-                                             style="transition: transform 0.3s ease; object-fit: cover;">
-                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle" 
-                                             style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <img src="https://img.youtube.com/vi/NYHDu0_5afQ/maxresdefault.jpg"
+                                            alt="Gee Dee Ventures Video"
+                                            class="img-fluid w-100 h-100"
+                                            style="transition: transform 0.3s ease; object-fit: cover;">
+                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
+                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1244,18 +1252,18 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Video 2 -->
                             <div class="col-lg-4 col-md-6">
                                 <div class="video-card h-100">
                                     <div class="video-thumbnail position-relative" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); aspect-ratio: 16/9;" onclick="openVideoModal('LfKhSRvn-Es', 'Gee Dee Ventures Video 2')">
-                                        <img src="https://img.youtube.com/vi/LfKhSRvn-Es/hqdefault.jpg" 
-                                             alt="Gee Dee Ventures Video 2" 
-                                             class="img-fluid w-100 h-100" 
-                                             style="transition: transform 0.3s ease; object-fit: cover;"
-                                             onerror="this.src='https://img.youtube.com/vi/LfKhSRvn-Es/mqdefault.jpg'">
-                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle" 
-                                             style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <img src="https://img.youtube.com/vi/LfKhSRvn-Es/hqdefault.jpg"
+                                            alt="Gee Dee Ventures Video 2"
+                                            class="img-fluid w-100 h-100"
+                                            style="transition: transform 0.3s ease; object-fit: cover;"
+                                            onerror="this.src='https://img.youtube.com/vi/LfKhSRvn-Es/mqdefault.jpg'">
+                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
+                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1265,17 +1273,17 @@
                                     </div>
                                 </div>
                             </div>
-                            
+
                             <!-- Video 3 -->
                             <div class="col-lg-4 col-md-6">
                                 <div class="video-card h-100">
                                     <div class="video-thumbnail position-relative" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); aspect-ratio: 16/9;" onclick="openVideoModal('gnPM77ECZOM', 'Gee Dee Ventures Video 3')">
-                                        <img src="https://img.youtube.com/vi/gnPM77ECZOM/maxresdefault.jpg" 
-                                             alt="Gee Dee Ventures Video 3" 
-                                             class="img-fluid w-100 h-100" 
-                                             style="transition: transform 0.3s ease; object-fit: cover;">
-                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle" 
-                                             style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <img src="https://img.youtube.com/vi/gnPM77ECZOM/maxresdefault.jpg"
+                                            alt="Gee Dee Ventures Video 3"
+                                            class="img-fluid w-100 h-100"
+                                            style="transition: transform 0.3s ease; object-fit: cover;">
+                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
+                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1290,12 +1298,12 @@
                             <div class="col-lg-4 col-md-6">
                                 <div class="video-card h-100">
                                     <div class="video-thumbnail position-relative" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); aspect-ratio: 16/9;" onclick="openVideoModal('IJBZaAmkShM', 'Gee Dee Ventures Special Event')">
-                                        <img src="https://img.youtube.com/vi/IJBZaAmkShM/maxresdefault.jpg" 
-                                             alt="Gee Dee Ventures Special Event" 
-                                             class="img-fluid w-100 h-100" 
-                                             style="transition: transform 0.3s ease; object-fit: cover;">
-                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle" 
-                                             style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <img src="https://img.youtube.com/vi/IJBZaAmkShM/maxresdefault.jpg"
+                                            alt="Gee Dee Ventures Special Event"
+                                            class="img-fluid w-100 h-100"
+                                            style="transition: transform 0.3s ease; object-fit: cover;">
+                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
+                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1309,12 +1317,12 @@
                             <div class="col-lg-4 col-md-6">
                                 <div class="video-card h-100">
                                     <div class="video-thumbnail position-relative" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); aspect-ratio: 16/9;" onclick="openVideoModal('_U5HWs1slyo', 'Gee Dee Ventures Community')">
-                                        <img src="https://img.youtube.com/vi/_U5HWs1slyo/maxresdefault.jpg" 
-                                             alt="Gee Dee Ventures Community" 
-                                             class="img-fluid w-100 h-100" 
-                                             style="transition: transform 0.3s ease; object-fit: cover;">
-                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle" 
-                                             style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <img src="https://img.youtube.com/vi/_U5HWs1slyo/maxresdefault.jpg"
+                                            alt="Gee Dee Ventures Community"
+                                            class="img-fluid w-100 h-100"
+                                            style="transition: transform 0.3s ease; object-fit: cover;">
+                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
+                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1328,12 +1336,12 @@
                             <div class="col-lg-4 col-md-6">
                                 <div class="video-card h-100">
                                     <div class="video-thumbnail position-relative" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); aspect-ratio: 16/9;" onclick="openVideoModal('qW1mQ6h0bTk', 'Gee Dee Ventures Success Stories')">
-                                        <img src="https://img.youtube.com/vi/qW1mQ6h0bTk/maxresdefault.jpg" 
-                                             alt="Gee Dee Ventures Success Stories" 
-                                             class="img-fluid w-100 h-100" 
-                                             style="transition: transform 0.3s ease; object-fit: cover;">
-                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle" 
-                                             style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <img src="https://img.youtube.com/vi/qW1mQ6h0bTk/maxresdefault.jpg"
+                                            alt="Gee Dee Ventures Success Stories"
+                                            class="img-fluid w-100 h-100"
+                                            style="transition: transform 0.3s ease; object-fit: cover;">
+                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
+                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1347,12 +1355,12 @@
                             <div class="col-lg-4 col-md-6">
                                 <div class="video-card h-100">
                                     <div class="video-thumbnail position-relative" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); aspect-ratio: 16/9;" onclick="openVideoModal('t-bOshnRc6s', 'Gee Dee Ventures Insights')">
-                                        <img src="https://img.youtube.com/vi/t-bOshnRc6s/maxresdefault.jpg" 
-                                             alt="Gee Dee Ventures Insights" 
-                                             class="img-fluid w-100 h-100" 
-                                             style="transition: transform 0.3s ease; object-fit: cover;">
-                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle" 
-                                             style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <img src="https://img.youtube.com/vi/t-bOshnRc6s/maxresdefault.jpg"
+                                            alt="Gee Dee Ventures Insights"
+                                            class="img-fluid w-100 h-100"
+                                            style="transition: transform 0.3s ease; object-fit: cover;">
+                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
+                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1366,12 +1374,12 @@
                             <div class="col-lg-4 col-md-6">
                                 <div class="video-card h-100">
                                     <div class="video-thumbnail position-relative" style="cursor: pointer; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.2); aspect-ratio: 16/9;" onclick="openVideoModal('37_U6dup0ik', 'Gee Dee Ventures Future Plans')">
-                                        <img src="https://img.youtube.com/vi/37_U6dup0ik/maxresdefault.jpg" 
-                                             alt="Gee Dee Ventures Future Plans" 
-                                             class="img-fluid w-100 h-100" 
-                                             style="transition: transform 0.3s ease; object-fit: cover;">
-                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle" 
-                                             style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                        <img src="https://img.youtube.com/vi/37_U6dup0ik/maxresdefault.jpg"
+                                            alt="Gee Dee Ventures Future Plans"
+                                            class="img-fluid w-100 h-100"
+                                            style="transition: transform 0.3s ease; object-fit: cover;">
+                                        <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
+                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1399,12 +1407,12 @@
                     </div>
                     <div class="modal-body p-0">
                         <div class="ratio ratio-16x9">
-                            <iframe id="youtubeIframe" 
-                                    src="" 
-                                    title="Gee Dee Ventures Video" 
-                                    frameborder="0" 
-                                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                                    allowfullscreen>
+                            <iframe id="youtubeIframe"
+                                src=""
+                                title="Gee Dee Ventures Video"
+                                frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowfullscreen>
                             </iframe>
                         </div>
                     </div>
@@ -1419,8 +1427,8 @@
                     <div class="col-lg-8 fade-in-up">
                         <h2 class="section-title text-white mb-4">Ready to Partner With The Brand Weave?</h2>
                         <p class="section-subtitle text-white-50 mb-5">
-                            The Brand Weave is a premier digital agency specializing in creative solutions, digital marketing, branding, and design. 
-                            We empower businesses to grow online with data-driven strategies and innovative design solutions. 
+                            The Brand Weave is a premier digital agency specializing in creative solutions, digital marketing, branding, and design.
+                            We empower businesses to grow online with data-driven strategies and innovative design solutions.
                             From brand identity to comprehensive digital marketing campaigns, we deliver measurable results that drive your business forward.
                         </p>
                         <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
@@ -1447,11 +1455,11 @@
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-    
+
     <script>
         // Smooth scrolling for anchor links
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function (e) {
+            anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
                 if (target) {
@@ -1484,7 +1492,7 @@
             const form = event.target;
             const button = form.querySelector('button');
             const input = form.querySelector('input[type="email"]');
-            
+
             // Simple email validation
             const email = input.value.trim();
             if (!email || !email.includes('@') || !email.includes('.')) {
@@ -1495,14 +1503,14 @@
                 }, 2000);
                 return false;
             }
-            
+
             // Show success state
             const originalText = button.innerHTML;
             button.innerHTML = '<i class="fas fa-check"></i>';
             button.disabled = true;
             button.classList.add('btn-success');
             button.classList.remove('btn-outline-light');
-            
+
             // Reset form after 3 seconds
             setTimeout(() => {
                 button.innerHTML = originalText;
@@ -1511,7 +1519,7 @@
                 button.classList.add('btn-outline-light');
                 form.reset();
             }, 3000);
-            
+
             return false;
         }
 
@@ -1538,10 +1546,10 @@
         // Enhanced hover effects for cards
         document.querySelectorAll('.venture-card, .blog-card').forEach(card => {
             card.addEventListener('mouseenter', function() {
-                this.style.transform = this.classList.contains('venture-card') ? 
+                this.style.transform = this.classList.contains('venture-card') ?
                     'translateY(-12px) scale(1.02)' : 'translateY(-8px) scale(1.02)';
             });
-            
+
             card.addEventListener('mouseleave', function() {
                 this.style.transform = 'translateY(0) scale(1)';
             });
@@ -1553,7 +1561,7 @@
                 e.preventDefault();
                 const originalText = this.innerHTML;
                 this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
-                
+
                 setTimeout(() => {
                     this.innerHTML = originalText;
                 }, 2000);
@@ -1562,6 +1570,7 @@
 
         // Performance optimization for scroll events
         let ticking = false;
+
         function handleScroll() {
             if (!ticking) {
                 requestAnimationFrame(() => {
@@ -1581,7 +1590,7 @@
                 const size = Math.max(rect.width, rect.height);
                 const x = e.clientX - rect.left - size / 2;
                 const y = e.clientY - rect.top - size / 2;
-                
+
                 ripple.style.cssText = `
                     position: absolute;
                     border-radius: 50%;
@@ -1594,11 +1603,11 @@
                     top: ${y}px;
                     pointer-events: none;
                 `;
-                
+
                 this.style.position = 'relative';
                 this.style.overflow = 'hidden';
                 this.appendChild(ripple);
-                
+
                 setTimeout(() => {
                     ripple.remove();
                 }, 600);
@@ -1618,18 +1627,18 @@
         document.head.appendChild(rippleStyle);
 
         console.log('Gee Dee Ventures website loaded successfully - PHP Version');
-        
+
         // Performance monitoring
         window.addEventListener('load', function() {
             const loadTime = performance.now();
             console.log(`Page loaded in ${loadTime.toFixed(2)}ms`);
         });
-        
+
         // Enhanced error handling
         window.addEventListener('error', function(e) {
             console.error('JavaScript error:', e.error);
         });
-        
+
         // Add loading states for better UX
         document.addEventListener('DOMContentLoaded', function() {
             document.body.classList.add('loaded');
@@ -1639,7 +1648,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             const heroCarousel = document.getElementById('heroCarousel');
             const heroBgCarousel = document.getElementById('heroBgCarousel');
-            
+
             if (heroCarousel && heroBgCarousel) {
                 // Initialize carousels with smooth slide transitions
                 const mainCarousel = new bootstrap.Carousel(heroCarousel, {
@@ -1648,20 +1657,20 @@
                     ride: 'carousel',
                     touch: true
                 });
-                
+
                 const bgCarousel = new bootstrap.Carousel(heroBgCarousel, {
                     interval: 5000,
                     wrap: true,
                     ride: 'carousel',
                     touch: true
                 });
-                
+
                 // Sync carousels with smooth slide transitions
-                heroCarousel.addEventListener('slide.bs.carousel', function (event) {
+                heroCarousel.addEventListener('slide.bs.carousel', function(event) {
                     // Smooth transition for background carousel
                     bgCarousel.to(event.to);
                 });
-                
+
                 // Add manual navigation sync with smooth transitions
                 document.querySelectorAll('[data-bs-target="#heroCarousel"]').forEach(button => {
                     button.addEventListener('click', function() {
@@ -1673,51 +1682,51 @@
                         }
                     });
                 });
-                
+
                 // Pause carousels on hover for better UX
                 heroCarousel.addEventListener('mouseenter', function() {
                     mainCarousel.pause();
                     bgCarousel.pause();
                 });
-                
+
                 heroCarousel.addEventListener('mouseleave', function() {
                     mainCarousel.cycle();
                     bgCarousel.cycle();
                 });
-                
+
                 // Handle carousel errors gracefully
                 heroCarousel.addEventListener('error', function(e) {
                     console.warn('Carousel error:', e);
                 });
-                
+
                 // Ensure carousels are properly initialized with smooth slide transitions
                 setTimeout(() => {
                     if (mainCarousel && bgCarousel) {
                         mainCarousel.cycle();
                         bgCarousel.cycle();
-                        
+
                         // Verify carousel synchronization
                         console.log('Carousels initialized with wrap enabled and smooth slide transitions');
                         console.log('Main carousel wrap:', mainCarousel._config.wrap);
                         console.log('Background carousel wrap:', bgCarousel._config.wrap);
                     }
                 }, 100);
-                
+
                 // Additional sync check for perfect synchronization
-                heroCarousel.addEventListener('slid.bs.carousel', function (event) {
+                heroCarousel.addEventListener('slid.bs.carousel', function(event) {
                     // Ensure background carousel is on the same slide
                     const activeBgSlide = bgCarousel._element.querySelector('.carousel-item.active');
                     const activeMainSlide = event.relatedTarget;
-                    
+
                     if (activeBgSlide && activeMainSlide) {
                         const bgIndex = Array.from(bgCarousel._element.querySelectorAll('.carousel-item')).indexOf(activeBgSlide);
                         const mainIndex = event.to;
-                        
+
                         if (bgIndex !== mainIndex) {
                             bgCarousel.to(mainIndex);
                         }
                     }
-                    
+
                     // Ensure content is fully visible after transition
                     const currentSlide = event.relatedTarget;
                     if (currentSlide) {
@@ -1733,18 +1742,18 @@
             const modal = new bootstrap.Modal(document.getElementById('videoModal'));
             const iframe = document.getElementById('youtubeIframe');
             const modalTitle = document.getElementById('videoModalLabel');
-            
+
             // Set the modal title
             modalTitle.textContent = videoTitle;
-            
+
             // Set the YouTube embed URL with autoplay
             iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
-            
+
             // Show the modal
             modal.show();
-            
+
             // Clear iframe src when modal is hidden to stop video
-            document.getElementById('videoModal').addEventListener('hidden.bs.modal', function () {
+            document.getElementById('videoModal').addEventListener('hidden.bs.modal', function() {
                 iframe.src = '';
             });
         }
@@ -1752,17 +1761,17 @@
         // Add hover effects for video thumbnails
         document.addEventListener('DOMContentLoaded', function() {
             const videoThumbnails = document.querySelectorAll('.video-thumbnail');
-            
+
             videoThumbnails.forEach(function(thumbnail) {
                 const playButton = thumbnail.querySelector('.play-button-overlay');
-                
+
                 if (playButton) {
                     thumbnail.addEventListener('mouseenter', function() {
                         this.querySelector('img').style.transform = 'scale(1.05)';
                         playButton.style.transform = 'translate(-50%, -50%) scale(1.1)';
                         playButton.style.background = 'rgba(255,0,0,1)';
                     });
-                    
+
                     thumbnail.addEventListener('mouseleave', function() {
                         this.querySelector('img').style.transform = 'scale(1)';
                         playButton.style.transform = 'translate(-50%, -50%) scale(1)';
@@ -1850,7 +1859,7 @@
                     <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
                     <li><a href="#how-it-works"><i class="fas fa-chevron-right"></i> How It Works</a></li>
                     <li><a onclick="openLoginModal()"><i class="fas fa-chevron-right"></i> Login</a></li>
-                    <!-- <li><a href="https://goldendream.in//refer?id=GDP0001&ref=NTAw"><i class="fas fa-chevron-right"></i> Register</a></li> -->
+                    <!-- <li><a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw"><i class="fas fa-chevron-right"></i> Register</a></li> -->
                     <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
                 </ul>
             </div>
@@ -1898,4 +1907,5 @@
         </div>
     </footer>
 </body>
+
 </html>

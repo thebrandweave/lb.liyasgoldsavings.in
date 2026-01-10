@@ -1233,7 +1233,7 @@ require_once("../config/config.php");
                     </div>
                 </a>
                 <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                    <!-- <p style="color: var(--subtext-color); margin-bottom: 15px;">Don't have an account? <a href="https://goldendream.in//refer?id=GDP0001&ref=NTAw" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Register Now</a></p> -->
+                    <!-- <p style="color: var(--subtext-color); margin-bottom: 15px;">Don't have an account? <a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Register Now</a></p> -->
                 </div>
             </div>
         </div>
@@ -1252,7 +1252,7 @@ require_once("../config/config.php");
                     <li>✔ <span>24/7 customer support</span></li>
                 </ul>
                 <div class="price">Start from just <span style="color:#000;font-weight:700;">₹1000</span> <span class="sub-price">minimum investment</span></div>
-                <!-- <a href="https://goldendream.in//refer?id=GDP0001&ref=NTAw" class="btn">Start Your Journey</a> -->
+                <!-- <a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw" class="btn">Start Your Journey</a> -->
             </div>
             <div class="hero-image">
                 <img src="./landing_assets/images/hero.gif" alt="Golden Dream Platform">
@@ -1298,7 +1298,7 @@ require_once("../config/config.php");
         <div class="container">
             <h2>Ready to Start Your Investment Journey?</h2>
             <p>Join thousands of satisfied investors who have already discovered the benefits of Golden Dream.</p>
-            <!-- <a href="https://goldendream.in//refer?id=GDP0001&ref=NTAw" class="btn">Sign Up Now</a> -->
+            <!-- <a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw" class="btn">Sign Up Now</a> -->
         </div>
     </section>
 
@@ -1319,7 +1319,7 @@ require_once("../config/config.php");
                         <span style="font-size:1.3rem;font-weight:600;color:#111;">3. Start investing</span>
                     </div>
                 </div>
-                <!-- <a href="https://goldendream.in//refer?id=GDP0001&ref=NTAw" class="btn" style="margin-top:12px;">Get started</a> -->
+                <!-- <a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw" class="btn" style="margin-top:12px;">Get started</a> -->
             </div>
             <div style="flex:1;display:flex;align-items:center;justify-content:center;">
                 <div style="background:#fff;border-radius:24px;padding:32px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;min-width:320px;min-height:320px;">
@@ -1523,7 +1523,7 @@ require_once("../config/config.php");
                     <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
                     <li><a href="#how-it-works"><i class="fas fa-chevron-right"></i> How It Works</a></li>
                     <li><a onclick="openLoginModal()"><i class="fas fa-chevron-right"></i> Login</a></li>
-                    <!-- <li><a href="https://goldendream.in//refer?id=GDP0001&ref=NTAw"><i class="fas fa-chevron-right"></i> Register</a></li> -->
+                    <!-- <li><a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw"><i class="fas fa-chevron-right"></i> Register</a></li> -->
                     <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
                 </ul>
             </div>
