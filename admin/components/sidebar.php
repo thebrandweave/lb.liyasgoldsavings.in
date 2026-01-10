@@ -294,7 +294,7 @@ verifyAuth();
         <div class="sidebar-header">
             <div class="sidebar-logo">
                 <i class="fas fa-chart-line"></i>
-                <span>Admin Dashboard</span>
+                <span>LA Admin Dashboard</span>
             </div>
             <div class="toggle-btn" id="toggle-sidebar">
                 <!-- <i class="fas fa-angle-left"></i> -->
@@ -371,12 +371,12 @@ verifyAuth();
                     </a>
                 </li>
             <?php endif; ?>
-                <li class="<?php echo ($currentPage == 'sales') ? 'active' : ''; ?>">
-                    <a href="<?php echo $menuPath; ?>sales" data-title="Sales">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="link-text">Sales</span>
-                    </a>
-                </li>
+            <li class="<?php echo ($currentPage == 'sales') ? 'active' : ''; ?>">
+                <a href="<?php echo $menuPath; ?>sales" data-title="Sales">
+                    <i class="fas fa-chart-bar"></i>
+                    <span class="link-text">Sales</span>
+                </a>
+            </li>
             <?php if ($_SESSION['admin_role'] === 'SuperAdmin'): ?>
                 <li class="<?php echo ($currentPage == 'withdrawals') ? 'active' : ''; ?>">
                     <a href="<?php echo $menuPath; ?>withdrawals" data-title="Withdrawals">

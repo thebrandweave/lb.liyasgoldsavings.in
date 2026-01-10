@@ -54,7 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if ($isNewTeam) {
             $parentPromoterID = null;
             $teamName = trim($_POST['new_team_name']);
-            $commission = "750"; // Default commission for new teams
+            $commission = "850"; // Default commission for new teams
         } else {
             $parentPromoterID = $_POST['parent_promoter_id'];
             $teamName = null; // Will be set based on parent promoter

@@ -112,7 +112,7 @@ try {
     $stmt->execute([$customerUniqueID]);
     $customerDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    $paymentAmount = $customerDetails['Amount'] ?? 750;
+    $paymentAmount = $customerDetails['Amount'] ?? 850;
     $promoters = fetchPromotersOfCustomer($customerUniqueID, $conn);
     $walletUpdates = [];
 

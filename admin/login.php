@@ -190,6 +190,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $loginErr = "An error occurred. Please try again later.";
             // Log the error
             error_log("Login error: " . $e->getMessage());
+            // echo  $e->getMessage();
         }
     }
 }
