@@ -8,7 +8,8 @@ $conn = $database->getConnection();
 
 // Get parameters
 $teamName = isset($_GET['team']) ? $_GET['team'] : '';
-$date = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
+$fromDate = isset($_GET['from_date']) ? $_GET['from_date'] : date('Y-m-d');
+$toDate = isset($_GET['to_date']) ? $_GET['to_date'] : date('Y-m-d');
 $promoterId = isset($_GET['promoter']) ? $_GET['promoter'] : null;
 
 if (empty($teamName)) {
@@ -16,19 +17,19 @@ if (empty($teamName)) {
 }
 
 // Function to get team members (customers only)
-function getTeamMembers($conn, $teamName, $date, $promoterId = null)
+function getTeamMembers($conn, $teamName, $fromDate, $toDate, $promoterId = null)
 {
     // Build WHERE clause with optional promoter filter
     $whereClause = "WHERE c.TeamName = :teamName";
-    $params = [':teamName' => $teamName, ':today' => $date];
-    
+    $params = [':teamName' => $teamName, ':fromDate' => $fromDate, ':toDate' => $toDate];
+
     if ($promoterId) {
         $whereClause .= " AND c.PromoterID = :promoterId";
         $params[':promoterId'] = $promoterId;
     }
-    
-    $whereClause .= " AND (DATE(c.CreatedAt) = :today OR DATE(pay.SubmittedAt) = :today)";
-    
+
+    $whereClause .= " AND (DATE(c.CreatedAt) BETWEEN :fromDate AND :toDate OR DATE(pay.SubmittedAt) BETWEEN :fromDate AND :toDate)";
+
     $query = "SELECT 
         c.CustomerUniqueID as unique_id,
         c.Name,
@@ -36,8 +37,8 @@ function getTeamMembers($conn, $teamName, $date, $promoterId = null)
         c.Email,
         c.PromoterID as ParentPromoterID,
         p.Name as ParentName,
-        COUNT(DISTINCT CASE WHEN DATE(pay.SubmittedAt) = :today THEN pay.PaymentID END) as total_payments,
-        SUM(CASE WHEN DATE(pay.SubmittedAt) = :today AND pay.Status = 'Verified' THEN pay.Amount ELSE 0 END) as total_amount
+        COUNT(DISTINCT CASE WHEN DATE(pay.SubmittedAt) BETWEEN :fromDate AND :toDate THEN pay.PaymentID END) as total_payments,
+        SUM(CASE WHEN DATE(pay.SubmittedAt) BETWEEN :fromDate AND :toDate AND pay.Status = 'Verified' THEN pay.Amount ELSE 0 END) as total_amount
         FROM Customers c
         LEFT JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID
         LEFT JOIN Payments pay ON pay.CustomerID = c.CustomerID
@@ -53,7 +54,7 @@ function getTeamMembers($conn, $teamName, $date, $promoterId = null)
 }
 
 // Get team members data
-$teamMembers = getTeamMembers($conn, $teamName, $date, $promoterId);
+$teamMembers = getTeamMembers($conn, $teamName, $fromDate, $toDate, $promoterId);
 
 // Get promoter name if filtered
 $promoterName = '';
@@ -65,7 +66,7 @@ if ($promoterId) {
 }
 
 // Set headers for Excel download
-$filename = $teamName . '_sales_' . $date;
+$filename = $teamName . '_sales_' . $fromDate . '_to_' . $toDate;
 if ($promoterId && $promoterName) {
     $filename .= '_' . str_replace(' ', '_', $promoterName);
 }
@@ -75,14 +76,18 @@ header('Cache-Control: max-age=0');
 
 // Output Excel content
 echo "Team Sales Report - " . $teamName . "\n";
-echo "Date: " . date('F d, Y', strtotime($date)) . "\n";
+if ($fromDate === $toDate) {
+    echo "Date: " . date('F d, Y', strtotime($fromDate)) . "\n";
+} else {
+    echo "Date Range: " . date('F d, Y', strtotime($fromDate)) . " to " . date('F d, Y', strtotime($toDate)) . "\n";
+}
 if ($promoterId && $promoterName) {
     echo "Filtered by Promoter: " . $promoterName . " (" . $promoterId . ")\n";
 }
 echo "\n";
 
 // Headers
-echo "ID\tName\tContact\tEmail\tParent\tToday's Payments\tToday's Amount\n";
+echo "ID\tName\tContact\tEmail\tParent\tPayments (Period)\tAmount (Period)\n";
 
 // Data rows
 foreach ($teamMembers as $member) {

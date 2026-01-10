@@ -9,8 +9,9 @@ require_once("../../config/config.php");
 $database = new Database();
 $conn = $database->getConnection();
 
-// Get selected date from GET or default to today
-$selectedDate = isset($_GET['date']) ? $_GET['date'] : date('Y-m-d');
+// Get selected date range from GET or default to today
+$fromDate = isset($_GET['from_date']) ? $_GET['from_date'] : date('Y-m-d');
+$toDate = isset($_GET['to_date']) ? $_GET['to_date'] : date('Y-m-d');
 
 // Get selected promoter filter from GET
 $selectedPromoter = isset($_GET['promoter']) ? $_GET['promoter'] : '';
@@ -22,21 +23,24 @@ $stmt->execute();
 $allPromoters = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 // Function to get team statistics
-function getTeamStats($conn, $date = null, $promoterId = null)
+function getTeamStats($conn, $fromDate = null, $toDate = null, $promoterId = null)
 {
-    if (!$date) {
-        $date = date('Y-m-d');
+    if (!$fromDate) {
+        $fromDate = date('Y-m-d');
+    }
+    if (!$toDate) {
+        $toDate = date('Y-m-d');
     }
 
     // Get all unique team names (filtered by promoter if selected)
     $teamQuery = "SELECT DISTINCT TeamName FROM Customers WHERE TeamName IS NOT NULL";
     $teamParams = [];
-    
+
     if ($promoterId) {
         $teamQuery .= " AND PromoterID = :promoterId";
         $teamParams[':promoterId'] = $promoterId;
     }
-    
+
     $teamStmt = $conn->prepare($teamQuery);
     $teamStmt->execute($teamParams);
     $teams = $teamStmt->fetchAll(PDO::FETCH_COLUMN);
@@ -45,21 +49,21 @@ function getTeamStats($conn, $date = null, $promoterId = null)
     foreach ($teams as $teamName) {
         // Build customer filter condition based on promoter
         $customerFilter = "TeamName = :teamName";
-        $params = [':teamName' => $teamName, ':date' => $date];
-        
+        $params = [':teamName' => $teamName, ':fromDate' => $fromDate, ':toDate' => $toDate];
+
         if ($promoterId) {
             $customerFilter .= " AND PromoterID = :promoterId";
             $params[':promoterId'] = $promoterId;
         }
-        
-        // New customers today
-        $stmt = $conn->prepare("SELECT COUNT(*) FROM Customers WHERE $customerFilter AND DATE(CreatedAt) = :date");
+
+        // New customers in date range
+        $stmt = $conn->prepare("SELECT COUNT(*) FROM Customers WHERE $customerFilter AND DATE(CreatedAt) BETWEEN :fromDate AND :toDate");
         $stmt->execute($params);
         $total_customers = $stmt->fetchColumn();
 
-        // New promoters today (only if no promoter filter is applied, as it doesn't make sense to filter promoters by themselves)
-        $promoterParams = [':teamName' => $teamName, ':date' => $date];
-        $promoterQuery = "SELECT COUNT(*) FROM Promoters WHERE TeamName = :teamName AND DATE(CreatedAt) = :date";
+        // New promoters in date range
+        $promoterParams = [':teamName' => $teamName, ':fromDate' => $fromDate, ':toDate' => $toDate];
+        $promoterQuery = "SELECT COUNT(*) FROM Promoters WHERE TeamName = :teamName AND DATE(CreatedAt) BETWEEN :fromDate AND :toDate";
         if ($promoterId) {
             $promoterQuery .= " AND PromoterUniqueID = :promoterId";
             $promoterParams[':promoterId'] = $promoterId;
@@ -68,7 +72,7 @@ function getTeamStats($conn, $date = null, $promoterId = null)
         $stmt->execute($promoterParams);
         $total_promoters = $stmt->fetchColumn();
 
-        // Payments for today (for customers in this team and promoter if filtered)
+        // Payments in date range (for customers in this team and promoter if filtered)
         $paymentQuery = "
             SELECT 
                 SUM(CASE WHEN Status = 'Verified' THEN Amount ELSE 0 END) as verified_amount,
@@ -78,7 +82,7 @@ function getTeamStats($conn, $date = null, $promoterId = null)
                 COUNT(*) as total_payments
             FROM Payments
             WHERE CustomerID IN (SELECT CustomerID FROM Customers WHERE $customerFilter)
-            AND DATE(SubmittedAt) = :date
+            AND DATE(SubmittedAt) BETWEEN :fromDate AND :toDate
         ";
         $stmt = $conn->prepare($paymentQuery);
         $stmt->execute($params);
@@ -105,21 +109,26 @@ function getTeamStats($conn, $date = null, $promoterId = null)
 }
 
 // Function to get team members (customers only)
-function getTeamMembers($conn, $teamName, $date = null, $promoterId = null)
+function getTeamMembers($conn, $teamName, $fromDate = null, $toDate = null, $promoterId = null)
 {
-    $today = $date ?: date('Y-m-d');
-    
+    if (!$fromDate) {
+        $fromDate = date('Y-m-d');
+    }
+    if (!$toDate) {
+        $toDate = date('Y-m-d');
+    }
+
     // Build WHERE clause with optional promoter filter
     $whereClause = "WHERE c.TeamName = :teamName";
-    $params = [':teamName' => $teamName, ':today' => $today];
-    
+    $params = [':teamName' => $teamName, ':fromDate' => $fromDate, ':toDate' => $toDate];
+
     if ($promoterId) {
         $whereClause .= " AND c.PromoterID = :promoterId";
         $params[':promoterId'] = $promoterId;
     }
-    
-    $whereClause .= " AND (DATE(c.CreatedAt) = :today OR DATE(pay.SubmittedAt) = :today)";
-    
+
+    $whereClause .= " AND (DATE(c.CreatedAt) BETWEEN :fromDate AND :toDate OR DATE(pay.SubmittedAt) BETWEEN :fromDate AND :toDate)";
+
     $query = "SELECT 
         c.CustomerUniqueID as unique_id,
         c.Name,
@@ -127,8 +136,8 @@ function getTeamMembers($conn, $teamName, $date = null, $promoterId = null)
         c.Email,
         c.PromoterID as ParentPromoterID,
         CONCAT(p.PromoterUniqueID, ' - ', p.Name) as ParentName,
-        COUNT(DISTINCT CASE WHEN DATE(pay.SubmittedAt) = :today THEN pay.PaymentID END) as total_payments,
-        SUM(CASE WHEN DATE(pay.SubmittedAt) = :today AND pay.Status = 'Verified' THEN pay.Amount ELSE 0 END) as total_amount
+        COUNT(DISTINCT CASE WHEN DATE(pay.SubmittedAt) BETWEEN :fromDate AND :toDate THEN pay.PaymentID END) as total_payments,
+        SUM(CASE WHEN DATE(pay.SubmittedAt) BETWEEN :fromDate AND :toDate AND pay.Status = 'Verified' THEN pay.Amount ELSE 0 END) as total_amount
         FROM Customers c
         LEFT JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID
         LEFT JOIN Payments pay ON pay.CustomerID = c.CustomerID
@@ -143,8 +152,8 @@ function getTeamMembers($conn, $teamName, $date = null, $promoterId = null)
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
-// Get team statistics with promoter filter
-$teamStats = getTeamStats($conn, $selectedDate, $selectedPromoter);
+// Get team statistics with promoter filter and date range
+$teamStats = getTeamStats($conn, $fromDate, $toDate, $selectedPromoter);
 
 // Include header and sidebar
 include("../components/sidebar.php");
@@ -435,42 +444,55 @@ include("../components/topbar.php");
             <div class="dashboard-header">
                 <h1 class="dashboard-title">Team Sales Overview</h1>
                 <div class="date-display" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
-                    <form method="GET" id="filterForm" style="display:inline-flex; align-items: center; gap: 10px;">
+                    <form method="GET" id="filterForm" style="display:inline-flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <label for="promoter-search" style="font-weight: 500; color: #333;">Filter by Promoter:</label>
                         <div class="searchable-dropdown" id="promoterDropdown">
                             <input type="hidden" name="promoter" id="promoter" value="<?php echo htmlspecialchars($selectedPromoter); ?>">
                             <div class="select-wrapper">
-                                <input type="text" id="promoter-search" placeholder="Search promoters..." autocomplete="off" 
-                                    value="<?php 
-                                        if ($selectedPromoter) {
-                                            foreach ($allPromoters as $promoter) {
-                                                if ($promoter['PromoterUniqueID'] === $selectedPromoter) {
-                                                    echo htmlspecialchars($promoter['Name'] . ' (' . $promoter['PromoterUniqueID'] . ')');
-                                                    break;
+                                <input type="text" id="promoter-search" placeholder="Search promoters..." autocomplete="off"
+                                    value="<?php
+                                            if ($selectedPromoter) {
+                                                foreach ($allPromoters as $promoter) {
+                                                    if ($promoter['PromoterUniqueID'] === $selectedPromoter) {
+                                                        echo htmlspecialchars($promoter['Name'] . ' (' . $promoter['PromoterUniqueID'] . ')');
+                                                        break;
+                                                    }
                                                 }
                                             }
-                                        }
-                                    ?>">
+                                            ?>">
                                 <i class="fas fa-chevron-down dropdown-icon"></i>
                             </div>
                             <div class="dropdown-list" id="promoterList">
                                 <div class="dropdown-item" data-value="" data-text="All Promoters">All Promoters</div>
                                 <?php foreach ($allPromoters as $promoter): ?>
-                                    <div class="dropdown-item <?php echo ($selectedPromoter === $promoter['PromoterUniqueID']) ? 'selected' : ''; ?>" 
-                                         data-value="<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>" 
-                                         data-text="<?php echo htmlspecialchars($promoter['Name'] . ' (' . $promoter['PromoterUniqueID'] . ')'); ?>">
+                                    <div class="dropdown-item <?php echo ($selectedPromoter === $promoter['PromoterUniqueID']) ? 'selected' : ''; ?>"
+                                        data-value="<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>"
+                                        data-text="<?php echo htmlspecialchars($promoter['Name'] . ' (' . $promoter['PromoterUniqueID'] . ')'); ?>">
                                         <?php echo htmlspecialchars($promoter['Name']); ?> (<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>)
                                     </div>
                                 <?php endforeach; ?>
                                 <div class="no-results">No promoters found</div>
                             </div>
                         </div>
-                        <label for="date" style="font-weight: 500; color: #333;">Date:</label>
-                        <input type="date" name="date" id="date" value="<?php echo htmlspecialchars($selectedDate); ?>" onchange="document.getElementById('filterForm').submit();" style="padding:6px 10px; border-radius:5px; border:1px solid #ccc;">
+                        <label for="from_date" style="font-weight: 500; color: #333;">From Date:</label>
+                        <input type="date" name="from_date" id="from_date" value="<?php echo htmlspecialchars($fromDate); ?>" style="padding:6px 10px; border-radius:5px; border:1px solid #ccc;">
+                        <label for="to_date" style="font-weight: 500; color: #333;">To Date:</label>
+                        <input type="date" name="to_date" id="to_date" value="<?php echo htmlspecialchars($toDate); ?>" style="padding:6px 10px; border-radius:5px; border:1px solid #ccc;">
+                        <button type="submit" class="btn btn-primary" style="padding: 6px 12px; font-size: 14px;">
+                            <i class="fas fa-filter"></i> Apply
+                        </button>
                     </form>
-                    <span><i class="fas fa-calendar-alt"></i> <?php echo date('F d, Y', strtotime($selectedDate)); ?></span>
+                    <span><i class="fas fa-calendar-alt"></i>
+                        <?php
+                        if ($fromDate === $toDate) {
+                            echo date('F d, Y', strtotime($fromDate));
+                        } else {
+                            echo date('M d, Y', strtotime($fromDate)) . ' - ' . date('M d, Y', strtotime($toDate));
+                        }
+                        ?>
+                    </span>
                     <?php if ($selectedPromoter): ?>
-                        <?php 
+                        <?php
                         $selectedPromoterName = '';
                         foreach ($allPromoters as $promoter) {
                             if ($promoter['PromoterUniqueID'] === $selectedPromoter) {
@@ -482,8 +504,8 @@ include("../components/topbar.php");
                         <span style="background: #e3f2fd; color: #1976d2; padding: 6px 12px; border-radius: 5px; font-size: 14px;">
                             <i class="fas fa-filter"></i> Filtered by: <?php echo htmlspecialchars($selectedPromoterName); ?>
                         </span>
-                        <a href="?date=<?php echo urlencode($selectedDate); ?>" class="btn btn-primary" style="padding: 6px 12px; font-size: 14px;">
-                            <i class="fas fa-times"></i> Clear Filter
+                        <a href="?from_date=<?php echo urlencode($fromDate); ?>&to_date=<?php echo urlencode($toDate); ?>" class="btn btn-primary" style="padding: 6px 12px; font-size: 14px;">
+                            <i class="fas fa-times"></i> Clear Promoter Filter
                         </a>
                     <?php endif; ?>
                 </div>
@@ -497,7 +519,7 @@ include("../components/topbar.php");
                             <div class="team-name"><?php echo htmlspecialchars($team['TeamName']); ?></div>
                         </div>
                         <div>
-                            <a href="export.php?team=<?php echo urlencode($team['TeamName']); ?>&date=<?php echo urlencode($selectedDate); ?><?php echo $selectedPromoter ? '&promoter=' . urlencode($selectedPromoter) : ''; ?>" class="btn btn-primary">
+                            <a href="export.php?team=<?php echo urlencode($team['TeamName']); ?>&from_date=<?php echo urlencode($fromDate); ?>&to_date=<?php echo urlencode($toDate); ?><?php echo $selectedPromoter ? '&promoter=' . urlencode($selectedPromoter) : ''; ?>" class="btn btn-primary">
                                 <i class="fas fa-file-excel"></i> Export to Excel
                             </a>
                         </div>
@@ -506,29 +528,29 @@ include("../components/topbar.php");
                     <div class="team-stats">
                         <div class="team-stat">
                             <div class="team-stat-value"><?php echo number_format($team['total_customers']); ?></div>
-                            <div class="team-stat-label">New Customers Today</div>
+                            <div class="team-stat-label">New Customers (Period)</div>
                         </div>
                         <div class="team-stat">
                             <div class="team-stat-value"><?php echo number_format($team['total_promoters']); ?></div>
-                            <div class="team-stat-label">New Promoters Today</div>
+                            <div class="team-stat-label">New Promoters (Period)</div>
                         </div>
                         <div class="team-stat">
                             <div class="team-stat-value"><?php echo number_format($team['total_payments']); ?></div>
-                            <div class="team-stat-label">Payments Today</div>
+                            <div class="team-stat-label">Payments (Period)</div>
                         </div>
                         <div class="team-stat">
                             <div class="team-stat-value">₹<?php echo number_format($team['verified_amount']); ?></div>
-                            <div class="team-stat-label">Verified Amount Today</div>
+                            <div class="team-stat-label">Verified Amount (Period)</div>
                         </div>
                         <div class="team-stat">
                             <div class="team-stat-value">₹<?php echo number_format($team['pending_amount']); ?></div>
-                            <div class="team-stat-label">Pending Amount Today</div>
+                            <div class="team-stat-label">Pending Amount (Period)</div>
                         </div>
                     </div>
 
                     <!-- Team Members Table -->
                     <div class="section">
-                        <h3 class="section-title">Today's Team Activity</h3>
+                        <h3 class="section-title">Team Activity (<?php echo date('M d', strtotime($fromDate)) . ' - ' . date('M d, Y', strtotime($toDate)); ?>)</h3>
                         <div class="table-responsive">
                             <table>
                                 <thead>
@@ -538,13 +560,13 @@ include("../components/topbar.php");
                                         <th>Contact</th>
                                         <th>Email</th>
                                         <th>Parent</th>
-                                        <th>Today's Payments</th>
-                                        <th>Today's Amount</th>
+                                        <th>Payments (Period)</th>
+                                        <th>Amount (Period)</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <?php
-                                    $teamMembers = getTeamMembers($conn, $team['TeamName'], $selectedDate, $selectedPromoter);
+                                    $teamMembers = getTeamMembers($conn, $team['TeamName'], $fromDate, $toDate, $selectedPromoter);
                                     if (!empty($teamMembers)):
                                         foreach ($teamMembers as $member):
                                     ?>
@@ -562,7 +584,7 @@ include("../components/topbar.php");
                                     else:
                                         ?>
                                         <tr>
-                                            <td colspan="7" class="no-data">No activity found for this team today</td>
+                                            <td colspan="7" class="no-data">No activity found for this team in the selected period</td>
                                         </tr>
                                     <?php endif; ?>
                                 </tbody>
@@ -573,7 +595,7 @@ include("../components/topbar.php");
             <?php endforeach; ?>
 
             <?php if (empty($teamStats)): ?>
-                <div class="no-data">No team data available for today</div>
+                <div class="no-data">No team data available for the selected period</div>
             <?php endif; ?>
         </div>
     </div>
@@ -613,7 +635,7 @@ include("../components/topbar.php");
                     if (text.includes(searchTerm)) {
                         item.classList.remove('hidden');
                         visibleCount++;
-                        
+
                         // Highlight selected item
                         if (item.getAttribute('data-value') === hiddenInput.value) {
                             item.classList.add('selected');
@@ -651,14 +673,14 @@ include("../components/topbar.php");
                 item.addEventListener('click', function() {
                     const value = this.getAttribute('data-value');
                     const text = this.getAttribute('data-text');
-                    
+
                     hiddenInput.value = value;
                     searchInput.value = value ? text : '';
-                    
+
                     // Update selected state
                     dropdownItems.forEach(i => i.classList.remove('selected'));
                     this.classList.add('selected');
-                    
+
                     // Close dropdown and submit form
                     dropdownList.classList.remove('show');
                     document.getElementById('filterForm').submit();
@@ -667,10 +689,10 @@ include("../components/topbar.php");
 
             // Handle keyboard navigation
             let selectedIndex = -1;
-            
+
             searchInput.addEventListener('keydown', function(e) {
                 const visibleItems = Array.from(dropdownItems).filter(item => !item.classList.contains('hidden'));
-                
+
                 if (e.key === 'ArrowDown') {
                     e.preventDefault();
                     selectedIndex = Math.min(selectedIndex + 1, visibleItems.length - 1);
@@ -694,7 +716,10 @@ include("../components/topbar.php");
                 items.forEach((item, index) => {
                     if (index === selectedIndex) {
                         item.style.backgroundColor = '#e3f2fd';
-                        item.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+                        item.scrollIntoView({
+                            block: 'nearest',
+                            behavior: 'smooth'
+                        });
                     } else {
                         item.style.backgroundColor = '';
                     }
