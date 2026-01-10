@@ -31,17 +31,15 @@ try {
         throw new Exception('Installment not found');
     }
 
-    // Get customers with pending payments
+    // Get customers with pending payments - All active customers, not just subscribed ones
     $stmt = $conn->prepare("
-        SELECT c.CustomerID, c.CustomerUniqueID, c.Name, c.Contact
+        SELECT DISTINCT c.CustomerID, c.CustomerUniqueID, c.Name, c.Contact
         FROM Customers c
-        JOIN Subscriptions sub ON sub.CustomerID = c.CustomerID AND sub.SchemeID = ?
         LEFT JOIN Payments p ON p.CustomerID = c.CustomerID AND p.InstallmentID = ?
-        WHERE (p.PaymentID IS NULL OR p.Status = 'Rejected')
+        WHERE (p.PaymentID IS NULL OR p.Status != 'Verified')
         AND c.Status = 'Active'
-        AND sub.RenewalStatus = 'Active'
     ");
-    $stmt->execute([$schemeId, $installmentId]);
+    $stmt->execute([$installmentId]);
     $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
     $successCount = 0;

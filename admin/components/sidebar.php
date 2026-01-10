@@ -408,6 +408,13 @@ verifyAuth();
 
             <div class="section-divider"><span>System</span></div>
 
+            <li class="<?php echo ($currentPage == 'popups') ? 'active' : ''; ?>">
+                <a href="<?php echo $menuPath; ?>popups" data-title="Promoter Popups">
+                    <i class="fas fa-image"></i>
+                    <span class="link-text">Promoter Popups</span>
+                </a>
+            </li>
+
             <li class="<?php echo ($currentPage == 'notifications') ? 'active' : ''; ?>">
                 <a href="<?php echo $menuPath; ?>notifications" data-title="Notifications">
                     <i class="fas fa-bell"></i>

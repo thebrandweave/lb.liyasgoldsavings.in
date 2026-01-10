@@ -26,25 +26,25 @@ try {
     $stmt = $conn->query("SELECT * FROM SMSAPIConfig ORDER BY ConfigID DESC LIMIT 1");
     $settings = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // If no settings exist, create a default record
-        if (!$settings) {
-            $stmt = $conn->prepare("INSERT INTO SMSAPIConfig (APIProviderName, APIEndpoint, Username, Password, CustomerID, SourceAddress, DLTEntityID, DLTTemplateID, MessageType, MessageTemplate, Status) VALUES ('Airtel', 'https://iqsms.airtel.in/api/v1/send-prepaid-sms', '', '', '', '', '', '', 'SERVICE_EXPLICIT', '', 'Active')");
-            $stmt->execute();
-            $settings = [
-                'ConfigID' => $conn->lastInsertId(),
-                'APIProviderName' => 'Airtel',
-                'APIEndpoint' => 'https://iqsms.airtel.in/api/v1/send-prepaid-sms',
-                'Username' => '',
-                'Password' => '',
-                'CustomerID' => '',
-                'SourceAddress' => '',
-                'DLTEntityID' => '',
-                'DLTTemplateID' => '',
-                'MessageType' => 'SERVICE_EXPLICIT',
-                'MessageTemplate' => '',
-                'Status' => 'Active'
-            ];
-        }
+    // If no settings exist, create a default record
+    if (!$settings) {
+        $stmt = $conn->prepare("INSERT INTO SMSAPIConfig (APIProviderName, APIEndpoint, Username, Password, CustomerID, SourceAddress, DLTEntityID, DLTTemplateID, MessageType, MessageTemplate, Status) VALUES ('Airtel', 'https://iqsms.airtel.in/api/v1/send-prepaid-sms', '', '', '', '', '', '', 'SERVICE_EXPLICIT', '', 'Active')");
+        $stmt->execute();
+        $settings = [
+            'ConfigID' => $conn->lastInsertId(),
+            'APIProviderName' => 'Airtel',
+            'APIEndpoint' => 'https://iqsms.airtel.in/api/v1/send-prepaid-sms',
+            'Username' => '',
+            'Password' => '',
+            'CustomerID' => '',
+            'SourceAddress' => '',
+            'DLTEntityID' => '',
+            'DLTTemplateID' => '',
+            'MessageType' => 'SERVICE_EXPLICIT',
+            'MessageTemplate' => '',
+            'Status' => 'Active'
+        ];
+    }
 } catch (PDOException $e) {
     $_SESSION['error_message'] = "Failed to fetch settings: " . $e->getMessage();
 }
@@ -442,6 +442,21 @@ include("../../components/topbar.php");
                         <i class="fas fa-paper-plane"></i> Send Test
                     </button>
                 </div>
+                <div id="test_result" style="margin-top: 15px; display: none;"></div>
+            </div>
+
+            <!-- Logs Information Section -->
+            <div class="test-section" style="margin-top: 20px;">
+                <h4><i class="fas fa-file-alt"></i> SMS Error Logs</h4>
+                <p class="help-text">SMS errors are logged to PHP error log. Check the following locations:</p>
+                <ul style="list-style: none; padding: 0; margin: 10px 0;">
+                    <li style="padding: 5px 0;"><i class="fas fa-file" style="color: #3498db; margin-right: 8px;"></i> <strong>XAMPP Apache:</strong> <code>C:\xampp\apache\logs\error.log</code></li>
+                    <li style="padding: 5px 0;"><i class="fas fa-file" style="color: #3498db; margin-right: 8px;"></i> <strong>XAMPP PHP:</strong> <code>C:\xampp\php\logs\php_error_log</code></li>
+                    <li style="padding: 5px 0;"><i class="fas fa-info-circle" style="color: #f39c12; margin-right: 8px;"></i> <strong>Note:</strong> Log file location may vary based on your PHP configuration</li>
+                </ul>
+                <p class="help-text" style="margin-top: 10px; color: #e74c3c;">
+                    <i class="fas fa-exclamation-triangle"></i> <strong>Tip:</strong> When testing SMS, check the error details shown in the alert dialog. The error message will contain specific details about what went wrong.
+                </p>
             </div>
 
             <div class="btn-group">
@@ -472,40 +487,115 @@ include("../../components/topbar.php");
         function testSMS() {
             const phone = document.getElementById('test_phone').value;
             const message = document.getElementById('test_message').value;
-            
+
             if (!phone || !message) {
                 alert('Please enter both phone number and message');
                 return;
             }
-            
+
             // Show loading state
             const btn = event.target;
             const originalText = btn.innerHTML;
             btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             btn.disabled = true;
-            
+
             fetch('test_sms.php', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ phone: phone, message: message })
-            })
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    alert('Test SMS sent successfully!');
-                } else {
-                    alert('Failed to send test SMS: ' + data.message);
-                }
-            })
-            .catch(error => {
-                alert('Error sending test SMS: ' + error.message);
-            })
-            .finally(() => {
-                btn.innerHTML = originalText;
-                btn.disabled = false;
-            });
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        phone: phone,
+                        message: message
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    const resultDiv = document.getElementById('test_result');
+                    resultDiv.style.display = 'block';
+
+                    if (data.success) {
+                        resultDiv.innerHTML = '<div style="padding: 15px; background: #d4edda; border: 1px solid #c3e6cb; border-radius: 6px; color: #155724;"><i class="fas fa-check-circle"></i> <strong>Success!</strong> ' + (data.message || 'Test SMS sent successfully') + '</div>';
+                        alert('Test SMS sent successfully!');
+                    } else {
+                        // Build detailed error message
+                        let errorHtml = '<div style="padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 6px; color: #721c24;">';
+                        errorHtml += '<i class="fas fa-exclamation-circle"></i> <strong>Failed to send test SMS</strong><br><br>';
+
+                        // Get error message - prioritize error field over message field
+                        let errorMsg = data.error || data.message || 'Unknown error occurred';
+                        if (errorMsg === 'Failed to send test SMS') {
+                            errorMsg = 'No detailed error information available. Check debug info below.';
+                        }
+                        errorHtml += '<strong>Error:</strong> ' + errorMsg + '<br>';
+
+                        if (data.httpCode && data.httpCode !== 'N/A') {
+                            errorHtml += '<strong>HTTP Code:</strong> ' + data.httpCode + '<br>';
+                        }
+
+                        // Show debug info if available
+                        if (data.debug) {
+                            errorHtml += '<br><strong>Debug Information:</strong><br>';
+                            errorHtml += '<small style="color: #666;">Result Type: ' + (data.debug.result_type || 'unknown') + '<br>';
+                            if (data.debug.result_keys) {
+                                errorHtml += 'Result Keys: ' + data.debug.result_keys.join(', ') + '<br>';
+                            }
+                            errorHtml += '</small>';
+                        }
+
+                        if (data.logPath) {
+                            errorHtml += '<br><strong>Log File Location:</strong><br>';
+                            errorHtml += '<code style="background: #fff; padding: 5px; border-radius: 3px; display: inline-block; margin-top: 5px; font-size: 11px;">' + data.logPath + '</code><br>';
+                            if (data.logPathExists) {
+                                errorHtml += '<span style="color: #28a745;"><i class="fas fa-check"></i> File exists</span><br>';
+                            } else {
+                                errorHtml += '<span style="color: #dc3545;"><i class="fas fa-times"></i> File not found (check PHP error_log setting)</span><br>';
+                            }
+                        }
+
+                        if (data.apiResponse) {
+                            errorHtml += '<br><strong>API Response:</strong><br>';
+                            let responseStr = typeof data.apiResponse === 'object' ? JSON.stringify(data.apiResponse, null, 2) : data.apiResponse;
+                            errorHtml += '<pre style="background: #fff; padding: 10px; border-radius: 3px; overflow-x: auto; max-height: 200px; font-size: 11px; white-space: pre-wrap;">' + responseStr + '</pre>';
+                        }
+
+                        errorHtml += '</div>';
+                        resultDiv.innerHTML = errorHtml;
+
+                        // Also show alert with key info - make sure we show the actual error, not the generic message
+                        let alertMsg = 'Failed to send test SMS\n\n';
+                        if (data.error && data.error !== 'Unknown error occurred' && data.error !== 'Failed to send test SMS') {
+                            alertMsg += 'Error: ' + data.error + '\n';
+                        } else if (data.message && data.message !== 'Failed to send test SMS') {
+                            alertMsg += 'Message: ' + data.message + '\n';
+                        } else {
+                            alertMsg += 'Error: Unable to determine specific error. Check details below.\n';
+                        }
+                        if (data.httpCode && data.httpCode !== 'N/A') {
+                            alertMsg += 'HTTP Code: ' + data.httpCode + '\n';
+                        }
+                        if (data.logPath) {
+                            alertMsg += '\nCheck detailed error in the result box below.';
+                        }
+                        alert(alertMsg);
+                    }
+
+                    // Scroll to result
+                    resultDiv.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'nearest'
+                    });
+                })
+                .catch(error => {
+                    const resultDiv = document.getElementById('test_result');
+                    resultDiv.style.display = 'block';
+                    resultDiv.innerHTML = '<div style="padding: 15px; background: #f8d7da; border: 1px solid #f5c6cb; border-radius: 6px; color: #721c24;"><i class="fas fa-exclamation-circle"></i> <strong>Error:</strong> ' + error.message + '</div>';
+                    alert('Error sending test SMS: ' + error.message);
+                })
+                .finally(() => {
+                    btn.innerHTML = originalText;
+                    btn.disabled = false;
+                });
         }
     </script>
 </body>

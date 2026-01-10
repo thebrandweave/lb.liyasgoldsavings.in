@@ -28,11 +28,12 @@ class SMSAPI
         return $this->config && $this->config['Status'] === 'Active';
     }
 
-    public function sendSMS($phoneNumber, $message, $customerName = null, $amount = null)
+    public function sendSMS($phoneNumber, $message, $customerName = null, $amount = null, $returnDetails = false)
     {
         if (!$this->isConfigured()) {
-            error_log("SMS API is not configured or inactive");
-            return false;
+            $error = "SMS API is not configured or inactive";
+            error_log($error);
+            return $returnDetails ? ['success' => false, 'error' => $error] : false;
         }
 
         try {
@@ -77,31 +78,116 @@ class SMSAPI
             $curlError = curl_error($ch);
             curl_close($ch);
 
-            // Log the response
-            error_log("SMS API Response: " . $response);
-            error_log("SMS API HTTP Code: " . $httpCode);
+            // Handle null/empty response
+            if ($response === false) {
+                $response = '';
+            }
 
+            // Log the response
+            error_log("SMS API Response: " . ($response ?: 'empty or null'));
+            error_log("SMS API HTTP Code: " . $httpCode);
             if ($curlError) {
                 error_log("SMS API CURL Error: " . $curlError);
-                return false;
+            }
+
+            if ($curlError) {
+                $error = "CURL Error: " . $curlError;
+                error_log("SMS API " . $error);
+                return $returnDetails ? ['success' => false, 'error' => $error, 'httpCode' => $httpCode, 'response' => $response] : false;
             }
 
             // Check if request was successful
-            if ($httpCode == 200) {
+            if ($httpCode == 200 || $httpCode == 201) {
                 $responseData = json_decode($response, true);
-                if (isset($responseData['status']) && $responseData['status'] === 'success') {
-                    return true;
+
+                // Airtel API success indicators: messageRequestId exists (success) or status field
+                $isSuccess = false;
+                $hasMessageRequestId = isset($responseData['messageRequestId']) && !empty($responseData['messageRequestId']);
+
+                if ($hasMessageRequestId) {
+                    // Airtel API format: messageRequestId indicates request was processed
+                    // Check if there are any incorrect numbers
+                    $incorrectNumbers = isset($responseData['incorrectNum']) && is_array($responseData['incorrectNum']) ? $responseData['incorrectNum'] : [];
+                    if (empty($incorrectNumbers)) {
+                        // All numbers were valid - success
+                        $isSuccess = true;
+                    } else {
+                        // Some numbers were invalid - partial failure
+                        $isSuccess = false;
+                    }
+                } elseif (isset($responseData['status']) && $responseData['status'] === 'success') {
+                    // Generic API format: status field indicates success
+                    $isSuccess = true;
+                }
+
+                if ($isSuccess) {
+                    $messageRequestId = $responseData['messageRequestId'] ?? 'N/A';
+                    $destinationCount = isset($responseData['destinationAddress']) && is_array($responseData['destinationAddress']) ? count($responseData['destinationAddress']) : 0;
+                    $incorrectCount = isset($responseData['incorrectNum']) && is_array($responseData['incorrectNum']) ? count($responseData['incorrectNum']) : 0;
+
+                    $successMsg = "SMS sent successfully (Request ID: {$messageRequestId})";
+                    if ($destinationCount > 0) {
+                        $successMsg .= " to {$destinationCount} recipient(s)";
+                    }
+                    if ($incorrectCount > 0) {
+                        $successMsg .= " (Note: {$incorrectCount} invalid number(s) found)";
+                    }
+                    return $returnDetails ? ['success' => true, 'message' => $successMsg, 'response' => $responseData, 'messageRequestId' => $messageRequestId] : true;
                 } else {
-                    error_log("SMS API returned error: " . ($responseData['message'] ?? 'Unknown error'));
-                    return false;
+                    // Request processed but not successful (invalid numbers or other issues)
+                    $errorMsg = 'Unknown error';
+
+                    // Check for invalid phone numbers first (most common issue)
+                    if (isset($responseData['incorrectNum']) && is_array($responseData['incorrectNum']) && !empty($responseData['incorrectNum'])) {
+                        $errorMsg = 'Invalid phone number(s): ' . implode(', ', $responseData['incorrectNum']);
+                    } elseif (isset($responseData['message']) && is_string($responseData['message'])) {
+                        // Check if message is an actual error message (not the SMS content)
+                        $testMessages = ['test message from golden dream', 'test message'];
+                        $messageLower = strtolower(trim($responseData['message']));
+                        if (!in_array($messageLower, $testMessages)) {
+                            $errorMsg = $responseData['message'];
+                        }
+                    }
+
+                    if ($errorMsg === 'Unknown error') {
+                        if (isset($responseData['error'])) {
+                            $errorMsg = is_string($responseData['error']) ? $responseData['error'] : json_encode($responseData['error']);
+                        } elseif (isset($responseData['errorMessage'])) {
+                            $errorMsg = is_string($responseData['errorMessage']) ? $responseData['errorMessage'] : json_encode($responseData['errorMessage']);
+                        } elseif ($hasMessageRequestId) {
+                            // Has messageRequestId but also has issues - partial success scenario
+                            $errorMsg = 'Request processed but some numbers may be invalid. Check incorrectNum field in response.';
+                        } elseif (!empty($response)) {
+                            $errorMsg = 'Invalid response format. Expected messageRequestId or status field.';
+                        }
+                    }
+
+                    $error = "API returned error: " . $errorMsg;
+                    error_log("SMS API " . $error);
+                    error_log("SMS API Full Response: " . $response);
+                    return $returnDetails ? ['success' => false, 'error' => $error, 'httpCode' => $httpCode, 'response' => $responseData ?: $response] : false;
                 }
             } else {
-                error_log("SMS API HTTP Error: " . $httpCode . " - " . $response);
-                return false;
+                // HTTP error - format response for better error message
+                $errorDetails = 'No response received';
+                if (!empty($response)) {
+                    $responseData = json_decode($response, true);
+                    if (is_array($responseData)) {
+                        $errorDetails = isset($responseData['message']) ? $responseData['message'] : (isset($responseData['error']) ? $responseData['error'] :
+                            json_encode($responseData));
+                    } else {
+                        $errorDetails = substr($response, 0, 300);
+                    }
+                }
+                $error = "HTTP Error " . $httpCode . ": " . $errorDetails;
+                error_log("SMS API " . $error);
+                error_log("SMS API Full Response: " . ($response ?: 'empty'));
+                return $returnDetails ? ['success' => false, 'error' => $error, 'httpCode' => $httpCode, 'response' => $response] : false;
             }
         } catch (Exception $e) {
-            error_log("Error sending SMS: " . $e->getMessage());
-            return false;
+            $error = "Exception: " . $e->getMessage();
+            error_log("Error sending SMS: " . $error);
+            return $returnDetails ? ['success' => false, 'error' => $error] : false;
         }
     }
 

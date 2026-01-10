@@ -181,6 +181,17 @@ $stats = getStats($conn);
 $recentPayments = getRecentPayments($conn);
 $recentActivity = getRecentActivity($conn);
 
+// Get active popup for promoters
+$activePopup = null;
+try {
+    $stmt = $conn->prepare("SELECT ImageURL FROM Popups WHERE IsActive = 1 LIMIT 1");
+    $stmt->execute();
+    $activePopup = $stmt->fetch(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    // Popups table might not exist yet, silently fail
+    $activePopup = null;
+}
+
 $currentPage = 'dashboard';
 ?>
 
@@ -1465,5 +1476,169 @@ $currentPage = 'dashboard';
             }
         });
     </script>
+
+    <!-- Popup Modal -->
+    <?php if ($activePopup): ?>
+    <div id="promoterPopupModal" class="popup-modal" style="display: none;">
+        <div class="popup-modal-overlay"></div>
+        <div class="popup-modal-content">
+            <button class="popup-close-btn" onclick="closePopup()">
+                <i class="fas fa-times"></i>
+            </button>
+            <div class="popup-image-container">
+                <img src="../../<?php echo htmlspecialchars($activePopup['ImageURL']); ?>" alt="Promoter Popup" class="popup-image">
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .popup-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .popup-modal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(5px);
+        }
+
+        .popup-modal-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90vh;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+            z-index: 10000;
+            animation: popupSlideIn 0.3s ease-out;
+        }
+
+        @keyframes popupSlideIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9) translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        .popup-close-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.9);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            color: #333;
+            z-index: 10001;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup-close-btn:hover {
+            background: white;
+            transform: rotate(90deg);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+
+        .popup-image-container {
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            max-height: 90vh;
+            overflow: auto;
+        }
+
+        .popup-image {
+            max-width: 100%;
+            max-height: calc(90vh - 40px);
+            border-radius: 8px;
+            object-fit: contain;
+        }
+
+        @media (max-width: 768px) {
+            .popup-modal-content {
+                max-width: 95%;
+                max-height: 95vh;
+            }
+
+            .popup-image-container {
+                padding: 15px;
+            }
+
+            .popup-image {
+                max-height: calc(95vh - 30px);
+            }
+        }
+    </style>
+
+    <script>
+        // Show popup on page load (only once per session)
+        document.addEventListener('DOMContentLoaded', function() {
+            // Check if popup was already shown in this session
+            const popupShown = sessionStorage.getItem('promoterPopupShown');
+            
+            if (!popupShown) {
+                // Wait a bit for page to load, then show popup
+                setTimeout(function() {
+                    const modal = document.getElementById('promoterPopupModal');
+                    if (modal) {
+                        modal.style.display = 'flex';
+                        document.body.style.overflow = 'hidden';
+                        
+                        // Mark as shown in this session
+                        sessionStorage.setItem('promoterPopupShown', 'true');
+                    }
+                }, 500);
+            }
+        });
+
+        function closePopup() {
+            const modal = document.getElementById('promoterPopupModal');
+            if (modal) {
+                modal.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+        }
+
+        // Close popup when clicking outside the image
+        document.addEventListener('click', function(e) {
+            const modal = document.getElementById('promoterPopupModal');
+            if (modal && e.target === modal.querySelector('.popup-modal-overlay')) {
+                closePopup();
+            }
+        });
+
+        // Close popup with ESC key
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closePopup();
+            }
+        });
+    </script>
+    <?php endif; ?>
 </body>
 </html> 

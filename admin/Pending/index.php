@@ -29,10 +29,9 @@ $stmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, Name FROM Promoters
 $stmt->execute();
 $promoters = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Get selected scheme (default to latest)
+// Get selected scheme (default to latest, but required)
 $selectedSchemeId = isset($_GET['scheme_id']) ? $_GET['scheme_id'] : ($latestScheme['SchemeID'] ?? null);
 $selectedPromoterId = isset($_GET['promoter_id']) ? $_GET['promoter_id'] : '';
-$status = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
 $startDate = isset($_GET['start_date']) ? $_GET['start_date'] : '';
 $endDate = isset($_GET['end_date']) ? $_GET['end_date'] : '';
 
@@ -43,7 +42,26 @@ $offset = ($page - 1) * $recordsPerPage;
 
 // Search and filtering
 $search = isset($_GET['search']) ? $_GET['search'] : '';
+// Installment is required - must select one
 $installmentId = isset($_GET['installment_id']) ? $_GET['installment_id'] : '';
+
+// If scheme is selected but no installment selected, get first installment as default and redirect
+if (!empty($selectedSchemeId) && empty($installmentId)) {
+    $stmt = $conn->prepare("SELECT InstallmentID FROM Installments WHERE SchemeID = ? AND Status = 'Active' ORDER BY InstallmentNumber ASC LIMIT 1");
+    $stmt->execute([$selectedSchemeId]);
+    $firstInstallment = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($firstInstallment) {
+        $installmentId = $firstInstallment['InstallmentID'];
+        // Build redirect URL preserving other filters
+        $redirectUrl = "?scheme_id=" . urlencode($selectedSchemeId) . "&installment_id=" . urlencode($installmentId);
+        if (!empty($search)) $redirectUrl .= "&search=" . urlencode($search);
+        if (!empty($selectedPromoterId)) $redirectUrl .= "&promoter_id=" . urlencode($selectedPromoterId);
+        if (!empty($startDate)) $redirectUrl .= "&start_date=" . urlencode($startDate);
+        if (!empty($endDate)) $redirectUrl .= "&end_date=" . urlencode($endDate);
+        header("Location: " . $redirectUrl);
+        exit();
+    }
+}
 
 // Build query conditions
 $conditions = [];
@@ -54,12 +72,14 @@ if (!empty($search)) {
     $params[':search'] = "%$search%";
 }
 
-if (!empty($selectedSchemeId)) {
-    $conditions[] = "s.SchemeID = :scheme_id";
+// Scheme and Installment are both required
+if (empty($selectedSchemeId) || empty($installmentId)) {
+    // Force no results if scheme or installment is not selected
+    $conditions[] = "1 = 0";
+} else {
+    $conditions[] = "i.SchemeID = :scheme_id";
     $params[':scheme_id'] = $selectedSchemeId;
-}
 
-if (!empty($installmentId)) {
     $conditions[] = "i.InstallmentID = :installment_id";
     $params[':installment_id'] = $installmentId;
 }
@@ -67,11 +87,6 @@ if (!empty($installmentId)) {
 if (!empty($selectedPromoterId)) {
     $conditions[] = "c.PromoterID = :promoter_id";
     $params[':promoter_id'] = $selectedPromoterId;
-}
-
-if (!empty($status)) {
-    $conditions[] = "(p.Status = :status OR (p.Status IS NULL AND :status = 'Not Submitted'))";
-    $params[':status'] = $status;
 }
 
 if (!empty($startDate)) {
@@ -84,33 +99,35 @@ if (!empty($endDate)) {
     $params[':endDate'] = $endDate;
 }
 
-$whereClause = !empty($conditions) ? " WHERE " . implode(" AND ", $conditions) : "";
+$whereClause = !empty($conditions) ? " AND " . implode(" AND ", $conditions) : "";
 
-// Get total records count
+// Get total records count - All active customers with pending payments
+// Simple logic: Show all active customers who have pending or not submitted payments
+// Note: This shows all active customers for each installment in the selected scheme
 $countQuery = "
-    SELECT COUNT(DISTINCT c.CustomerID) as total
-    FROM Customers c
-    JOIN Schemes s ON 1=1
-    JOIN Installments i ON i.SchemeID = s.SchemeID
-    JOIN Subscriptions sub ON sub.CustomerID = c.CustomerID AND sub.SchemeID = s.SchemeID
+    SELECT COUNT(DISTINCT CONCAT(c.CustomerID, '-', i.InstallmentID)) as total
+    FROM Installments i
+    JOIN Schemes s ON i.SchemeID = s.SchemeID
+    CROSS JOIN Customers c
     LEFT JOIN Payments p ON p.CustomerID = c.CustomerID AND p.InstallmentID = i.InstallmentID
-    $whereClause
+    WHERE c.Status = 'Active'
     AND (p.PaymentID IS NULL OR p.Status != 'Verified')
-    AND c.Status = 'Active'
-    AND sub.RenewalStatus = 'Active'";
+    $whereClause";
 
 $stmt = $conn->prepare($countQuery);
 $stmt->execute($params);
 $totalRecords = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 $totalPages = ceil($totalRecords / $recordsPerPage);
 
-// Get pending payments
+// Get pending payments - Simple logic: All active customers with pending or not submitted payments
+// Shows all active customers for each installment - no subscription restriction
 $query = "
     SELECT 
         c.CustomerID,
         c.CustomerUniqueID,
         c.Name as CustomerName,
         c.Contact,
+        c.PromoterID,
         s.SchemeName,
         i.InstallmentName,
         i.InstallmentNumber,
@@ -118,15 +135,13 @@ $query = "
         i.DrawDate,
         p.Status as PaymentStatus,
         p.SubmittedAt as PaymentSubmittedAt
-    FROM Customers c
-    JOIN Schemes s ON 1=1
-    JOIN Installments i ON i.SchemeID = s.SchemeID
-    JOIN Subscriptions sub ON sub.CustomerID = c.CustomerID AND sub.SchemeID = s.SchemeID
+    FROM Installments i
+    JOIN Schemes s ON i.SchemeID = s.SchemeID
+    CROSS JOIN Customers c
     LEFT JOIN Payments p ON p.CustomerID = c.CustomerID AND p.InstallmentID = i.InstallmentID
-    $whereClause
+    WHERE c.Status = 'Active'
     AND (p.PaymentID IS NULL OR p.Status != 'Verified')
-    AND c.Status = 'Active'
-    AND sub.RenewalStatus = 'Active'
+    $whereClause
     ORDER BY i.InstallmentNumber ASC, c.Name ASC
     LIMIT :offset, :limit";
 
@@ -173,9 +188,11 @@ include("../components/topbar.php");
         body {
             background: #fff;
         }
+
         .content-wrapper {
             background: #fff;
         }
+
         .filter-container {
             display: flex;
             flex-wrap: wrap;
@@ -186,10 +203,23 @@ include("../components/topbar.php");
             border-radius: 10px;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
         }
+
+        .scheme-installment-group {
+            display: flex;
+            gap: 15px;
+            flex: 1 1 auto;
+            align-items: flex-end;
+        }
+
+        .scheme-installment-group .filter-group {
+            flex: 1;
+        }
+
         .search-box {
             flex: 1 1 300px;
             position: relative;
         }
+
         .search-input {
             width: 100%;
             padding: 10px 15px;
@@ -202,23 +232,27 @@ include("../components/topbar.php");
             background-repeat: no-repeat;
             background-position: 12px center;
         }
+
         .search-input:focus {
             outline: none;
             border-color: #3498db;
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
+
         .filter-group {
             display: flex;
             align-items: center;
             gap: 8px;
             flex: 1 1 200px;
         }
+
         .filter-label {
             font-size: 14px;
             color: #576574;
             white-space: nowrap;
             font-weight: 500;
         }
+
         .filter-select,
         .filter-input {
             flex: 1;
@@ -230,12 +264,14 @@ include("../components/topbar.php");
             color: #2d3436;
             transition: all 0.3s ease;
         }
+
         .filter-select:focus,
         .filter-input:focus {
             outline: none;
             border-color: #3498db;
             box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
         }
+
         .filter-select {
             background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="%23a4b0be" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
             background-repeat: no-repeat;
@@ -245,6 +281,7 @@ include("../components/topbar.php");
             -webkit-appearance: none;
             -moz-appearance: none;
         }
+
         /* Standard dropdown style for promoter filter input */
         #promoterInput {
             background-color: #fff;
@@ -253,7 +290,7 @@ include("../components/topbar.php");
             border-radius: 8px;
             padding: 8px 40px 8px 12px;
             font-size: 14px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
             transition: border-color 0.3s, box-shadow 0.3s;
             appearance: none;
             -webkit-appearance: none;
@@ -264,30 +301,42 @@ include("../components/topbar.php");
             background-position: right 12px center;
             cursor: pointer;
         }
+
         #promoterInput:focus {
             border-color: #3498db;
-            box-shadow: 0 0 0 3px rgba(52,152,219,0.15);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.15);
             outline: none;
         }
+
         @media (max-width: 768px) {
             .filter-container {
                 flex-direction: column;
                 gap: 12px;
             }
+
+            .scheme-installment-group {
+                flex-direction: column;
+                width: 100%;
+            }
+
             .filter-group {
                 flex-wrap: wrap;
             }
+
             .filter-group:has(.filter-input) {
                 flex-direction: column;
                 align-items: flex-start;
             }
+
             .filter-group:has(.filter-input) .filter-label {
                 margin-bottom: 5px;
             }
+
             .filter-group:has(.filter-input) span {
                 margin: 5px 0;
             }
         }
+
         .page-header {
             display: flex;
             justify-content: space-between;
@@ -509,13 +558,14 @@ include("../components/topbar.php");
             gap: 8px;
             transition: background 0.2s, color 0.2s, box-shadow 0.2s;
             text-decoration: none;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
         }
+
         .btn-clear-filter:hover {
             background: linear-gradient(135deg, #f1f2f6, #fff);
             color: #3498db;
             border-color: #3498db;
-            box-shadow: 0 4px 12px rgba(52,152,219,0.08);
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.08);
         }
     </style>
 </head>
@@ -534,26 +584,43 @@ include("../components/topbar.php");
                         placeholder="Search by customer name, ID or contact..."
                         value="<?php echo htmlspecialchars($search); ?>">
                 </div>
-                <div class="filter-group">
-                    <label class="filter-label">Status:</label>
-                    <select class="filter-select" name="status_filter">
-                        <option value="">All Status</option>
-                        <option value="Pending" <?php echo $status === 'Pending' ? 'selected' : ''; ?>>Pending</option>
-                        <option value="Not Submitted" <?php echo $status === 'Not Submitted' ? 'selected' : ''; ?>>Not Submitted</option>
-                    </select>
+
+                <!-- Scheme and Installment grouped together -->
+                <div class="scheme-installment-group">
+                    <div class="filter-group">
+                        <label class="filter-label">Scheme: <span style="color: red;">*</span></label>
+                        <select name="scheme_id" id="schemeSelect" class="filter-select" required>
+                            <?php if (empty($selectedSchemeId)): ?>
+                                <option value="">-- Select Scheme --</option>
+                            <?php endif; ?>
+                            <?php foreach ($schemes as $scheme): ?>
+                                <option value="<?php echo $scheme['SchemeID']; ?>"
+                                    <?php echo $selectedSchemeId == $scheme['SchemeID'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($scheme['SchemeName']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label class="filter-label">Installment: <span style="color: red;">*</span></label>
+                        <select name="installment_id" id="installmentSelect" class="filter-select" required <?php echo empty($selectedSchemeId) ? 'disabled' : ''; ?>>
+                            <?php if (empty($selectedSchemeId)): ?>
+                                <option value="">-- Select Scheme First --</option>
+                            <?php elseif (empty($installmentId)): ?>
+                                <option value="">-- Select Installment --</option>
+                            <?php endif; ?>
+                            <?php if (!empty($selectedSchemeId) && !empty($installments)): ?>
+                                <?php foreach ($installments as $installment): ?>
+                                    <option value="<?php echo $installment['InstallmentID']; ?>"
+                                        <?php echo $installmentId == $installment['InstallmentID'] ? 'selected' : ''; ?>>
+                                        <?php echo htmlspecialchars($installment['InstallmentName'] . ' (₹' . number_format($installment['Amount'], 2) . ')'); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </select>
+                    </div>
                 </div>
-                <div class="filter-group">
-                    <label class="filter-label">Scheme:</label>
-                    <select name="scheme_id" class="filter-select">
-                        <option value="">All Schemes</option>
-                        <?php foreach ($schemes as $scheme): ?>
-                            <option value="<?php echo $scheme['SchemeID']; ?>"
-                                <?php echo $selectedSchemeId == $scheme['SchemeID'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($scheme['SchemeName']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
+
                 <div class="filter-group">
                     <label class="filter-label">Promoter:</label>
                     <input list="promoterList" class="filter-select" name="promoter_id" id="promoterInput" placeholder="Type promoter name or ID..." value="<?php echo htmlspecialchars($selectedPromoterId); ?>">
@@ -567,18 +634,6 @@ include("../components/topbar.php");
                     </datalist>
                 </div>
                 <div class="filter-group">
-                    <label class="filter-label">Installment:</label>
-                    <select name="installment_id" class="filter-select">
-                        <option value="">All Installments</option>
-                        <?php foreach ($installments as $installment): ?>
-                            <option value="<?php echo $installment['InstallmentID']; ?>"
-                                <?php echo $installmentId == $installment['InstallmentID'] ? 'selected' : ''; ?>>
-                                <?php echo htmlspecialchars($installment['InstallmentName']); ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-                <div class="filter-group">
                     <label class="filter-label">Date Range:</label>
                     <input type="date" class="filter-input" name="start_date" value="<?php echo $startDate; ?>">
                     <span>to</span>
@@ -587,9 +642,9 @@ include("../components/topbar.php");
                 <button type="submit" class="btn btn-primary">
                     <i class="fas fa-filter"></i> Apply Filters
                 </button>
-                <?php if (!empty($search) || !empty($installmentId) || !empty($selectedPromoterId) || !empty($status) || !empty($startDate) || !empty($endDate)): ?>
-                    <a href="?scheme_id=<?php echo $selectedSchemeId; ?>" class="btn btn-clear-filter">
-                        <i class="fas fa-times"></i> Clear
+                <?php if (!empty($search) || !empty($selectedPromoterId) || !empty($startDate) || !empty($endDate)): ?>
+                    <a href="?scheme_id=<?php echo urlencode($selectedSchemeId ?? ''); ?><?php echo !empty($installmentId) ? '&installment_id=' . urlencode($installmentId) : ''; ?>" class="btn btn-clear-filter">
+                        <i class="fas fa-times"></i> Clear Filters
                     </a>
                 <?php endif; ?>
             </form>
@@ -692,14 +747,61 @@ include("../components/topbar.php");
     </div>
 
     <script>
-        // Auto-submit form when scheme or installment changes
-        document.querySelector('select[name="scheme_id"]').addEventListener('change', function() {
-            this.form.submit();
-        });
+        const schemeSelect = document.getElementById('schemeSelect');
+        const installmentSelect = document.getElementById('installmentSelect');
 
-        document.querySelector('select[name="installment_id"]').addEventListener('change', function() {
-            this.form.submit();
-        });
+        // Load installments when scheme is selected
+        if (schemeSelect) {
+            schemeSelect.addEventListener('change', function() {
+                const schemeId = this.value;
+
+                if (schemeId) {
+                    // Fetch installments for the selected scheme
+                    fetch(`get_installments.php?scheme_id=${schemeId}`)
+                        .then(response => response.json())
+                        .then(data => {
+                            installmentSelect.innerHTML = '<option value="">-- Select Installment --</option>';
+                            if (data.success && data.installments && data.installments.length > 0) {
+                                data.installments.forEach(inst => {
+                                    const option = document.createElement('option');
+                                    option.value = inst.InstallmentID;
+                                    option.textContent = `${inst.InstallmentName} (₹${parseFloat(inst.Amount).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})})`;
+                                    installmentSelect.appendChild(option);
+                                });
+                                installmentSelect.disabled = false;
+                                // Auto-select first installment if none is selected, then submit
+                                if (data.installments.length > 0 && !installmentSelect.value) {
+                                    installmentSelect.value = data.installments[0].InstallmentID;
+                                    // Submit form to load data
+                                    setTimeout(() => {
+                                        installmentSelect.form.submit();
+                                    }, 100);
+                                }
+                            } else {
+                                installmentSelect.innerHTML = '<option value="">No installments available</option>';
+                                installmentSelect.disabled = true;
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error loading installments:', error);
+                            installmentSelect.innerHTML = '<option value="">Error loading installments</option>';
+                            installmentSelect.disabled = false;
+                        });
+                } else {
+                    installmentSelect.innerHTML = '<option value="">-- Select Scheme First --</option>';
+                    installmentSelect.disabled = true;
+                }
+            });
+        }
+
+        // Auto-submit form when installment changes (if both scheme and installment are selected)
+        if (installmentSelect) {
+            installmentSelect.addEventListener('change', function() {
+                if (schemeSelect.value && this.value) {
+                    this.form.submit();
+                }
+            });
+        }
 
         function sendWhatsAppReminders() {
             if (confirm('Are you sure you want to send WhatsApp reminders to all customers with pending payments for this installment?')) {
@@ -716,8 +818,8 @@ include("../components/topbar.php");
                             'Content-Type': 'application/json',
                         },
                         body: JSON.stringify({
-                            installment_id: <?php echo $installmentId; ?>,
-                            scheme_id: <?php echo $selectedSchemeId; ?>
+                            installment_id: <?php echo !empty($installmentId) ? $installmentId : 'null'; ?>,
+                            scheme_id: <?php echo !empty($selectedSchemeId) ? $selectedSchemeId : 'null'; ?>
                         })
                     })
                     .then(response => response.json())

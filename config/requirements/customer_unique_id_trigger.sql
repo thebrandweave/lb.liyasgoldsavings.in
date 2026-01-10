@@ -27,7 +27,7 @@ BEGIN
 
     -- Set the custom unique ID with proper padding for numbers above 10000
     -- This will handle: 1000->GDC01000, 10000->GDC010000, 100000->GDC0100000, etc.
-    SET NEW.CustomerUniqueID = CONCAT('GDE0', newCounter);
+    SET NEW.CustomerUniqueID = CONCAT('LA0', newCounter);
 END$$
 DELIMITER ;
 

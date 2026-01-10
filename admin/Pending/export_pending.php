@@ -18,10 +18,15 @@ if (!isset($_SESSION['admin_id'])) {
 $database = new Database();
 $conn = $database->getConnection();
 
-// Get parameters
+// Get parameters - both scheme and installment are required
 $selectedSchemeId = isset($_GET['scheme_id']) ? $_GET['scheme_id'] : null;
 $installmentId = isset($_GET['installment_id']) ? $_GET['installment_id'] : '';
 $search = isset($_GET['search']) ? $_GET['search'] : '';
+
+// Validate required parameters
+if (empty($selectedSchemeId) || empty($installmentId)) {
+    die("Scheme and Installment are required for export.");
+}
 
 // Build query conditions
 $conditions = [];
@@ -32,19 +37,17 @@ if (!empty($search)) {
     $params[':search'] = "%$search%";
 }
 
-if (!empty($selectedSchemeId)) {
-    $conditions[] = "s.SchemeID = :scheme_id";
-    $params[':scheme_id'] = $selectedSchemeId;
-}
+// Scheme and Installment are required
+$conditions[] = "i.SchemeID = :scheme_id";
+$params[':scheme_id'] = $selectedSchemeId;
 
-if (!empty($installmentId)) {
-    $conditions[] = "i.InstallmentID = :installment_id";
-    $params[':installment_id'] = $installmentId;
-}
+$conditions[] = "i.InstallmentID = :installment_id";
+$params[':installment_id'] = $installmentId;
 
-$whereClause = !empty($conditions) ? " WHERE " . implode(" AND ", $conditions) : "";
+$whereClause = !empty($conditions) ? " AND " . implode(" AND ", $conditions) : "";
 
-// Get pending payments
+// Get pending payments - Simple logic: All active customers with pending or not submitted payments
+// Shows all active customers for each installment - no subscription restriction
 $query = "
     SELECT 
         c.CustomerUniqueID,
@@ -61,15 +64,13 @@ $query = "
             ELSE p.Status 
         END as PaymentStatus,
         p.SubmittedAt as PaymentSubmittedAt
-    FROM Customers c
-    JOIN Schemes s ON 1=1
-    JOIN Installments i ON i.SchemeID = s.SchemeID
-    JOIN Subscriptions sub ON sub.CustomerID = c.CustomerID AND sub.SchemeID = s.SchemeID
+    FROM Installments i
+    JOIN Schemes s ON i.SchemeID = s.SchemeID
+    CROSS JOIN Customers c
     LEFT JOIN Payments p ON p.CustomerID = c.CustomerID AND p.InstallmentID = i.InstallmentID
-    $whereClause
+    WHERE c.Status = 'Active'
     AND (p.PaymentID IS NULL OR p.Status != 'Verified')
-    AND c.Status = 'Active'
-    AND sub.RenewalStatus = 'Active'
+    $whereClause
     ORDER BY i.InstallmentNumber ASC, c.Name ASC";
 
 $stmt = $conn->prepare($query);
