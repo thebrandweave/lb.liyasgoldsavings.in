@@ -1,7 +1,11 @@
 <?php
 session_start();
-// Check if user is logged in, redirect if not
 
+// Check if user is logged in
+if (!isset($_SESSION['admin_id'])) {
+    header("Location: ../login.php");
+    exit();
+}
 
 $menuPath = "../";
 $currentPage = "promoters";
@@ -149,6 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (!empty($errors)) {
             $_SESSION['error_message'] = implode("<br>", $errors);
             $conn->rollBack();
+            // Don't redirect on validation errors - show form with errors
         } else {
             // Update promoter
             $query = "UPDATE Promoters SET 
@@ -162,14 +167,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       BankName = ?, 
                       BankAccountName = ?, 
                       BankAccountNumber = ?, 
-                      IFSCCode = ?,
-                      UpdatedAt = NOW()" . $passwordUpdate . " 
+                      IFSCCode = ?" . $passwordUpdate . ",
+                      UpdatedAt = NOW()
                       WHERE PromoterID = ?";
 
             $stmt = $conn->prepare($query);
 
-            // Build parameters array
-            $params = array_merge([
+            // Build parameters array - password hash must be inserted before promoterId
+            $updateParams = [
                 $name,
                 $contact,
                 $email,
@@ -180,15 +185,51 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $bankName,
                 $bankAccountName,
                 $bankAccountNumber,
-                $ifscCode,
-                $promoterId
-            ], $params);
+                $ifscCode
+            ];
+
+            // If password is being updated, add it here (before promoterId)
+            if (!empty($passwordUpdate) && !empty($params)) {
+                $updateParams = array_merge($updateParams, $params); // Add password hash
+            }
+
+            // Add promoterId at the end (for WHERE clause)
+            $updateParams[] = $promoterId;
+            $params = $updateParams;
+
+            // Debug: Log the query and params before execution
+            if (!empty($passwordUpdate)) {
+                error_log("Updating password for promoter ID: " . $promoterId);
+                error_log("SQL Query: " . $query);
+                error_log("Password hash length: " . strlen($params[count($params) - 2] ?? 'N/A'));
+            }
 
             $stmt->execute($params);
+
+            // Verify password was updated if it was changed
+            if (!empty($passwordUpdate)) {
+                // Double-check the password was saved correctly
+                $verifyStmt = $conn->prepare("SELECT PasswordHash FROM Promoters WHERE PromoterID = ?");
+                $verifyStmt->execute([$promoterId]);
+                $savedHash = $verifyStmt->fetchColumn();
+
+                // Verify the saved hash matches what we tried to save
+                if ($savedHash && password_verify($newPassword, $savedHash)) {
+                    // Password was saved correctly
+                    error_log("Password successfully updated and verified for promoter ID: " . $promoterId);
+                } else {
+                    error_log("ERROR: Password update verification failed for promoter ID: " . $promoterId);
+                    error_log("Saved hash exists: " . ($savedHash ? 'Yes' : 'No'));
+                    error_log("Password verification result: " . ($savedHash ? (password_verify($newPassword, $savedHash) ? 'Pass' : 'Fail') : 'N/A'));
+                }
+            }
 
             // Log the activity
             $adminId = $_SESSION['admin_id'];
             $action = "Updated promoter details for " . $name . " (ID: " . $promoter['PromoterUniqueID'] . ")";
+            if (!empty($passwordUpdate)) {
+                $action .= " (Password reset)";
+            }
             $ipAddress = $_SERVER['REMOTE_ADDR'];
 
             $logQuery = "INSERT INTO ActivityLogs (UserID, UserType, Action, IPAddress) VALUES (?, ?, ?, ?)";
@@ -196,13 +237,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $logStmt->execute([$adminId, 'Admin', $action, $ipAddress]);
 
             $conn->commit();
-            $_SESSION['success_message'] = "Promoter updated successfully.";
+
+            // Build success message
+            $successMsg = "Promoter updated successfully.";
+            if (!empty($passwordUpdate)) {
+                $successMsg .= " Password has been reset.";
+            }
+
+            $_SESSION['success_message'] = $successMsg;
             header("Location: view.php?id=" . $promoterId);
             exit();
         }
     } catch (PDOException $e) {
+        // Catch database exceptions first (more specific)
         $conn->rollBack();
-        $_SESSION['error_message'] = "Error updating promoter: " . $e->getMessage();
+        $_SESSION['error_message'] = "Database error: " . $e->getMessage();
+        header("Location: edit.php?id=" . $promoterId);
+        exit();
+    } catch (Exception $e) {
+        // Catch general exceptions (like password validation errors)
+        $conn->rollBack();
+        $_SESSION['error_message'] = $e->getMessage();
+        header("Location: edit.php?id=" . $promoterId);
+        exit();
     }
 }
 

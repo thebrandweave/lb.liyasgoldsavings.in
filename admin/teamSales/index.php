@@ -442,7 +442,12 @@ include("../components/topbar.php");
     <div class="content-wrapper">
         <div class="dashboard-container">
             <div class="dashboard-header">
-                <h1 class="dashboard-title">Team Sales Overview</h1>
+                <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 15px; margin-bottom: 15px;">
+                    <h1 class="dashboard-title" style="margin: 0;">Team Sales Overview</h1>
+                    <a href="export_all.php?from_date=<?php echo urlencode($fromDate); ?>&to_date=<?php echo urlencode($toDate); ?><?php echo $selectedPromoter ? '&promoter=' . urlencode($selectedPromoter) : ''; ?>" class="btn btn-primary" style="padding: 8px 16px; font-size: 14px; text-decoration: none; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-file-excel"></i> Export All Teams
+                    </a>
+                </div>
                 <div class="date-display" style="display: flex; align-items: center; gap: 15px; flex-wrap: wrap;">
                     <form method="GET" id="filterForm" style="display:inline-flex; align-items: center; gap: 10px; flex-wrap: wrap;">
                         <label for="promoter-search" style="font-weight: 500; color: #333;">Filter by Promoter:</label>

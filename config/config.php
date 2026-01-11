@@ -7,7 +7,7 @@ class Database
     private $username = "u232955123_LAGD_USER";
     private $password = "4huM=!Z3D|j";
     public $conn;
-    
+
 
     //public $host = "localhost";
     //public $db_name = "u229215627_goldenDreamSQL";
@@ -32,11 +32,9 @@ class Database
         } catch (PDOException $e) {
             $baseUrl = "https://la.goldendream.in/";
 
-           header("Location: " . $baseUrl . "noInternet/");
+            header("Location: " . $baseUrl . "noInternet/");
         }
 
         return $this->conn;
     }
 }
-
-?>

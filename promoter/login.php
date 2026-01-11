@@ -47,32 +47,37 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $promoter = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($promoter) {
-                // Verify password
-                if (password_verify($password, $promoter['PasswordHash'])) {
-                    // Check if account is active
-                    if ($promoter['Status'] === 'Active') {
-                        // Set up the user session
-                        $_SESSION['promoter_id'] = $promoter['PromoterID'];
-                        $_SESSION['promoter_name'] = $promoter['Name'];
-                        $_SESSION['promoter_contact'] = $promoter['Contact'];
-                        $_SESSION['promoter_email'] = $promoter['Email'];
-
-                        // Log the activity
-                        $action = "Logged in";
-                        $stmt = $conn->prepare("INSERT INTO ActivityLogs (UserID, UserType, Action, IPAddress) VALUES (?, 'Promoter', ?, ?)");
-                        $stmt->execute([$promoter['PromoterID'], $action, $_SERVER['REMOTE_ADDR']]);
-
-                        // Regenerate the session ID to prevent session fixation
-                        session_regenerate_id(true);
-
-                        // Redirect to dashboard
-                        header("Location: dashboard/index.php");
-                        exit();
-                    } else {
-                        $loginErr = "Your account is inactive. Please contact the administrator.";
-                    }
+                // Check if password hash exists
+                if (empty($promoter['PasswordHash']) || is_null($promoter['PasswordHash'])) {
+                    $loginErr = "Password not set. Please contact administrator to reset your password.";
                 } else {
-                    $loginErr = "Invalid contact number or password";
+                    // Verify password
+                    if (password_verify($password, $promoter['PasswordHash'])) {
+                        // Check if account is active
+                        if ($promoter['Status'] === 'Active') {
+                            // Set up the user session
+                            $_SESSION['promoter_id'] = $promoter['PromoterID'];
+                            $_SESSION['promoter_name'] = $promoter['Name'];
+                            $_SESSION['promoter_contact'] = $promoter['Contact'];
+                            $_SESSION['promoter_email'] = $promoter['Email'];
+
+                            // Log the activity
+                            $action = "Logged in";
+                            $stmt = $conn->prepare("INSERT INTO ActivityLogs (UserID, UserType, Action, IPAddress) VALUES (?, 'Promoter', ?, ?)");
+                            $stmt->execute([$promoter['PromoterID'], $action, $_SERVER['REMOTE_ADDR']]);
+
+                            // Regenerate the session ID to prevent session fixation
+                            session_regenerate_id(true);
+
+                            // Redirect to dashboard
+                            header("Location: dashboard/index.php");
+                            exit();
+                        } else {
+                            $loginErr = "Your account is inactive. Please contact the administrator.";
+                        }
+                    } else {
+                        $loginErr = "Invalid contact number or password";
+                    }
                 }
             } else {
                 $loginErr = "Invalid contact number or password";

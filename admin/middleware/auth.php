@@ -1,12 +1,12 @@
 <?php
-require_once($menuPath ."../config/JWT.php");
+require_once($menuPath . "../config/JWT.php");
 
 function verifyAuth()
 {
     // Check for JWT token in cookie
     if (!isset($_COOKIE['admin_token'])) {
-header("Location: https://la.goldendream.in/admin/login.php");
-// header("Location:http://localhost/goldendream/admin/login.php");
+        header("Location: https://la.goldendream.in/admin/login.php");
+        // header("Location:http://localhost/goldendream/admin/login.php");
         exit();
     }
 
