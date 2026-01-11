@@ -120,9 +120,9 @@ include($menuPath . "components/topbar.php");
                 <!-- Repayment Excel Download -->
                 <div class="extra-card">
                     <div class="extra-icon"><i class="fas fa-file-excel"></i></div>
-                    <div class="extra-title">Get Repayment Excel</div>
-                    <div class="extra-desc">Download repayment data in Excel format for reconciliation and reporting.</div>
-                    <a href="./get_repayment_excel.php" class="extra-action">Download Excel</a>
+                    <div class="extra-title">Get montly payments Excel</div>
+                    <div class="extra-desc">Download monthly payments data in Excel format for reconciliation and reporting.</div>
+                    <a href="./get_repayment_excel.php" class="extra-action">Open</a>
                 </div>
                 <!-- Upload Repayment Commission -->
                 <div class="extra-card">

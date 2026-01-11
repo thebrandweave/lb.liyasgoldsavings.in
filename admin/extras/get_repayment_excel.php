@@ -28,14 +28,14 @@ foreach ($allInstallments as $inst) {
     $installmentsByScheme[$inst['SchemeID']][] = $inst;
 }
 
-// Fetch promoters with more than 50 customers
+// Fetch all promoters with their customer count
 $promoters = $conn->query("
     SELECT p.PromoterUniqueID, p.Name, COUNT(c.CustomerID) as customer_count
     FROM Promoters p
-    JOIN Customers c ON c.PromoterID = p.PromoterUniqueID
-    GROUP BY p.PromoterUniqueID
-    HAVING customer_count > 50
-    ORDER BY customer_count DESC
+    LEFT JOIN Customers c ON c.PromoterID = p.PromoterUniqueID
+    WHERE p.Status = 'Active'
+    GROUP BY p.PromoterUniqueID, p.Name
+    ORDER BY customer_count DESC, p.Name ASC
 ")->fetchAll(PDO::FETCH_ASSOC);
 
 // Handle Excel download
@@ -45,12 +45,13 @@ if (isset($_GET['download']) && isset($_GET['promoter_id']) && isset($_GET['sche
     $installmentId = $_GET['installment_id'];
 
     $stmt = $conn->prepare("
-        SELECT p.PromoterUniqueID, pay.CustomerID as FromCustomerID, pay.Amount, s.SchemeName, i.InstallmentName
+        SELECT p.PromoterUniqueID, c.CustomerUniqueID as FromCustomerID, pay.Amount, s.SchemeName, i.InstallmentName
         FROM Payments pay
+        JOIN Customers c ON pay.CustomerID = c.CustomerID
+        JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID
         JOIN Schemes s ON pay.SchemeID = s.SchemeID
         JOIN Installments i ON pay.InstallmentID = i.InstallmentID
-        JOIN Promoters p ON pay.PromoterID = p.PromoterID OR pay.PromoterID = p.PromoterUniqueID
-        WHERE (p.PromoterUniqueID = ?)
+        WHERE c.PromoterID = ?
           AND pay.SchemeID = ?
           AND pay.InstallmentID = ?
           AND pay.Status = 'Verified'
@@ -76,7 +77,7 @@ if (isset($_GET['download']) && isset($_GET['promoter_id']) && isset($_GET['sche
         $rowNum++;
     }
     header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-    header('Content-Disposition: attachment;filename="repayment_report.xlsx"');
+    header('Content-Disposition: attachment;filename="monthly_payments_report.xlsx"');
     header('Cache-Control: max-age=0');
     $writer = new Xlsx($spreadsheet);
     $writer->save('php://output');
@@ -90,12 +91,13 @@ $selectedInstallment = $_GET['installment_id'] ?? '';
 $previewRows = [];
 if ($selectedPromoter && $selectedScheme && $selectedInstallment) {
     $stmt = $conn->prepare("
-        SELECT p.PromoterUniqueID, pay.CustomerID as FromCustomerID, pay.Amount, s.SchemeName, i.InstallmentName
+        SELECT p.PromoterUniqueID, c.CustomerUniqueID as FromCustomerID, pay.Amount, s.SchemeName, i.InstallmentName
         FROM Payments pay
+        JOIN Customers c ON pay.CustomerID = c.CustomerID
+        JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID
         JOIN Schemes s ON pay.SchemeID = s.SchemeID
         JOIN Installments i ON pay.InstallmentID = i.InstallmentID
-        JOIN Promoters p ON pay.PromoterID = p.PromoterID OR pay.PromoterID = p.PromoterUniqueID
-        WHERE (p.PromoterUniqueID = ?)
+        WHERE c.PromoterID = ?
           AND pay.SchemeID = ?
           AND pay.InstallmentID = ?
           AND pay.Status = 'Verified'
@@ -114,7 +116,7 @@ include($menuPath . "components/topbar.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Get Repayment Excel</title>
+    <title>Get Monthly Payments Excel</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/dashboard.css">
@@ -212,23 +214,135 @@ include($menuPath . "components/topbar.php");
         .download-btn:hover {
             background: #00d2ff;
         }
+
+        /* Searchable Dropdown Styles */
+        .searchable-dropdown {
+            position: relative;
+            display: block;
+            width: 100%;
+        }
+
+        .searchable-dropdown .select-wrapper {
+            position: relative;
+        }
+
+        .searchable-dropdown input[type="text"] {
+            width: 100%;
+            padding: 10px 30px 10px 10px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 15px;
+            box-sizing: border-box;
+        }
+
+        .searchable-dropdown input[type="text"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.1);
+        }
+
+        .searchable-dropdown .dropdown-icon {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: #666;
+        }
+
+        .searchable-dropdown .dropdown-list {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: white;
+            border: 1px solid #ddd;
+            border-top: none;
+            border-radius: 0 0 6px 6px;
+            max-height: 300px;
+            overflow-y: auto;
+            z-index: 1000;
+            display: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            margin-top: -1px;
+        }
+
+        .searchable-dropdown .dropdown-list.show {
+            display: block;
+        }
+
+        .searchable-dropdown .dropdown-item {
+            padding: 10px 12px;
+            cursor: pointer;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s;
+        }
+
+        .searchable-dropdown .dropdown-item:last-child {
+            border-bottom: none;
+        }
+
+        .searchable-dropdown .dropdown-item:hover {
+            background-color: #f5f5f5;
+        }
+
+        .searchable-dropdown .dropdown-item.selected {
+            background-color: #e3f2fd;
+            color: var(--primary-color);
+            font-weight: 500;
+        }
+
+        .searchable-dropdown .dropdown-item.hidden {
+            display: none;
+        }
+
+        .searchable-dropdown .no-results {
+            padding: 10px 12px;
+            color: #999;
+            text-align: center;
+            font-style: italic;
+            display: none;
+        }
+
+        .searchable-dropdown .no-results.show {
+            display: block;
+        }
     </style>
 </head>
 
 <body>
     <div class="content-wrapper">
         <div class="extras-container">
-            <div class="extras-title"><i class="fas fa-file-excel"></i> Get Repayment Excel</div>
-            <form class="extras-form" method="GET">
-                <label for="promoter_id">Select Promoter (with > 50 customers):</label>
-                <select name="promoter_id" id="promoter_id" required>
-                    <option value="">Select Promoter</option>
-                    <?php foreach ($promoters as $promoter): ?>
-                        <option value="<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>" <?php if ($selectedPromoter == $promoter['PromoterUniqueID']) echo 'selected'; ?>>
-                            <?php echo htmlspecialchars($promoter['PromoterUniqueID'] . ' - ' . $promoter['Name'] . ' (' . $promoter['customer_count'] . ' customers)'); ?>
-                        </option>
-                    <?php endforeach; ?>
-                </select>
+            <div class="extras-title"><i class="fas fa-file-excel"></i> Get Monthly Payments Excel</div>
+            <form class="extras-form" method="GET" id="filterForm">
+                <label for="promoter-search">Select Promoter:</label>
+                <div class="searchable-dropdown" id="promoterDropdown">
+                    <input type="hidden" name="promoter_id" id="promoter_id" value="<?php echo htmlspecialchars($selectedPromoter); ?>">
+                    <div class="select-wrapper">
+                        <input type="text" id="promoter-search" placeholder="Search promoters..." autocomplete="off"
+                            value="<?php
+                                    if ($selectedPromoter) {
+                                        foreach ($promoters as $promoter) {
+                                            if ($promoter['PromoterUniqueID'] === $selectedPromoter) {
+                                                echo htmlspecialchars($promoter['PromoterUniqueID'] . ' - ' . $promoter['Name'] . ' (' . $promoter['customer_count'] . ' customers)');
+                                                break;
+                                            }
+                                        }
+                                    }
+                                    ?>">
+                        <i class="fas fa-chevron-down dropdown-icon"></i>
+                    </div>
+                    <div class="dropdown-list" id="promoterList">
+                        <?php foreach ($promoters as $promoter): ?>
+                            <div class="dropdown-item <?php echo ($selectedPromoter === $promoter['PromoterUniqueID']) ? 'selected' : ''; ?>"
+                                data-value="<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>"
+                                data-text="<?php echo htmlspecialchars($promoter['PromoterUniqueID'] . ' - ' . $promoter['Name'] . ' (' . $promoter['customer_count'] . ' customers)'); ?>">
+                                <?php echo htmlspecialchars($promoter['PromoterUniqueID'] . ' - ' . $promoter['Name'] . ' (' . $promoter['customer_count'] . ' customers)'); ?>
+                            </div>
+                        <?php endforeach; ?>
+                        <div class="no-results">No promoters found</div>
+                    </div>
+                </div>
                 <label for="scheme_id">Select Scheme:</label>
                 <select name="scheme_id" id="scheme_id" required onchange="filterInstallments()">
                     <option value="">Select Scheme</option>
@@ -276,6 +390,120 @@ include($menuPath . "components/topbar.php");
         </div>
     </div>
     <script>
+        // Searchable Dropdown Functionality
+        (function() {
+            const dropdown = document.getElementById('promoterDropdown');
+            const searchInput = document.getElementById('promoter-search');
+            const hiddenInput = document.getElementById('promoter_id');
+            const dropdownList = document.getElementById('promoterList');
+            const dropdownItems = dropdownList.querySelectorAll('.dropdown-item:not(.no-results)');
+            const noResults = dropdownList.querySelector('.no-results');
+
+            // Toggle dropdown on input click/focus
+            searchInput.addEventListener('focus', function() {
+                dropdownList.classList.add('show');
+                filterItems();
+            });
+
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!dropdown.contains(e.target)) {
+                    dropdownList.classList.remove('show');
+                }
+            });
+
+            // Filter items based on search input
+            function filterItems() {
+                const searchTerm = searchInput.value.toLowerCase().trim();
+                let visibleCount = 0;
+
+                dropdownItems.forEach(item => {
+                    const text = item.getAttribute('data-text').toLowerCase();
+                    if (text.includes(searchTerm)) {
+                        item.classList.remove('hidden');
+                        visibleCount++;
+
+                        // Highlight selected item
+                        if (item.getAttribute('data-value') === hiddenInput.value) {
+                            item.classList.add('selected');
+                        } else {
+                            item.classList.remove('selected');
+                        }
+                    } else {
+                        item.classList.add('hidden');
+                    }
+                });
+
+                // Show/hide "no results" message
+                if (visibleCount === 0) {
+                    noResults.classList.add('show');
+                } else {
+                    noResults.classList.remove('show');
+                }
+            }
+
+            // Filter on input
+            searchInput.addEventListener('input', function() {
+                dropdownList.classList.add('show');
+                filterItems();
+            });
+
+            // Handle item selection
+            dropdownItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    const value = this.getAttribute('data-value');
+                    const text = this.getAttribute('data-text');
+
+                    hiddenInput.value = value;
+                    searchInput.value = text;
+
+                    // Update selected state
+                    dropdownItems.forEach(i => i.classList.remove('selected'));
+                    this.classList.add('selected');
+
+                    // Close dropdown (don't auto-submit form)
+                    dropdownList.classList.remove('show');
+                });
+            });
+
+            // Handle keyboard navigation
+            let selectedIndex = -1;
+
+            searchInput.addEventListener('keydown', function(e) {
+                const visibleItems = Array.from(dropdownItems).filter(item => !item.classList.contains('hidden'));
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    selectedIndex = Math.min(selectedIndex + 1, visibleItems.length - 1);
+                    updateHighlight(visibleItems);
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    selectedIndex = Math.max(selectedIndex - 1, -1);
+                    updateHighlight(visibleItems);
+                } else if (e.key === 'Enter' && selectedIndex >= 0) {
+                    e.preventDefault();
+                    visibleItems[selectedIndex].click();
+                } else if (e.key === 'Escape') {
+                    dropdownList.classList.remove('show');
+                }
+            });
+
+            function updateHighlight(visibleItems) {
+                visibleItems.forEach((item, index) => {
+                    if (index === selectedIndex) {
+                        item.style.backgroundColor = '#e3f2fd';
+                    } else {
+                        item.style.backgroundColor = '';
+                    }
+                });
+            }
+
+            // Reset selected index when typing
+            searchInput.addEventListener('input', function() {
+                selectedIndex = -1;
+            });
+        })();
+
         // Pass PHP data to JavaScript
         const installmentsByScheme = <?php echo json_encode($installmentsByScheme); ?>;
         const selectedInstallment = '<?php echo $selectedInstallment; ?>';
@@ -306,6 +534,17 @@ include($menuPath . "components/topbar.php");
             const schemeSelect = document.getElementById('scheme_id');
             if (schemeSelect.value) {
                 filterInstallments();
+            }
+        });
+
+        // Form validation
+        document.getElementById('filterForm').addEventListener('submit', function(e) {
+            const promoterId = document.getElementById('promoter_id').value;
+            if (!promoterId) {
+                e.preventDefault();
+                alert('Please select a promoter.');
+                document.getElementById('promoter-search').focus();
+                return false;
             }
         });
     </script>
