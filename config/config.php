@@ -2,7 +2,7 @@
 
 class Database
 {
-    private $host = "srv672.hstgr.io";
+    private $host = "82.25.121.121";
     private $db_name = "u232955123_LAGD_DB";
     private $username = "u232955123_LAGD_USER";
     private $password = "4huM=!Z3D|j";
