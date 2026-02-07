@@ -552,9 +552,17 @@ include("../components/topbar.php");
             padding: 25px;
             width: 400px;
             max-width: 90%;
+            max-height: 90vh;
+            overflow-y: auto;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             text-align: center;
             animation: slideIn 0.3s ease;
+        }
+
+        .duplicate-utr-container {
+            max-height: 200px;
+            overflow-y: auto;
+            text-align: left;
         }
 
         @keyframes slideIn {
@@ -1396,6 +1404,7 @@ include("../components/topbar.php");
             <div class="confirmation-icon"><i class="fas fa-check-circle icon-verify" id="confirmationIcon"></i></div>
             <div class="confirmation-title" id="confirmationTitle">Verify Payment</div>
             <div class="confirmation-message" id="confirmationMessage">Are you sure you want to verify this payment?</div>
+            <div id="duplicateUtrContainer" class="duplicate-utr-container"></div>
             <div class="confirmation-buttons">
                 <button class="confirmation-btn cancel-confirm-btn" onclick="hideConfirmation()">Cancel</button>
                 <button class="confirmation-btn confirm-btn" id="confirmButton">Confirm</button>
@@ -1528,12 +1537,22 @@ include("../components/topbar.php");
             const message = document.getElementById('confirmationMessage');
             const icon = document.getElementById('confirmationIcon');
             const confirmBtn = document.getElementById('confirmButton');
+            const duplicateUtrContainer = document.getElementById('duplicateUtrContainer');
+
+            duplicateUtrContainer.innerHTML = '';
 
             // Set content based on action
             if (action === 'verify') {
                 title.textContent = 'Verify Payment';
                 message.textContent = 'Are you sure you want to verify this payment?';
                 icon.className = 'fas fa-check-circle icon-verify';
+                // Load duplicate UTR list for this payment
+                fetch('get_duplicate_utr.php?payment_id=' + encodeURIComponent(paymentId))
+                    .then(function(r) { return r.text(); })
+                    .then(function(html) {
+                        if (html && html.trim()) duplicateUtrContainer.innerHTML = html;
+                    })
+                    .catch(function() {});
             } else {
                 title.textContent = 'Reject Payment';
                 message.textContent = 'Are you sure you want to reject this payment?';

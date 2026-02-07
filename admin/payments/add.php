@@ -45,6 +45,7 @@ $submittedCustomerId = $_POST['customer_id'] ?? '';
 $submittedSchemeId = $_POST['scheme_id'] ?? '';
 $submittedInstallmentId = $_POST['installment_id'] ?? '';
 $submittedAmount = $_POST['amount'] ?? '';
+$submittedUtrNumber = $_POST['utr_number'] ?? '';
 $submittedPayerRemark = $_POST['payer_remark'] ?? '';
 $submittedIsCashPayment = isset($_POST['is_cash_payment']);
 $submittedIsExtraPayment = isset($_POST['is_extra_payment']);
@@ -54,6 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $customerId = $_POST['customer_id'];
         $amount = $_POST['amount'];
+        $utrNumber = trim($_POST['utr_number'] ?? '');
         $isCashPayment = isset($_POST['is_cash_payment']) ? true : false;
         $isExtraPayment = isset($_POST['is_extra_payment']) ? true : false;
         $payerRemark = trim($_POST['payer_remark'] ?? '');
@@ -72,23 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if (empty($schemeId) || empty($installmentId)) {
                 throw new Exception("Please select scheme and installment.");
             }
+        }
 
-            // Check if payment already exists for this customer, scheme and installment
-            $stmt = $conn->prepare("
-                SELECT p.*, s.SchemeName, i.InstallmentNumber 
-                FROM Payments p
-                JOIN Schemes s ON p.SchemeID = s.SchemeID
-                JOIN Installments i ON p.InstallmentID = i.InstallmentID
-                WHERE p.CustomerID = ? AND p.SchemeID = ? AND p.InstallmentID = ?
-            ");
-            $stmt->execute([$customerId, $schemeId, $installmentId]);
-            $existingPayment = $stmt->fetch(PDO::FETCH_ASSOC);
-
-            if ($existingPayment) {
-                throw new Exception("A payment already exists for this scheme's installment. Status: " . $existingPayment['Status'] .
-                    " (Scheme: " . $existingPayment['SchemeName'] .
-                    ", Installment: " . $existingPayment['InstallmentNumber'] . ")");
-            }
+        if (empty($utrNumber)) {
+            throw new Exception("UTR Number is required.");
         }
 
         // Handle screenshot upload
@@ -128,25 +117,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert payment record
         if ($isExtraPayment) {
             $stmt = $conn->prepare("
-                INSERT INTO Payments (CustomerID, Amount, ScreenshotURL, Status, PayerRemark)
-                VALUES (?, ?, ?, 'Pending', ?)
+                INSERT INTO Payments (CustomerID, Amount, UTRNumber, ScreenshotURL, Status, PayerRemark)
+                VALUES (?, ?, ?, ?, 'Pending', ?)
             ");
             $stmt->execute([
                 $customerId,
                 $amount,
+                $utrNumber,
                 "uploads/payments/" . $fileName,
                 $payerRemark
             ]);
         } else {
             $stmt = $conn->prepare("
-                INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, ScreenshotURL, Status, PayerRemark)
-                VALUES (?, ?, ?, ?, ?, 'Pending', ?)
+                INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, ScreenshotURL, Status, PayerRemark)
+                VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?)
             ");
             $stmt->execute([
                 $customerId,
                 $schemeId,
                 $installmentId,
                 $amount,
+                $utrNumber,
                 "uploads/payments/" . $fileName,
                 $payerRemark
             ]);
@@ -411,6 +402,11 @@ include("../components/topbar.php");
                 </div>
 
                 <div class="form-group">
+                    <label for="utr_number">UTR Number <span class="required">*</span></label>
+                    <input type="text" name="utr_number" id="utr_number" class="form-control" maxlength="50" required placeholder="Bank UTR/Reference number" value="<?php echo htmlspecialchars($submittedUtrNumber); ?>">
+                </div>
+
+                <div class="form-group">
                     <label for="screenshot">Payment Screenshot</label>
                     <input type="file" name="screenshot" id="screenshot" class="form-control" accept="image/jpeg,image/png">
                     <small>Max file size: 5MB. Allowed formats: JPG, JPEG, PNG</small>
@@ -553,28 +549,8 @@ include("../components/topbar.php");
                 }
             });
 
-            // Add function to check existing payment
-            function checkExistingPayment() {
-                const customerId = $('#customer_id').val();
-                const schemeId = $('#scheme_id').val();
-                const installmentId = $('#installment_id').val();
-
-                if (customerId && schemeId && installmentId) {
-                    fetch(`check_existing_payment.php?customer_id=${customerId}&scheme_id=${schemeId}&installment_id=${installmentId}`)
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.exists) {
-                                const info = $('#subscription-info');
-                                info.html(`<i class="fas fa-exclamation-circle"></i> ${data.message}`);
-                                info.css('background-color', '#fff3cd');
-                                info.css('color', '#856404');
-                                info.css('border', '1px solid #ffeeba');
-                                info.show();
-                            }
-                        })
-                        .catch(error => console.error('Error:', error));
-                }
-            }
+            // Duplicate payment check disabled per requirement
+            function checkExistingPayment() {}
 
             // Add event listener for installment selection to check existing payment
             $('#installment_id').on('change', function() {

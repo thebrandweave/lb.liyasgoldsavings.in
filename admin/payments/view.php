@@ -68,6 +68,25 @@ try {
     $stmt = $conn->prepare($subscriptionsQuery);
     $stmt->execute([$payment['CustomerID']]);
     $subscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // If Pending and has UTR: fetch already Verified payments with same UTR (for duplicate UTR warning)
+    $duplicateUtrPayments = [];
+    if ($payment['Status'] === 'Pending' && !empty(trim($payment['UTRNumber'] ?? ''))) {
+        $utrStmt = $conn->prepare("
+            SELECT p.PaymentID, p.Amount, p.UTRNumber, p.VerifiedAt, p.Status,
+                   c.Name as CustomerName, c.CustomerUniqueID,
+                   s.SchemeName,
+                   i.InstallmentName, i.InstallmentNumber
+            FROM Payments p
+            LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
+            LEFT JOIN Schemes s ON p.SchemeID = s.SchemeID
+            LEFT JOIN Installments i ON p.InstallmentID = i.InstallmentID
+            WHERE TRIM(p.UTRNumber) = ? AND p.Status = 'Verified' AND p.PaymentID != ?
+            ORDER BY p.VerifiedAt DESC
+        ");
+        $utrStmt->execute([trim($payment['UTRNumber']), $paymentId]);
+        $duplicateUtrPayments = $utrStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 } catch (PDOException $e) {
     $_SESSION['error_message'] = "Error fetching payment details: " . $e->getMessage();
     header("Location: index.php");
@@ -562,6 +581,47 @@ include("../components/topbar.php");
                 <i class="fas fa-arrow-left"></i> Back to Payments
             </a>
 
+            <?php if ($payment['Status'] === 'Pending' && !empty($duplicateUtrPayments)): ?>
+                <div class="duplicate-utr-warning" style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:12px 16px;margin-bottom:16px;">
+                    <strong><i class="fas fa-exclamation-triangle"></i> Same UTR already used in verified payment(s):</strong>
+                    <table class="payment-history-table" style="margin-top:10px;width:100%;">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>Scheme</th>
+                                <th>Installment</th>
+                                <th>Amount</th>
+                                <th>Verified At</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($duplicateUtrPayments as $dup): ?>
+                                <?php
+                                $instLabel = '-';
+                                if (!empty($dup['InstallmentName']) || isset($dup['InstallmentNumber'])) {
+                                    $n = $dup['InstallmentName'] ?? '';
+                                    $num = $dup['InstallmentNumber'] ?? '';
+                                    $instLabel = $n ? ($num !== '' ? $n . ' (' . $num . ')' : $n) : ($num !== '' ? (string)$num : '-');
+                                }
+                                ?>
+                                <tr>
+                                    <td>#<?php echo $dup['PaymentID']; ?></td>
+                                    <td><?php echo htmlspecialchars($dup['CustomerName'] . ' (' . $dup['CustomerUniqueID'] . ')'); ?></td>
+                                    <td><?php echo htmlspecialchars($dup['SchemeName'] ?? '-'); ?></td>
+                                    <td><?php echo htmlspecialchars($instLabel); ?></td>
+                                    <td>₹<?php echo number_format($dup['Amount'], 2); ?></td>
+                                    <td><?php echo $dup['VerifiedAt'] ? date('M d, Y H:i', strtotime($dup['VerifiedAt'])) : '-'; ?></td>
+                                    <td><a href="view.php?id=<?php echo $dup['PaymentID']; ?>" class="action-btn view-btn" style="padding:4px 8px;font-size:12px;"><i class="fas fa-eye"></i> View</a></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                    <p style="margin:10px 0 0;font-size:13px;color:#856404;">You can still approve or reject this payment.</p>
+                </div>
+            <?php endif; ?>
+
             <?php if ($payment['Status'] === 'Pending'): ?>
                 <button class="action-btn verify-btn" onclick="showActionModal('verify')">
                     <i class="fas fa-check"></i> Verify Payment
@@ -601,6 +661,13 @@ include("../components/topbar.php");
                             <div class="detail-label">Amount</div>
                             <div class="detail-value">₹<?php echo number_format($payment['Amount'], 2); ?></div>
                         </div>
+
+                        <?php if (!empty(trim($payment['UTRNumber'] ?? ''))): ?>
+                        <div class="detail-item">
+                            <div class="detail-label">UTR Number</div>
+                            <div class="detail-value"><?php echo htmlspecialchars($payment['UTRNumber']); ?></div>
+                        </div>
+                        <?php endif; ?>
 
                         <div class="detail-item">
                             <div class="detail-label">Status</div>

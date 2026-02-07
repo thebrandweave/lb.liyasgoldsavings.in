@@ -24,7 +24,7 @@
     <meta property="og:title" content="GoldenDream - Building Tomorrow's Market Leaders">
     <meta property="og:description" content="Strategic investments across high-growth sectors that are shaping tomorrow's economy.">
     <meta property="og:type" content="website">
-    <meta property="og:url" content="https://la.goldendream.in">
+    <meta property="og:url" content="http://localhost/la.goldendream.in/">
     <meta property="og:image" content="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1200&auto=format&fit=crop">
     <meta property="og:site_name" content="GoldenDream">
 
@@ -41,7 +41,7 @@
             "@type": "Organization",
             "name": "GoldenDream",
             "description": "Strategic investments across high-growth sectors that are shaping tomorrow's economy.",
-            "url": "https://la.goldendream.in",
+            "url": "http://localhost/la.goldendream.in/",
             "logo": "https://placehold.co/200x200/0a2540/ffffff?text=GD&font=raleway",
             "address": {
                 "@type": "PostalAddress",
@@ -967,7 +967,7 @@
                     </div>
                 </a>
                 <div style="text-align: center; margin-top: 20px; padding-top: 20px; border-top: 1px solid #eee;">
-                    <!-- <p style="color: var(--subtext-color); margin-bottom: 15px;">Don't have an account? <a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Register Now</a></p> -->
+                    <!-- <p style="color: var(--subtext-color); margin-bottom: 15px;">Don't have an account? <a href="http://localhost/la.goldendream.in///refer?id=GDP0001&ref=NTAw" style="color: var(--accent-color); text-decoration: none; font-weight: 600;">Register Now</a></p> -->
                 </div>
             </div>
         </div>
@@ -1053,7 +1053,7 @@
                                             </p>
 
                                             <div class="hero-cta mt-4">
-                                                <a href="https://la.goldendream.in/" target="_blank" class="btn btn-primary btn-lg me-3">
+                                                <a href="http://localhost/la.goldendream.in//" target="_blank" class="btn btn-primary btn-lg me-3">
                                                     <i class="fas fa-external-link-alt me-2"></i>
                                                     Visit Website
                                                 </a>
@@ -1859,7 +1859,7 @@
                     <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
                     <li><a href="#how-it-works"><i class="fas fa-chevron-right"></i> How It Works</a></li>
                     <li><a onclick="openLoginModal()"><i class="fas fa-chevron-right"></i> Login</a></li>
-                    <!-- <li><a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw"><i class="fas fa-chevron-right"></i> Register</a></li> -->
+                    <!-- <li><a href="http://localhost/la.goldendream.in///refer?id=GDP0001&ref=NTAw"><i class="fas fa-chevron-right"></i> Register</a></li> -->
                     <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
                 </ul>
             </div>
