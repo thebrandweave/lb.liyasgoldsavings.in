@@ -1,0 +1,374 @@
+Database tables – up to 20 rows each
+Total tables: 29
+
+Jump to table: ActivityLogs | Admins | ApiLogs | Balances | CommissionUpdateLogs | CustomerUniqueCounter | Customers | Installments | KYC | MessagingPreference | Notifications | PaymentCodeTransactions | PaymentCodesPerMonth | PaymentQR | Payments | Popups | PromoterWallet | Promoters | RememberTokens | SMSAPIConfig | Schemes | Subscriptions | Teams | WalletLogs | WhatsAppAPIConfig | WhatsAppQueue | Winners | Withdrawals | backups
+ActivityLogs
+20 row(s)
+
+LogID	UserID	UserType	Action	IPAddress	CreatedAt
+1	1	Admin	Logged in	::1	2026-01-10 14:43:59
+2	1	Admin	Deleted admin account	::1	2026-01-10 14:44:17
+3	1	Admin	Deleted admin account	::1	2026-01-10 14:44:21
+4	1	Admin	Updated promoter details for muhammad azlann (ID: GDP0527)	::1	2026-01-10 15:07:24
+5	527	Promoter	Logged in	::1	2026-01-10 15:09:40
+6	527	Promoter	Logged out	::1	2026-01-10 15:12:17
+7	527	Promoter	Logged in	::1	2026-01-10 15:13:54
+8	527	Promoter	Logged out	::1	2026-01-10 15:15:50
+9	527	Promoter	Logged in	::1	2026-01-10 15:22:05
+10	527	Promoter	Logged out	::1	2026-01-10 15:24:46
+11	527	Promoter	Logged in	::1	2026-01-10 15:25:12
+12	527	Promoter	Logged in	2409:40f2:3003:d031:8d74:bec3:661d:b779	2026-01-10 15:27:08
+13	2	Admin	Logged in	2403:a080:c0b:bd9e:fd6c:c269:7b9b:5417	2026-01-10 15:53:16
+14	1	Admin	Logged in	2409:40f2:3003:d031:8d74:bec3:661d:b779	2026-01-10 15:54:55
+15	527	Promoter	Logged in	2409:40f2:3003:d031:8d74:bec3:661d:b779	2026-01-10 15:57:57
+16	527	Promoter	Logged in	::1	2026-01-10 16:06:05
+17	527	Promoter	Registered new customer: muhammad azlan (ID: GDE01)	2409:40f2:3003:d031:8d74:bec3:661d:b779	2026-01-10 16:07:02
+18	527	Promoter	Registered new customer: Azlan (ID: LA02)	2409:40f2:3003:d031:8d74:bec3:661d:b779	2026-01-10 16:23:25
+19	420	Promoter	Logged in	2403:a080:c0b:bd9e:fd6c:c269:7b9b:5417	2026-01-10 16:23:27
+20	1	Admin	Added new scheme: Gold Savings Plan (LA) with 16 installments	::1	2026-01-10 16:46:51
+Admins
+8 row(s)
+
+AdminID	Name	Email	PasswordHash	Role	Status	CreatedAt
+1	Azlan	muhammedazlan11@gmail.com	$2y$10$f8RpDnV887jmqZKOTEm/oesy7nKRboD8HxH5yQMF0xdLO0aTGLnZm	SuperAdmin	Active	2025-04-19 16:10:31
+2	Hisham	hisham@goldendream.in	$2y$10$3bcnAwtLonS7EH56.kl/OuoUwixJPv5ncw0QK38o5eW06LPga0Iai	SuperAdmin	Active	2025-04-20 12:25:41
+3	Sameer	sameer@goldendream.in	$2y$10$XFNzB/0ypCXKFRc89Y2BeeT4IiOpS2YnJGoF3jhcYfHBgXpPzz8sm	SuperAdmin	Active	2025-04-20 12:29:22
+36	Rushda	rushda171@gmail.com	$2y$10$caJx9PHjV8J7RnP0ypiAReWbvwn1bXBhGIdsl/YZjUwdoofzdg0xu	SuperAdmin	Active	2026-01-21 05:48:45
+37	Ramshi	Ramshi171@gmail.com	$2y$10$DeSRvJ6hZWC61aXuWodtpeOfxkaE/zb1uI0pD9sNx18fKXXVd9.lS	SuperAdmin	Active	2026-01-21 05:49:32
+38	AFREENA	Afreena171@gmail.com	$2y$10$wF.2F3UPQ9eyT2zRpwu.7OoXac9zCQf2VZs.aQxjWtHk5y/WjUoiC	SuperAdmin	Active	2026-01-24 04:55:31
+39	MEHEK	Mehek@gmail.com	$2y$10$y3zVP/Qg/YFYMk1lJ3FmOe7BBUqvEiPgFlldHkr.e/mushwXHWzTa	SuperAdmin	Active	2026-01-29 10:38:48
+40	Ashika	ashika@gmail.com	$2y$10$QN.39Dgu2/MvQU7NH/o65er2EVCVMPJ1uPM9rucHy3g58474yLt7C	SuperAdmin	Active	NULL
+ApiLogs
+(0 rows)
+
+Balances
+(0 rows)
+
+CommissionUpdateLogs
+(0 rows)
+
+CustomerUniqueCounter
+20 row(s)
+
+id
+1
+2
+3
+4
+5
+6
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+Customers
+20 row(s)
+
+CustomerID	CustomerUniqueID	Name	Contact	Email	PasswordHash	Address	ProfileImageURL	Gender	DateOfBirth	BankAccountName	BankAccountNumber	IFSCCode	BankName	PromoterID	ReferredBy	TeamName	JoinedDate	Status	CreatedAt	UpdatedAt
+1019	LA01019	cs	NULL	NULL	$2y$10$f8RpDnV887jmqZKOTEm/oesy7nKRboD8HxH5yQMF0xdLO0aTGLnZm	NULL	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	NULL	NULL	Active	2026-01-11 08:11:41	2026-02-07 14:24:51
+1020	LA01020	Fayaz Ahemad	9980169076	NULL	$2y$10$WX2aQ.f100nQA8e0ao23eufcC9vFgR4cQyevp8h0XpyyZsiUbFecC	Anowar colony old town bhadravati	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-23	Active	2026-01-23 08:46:27	2026-02-07 06:32:36
+1021	LA01021	MD Farhan	8073342385	NULL	$2y$10$pSJFMNstIDAbmJlqppt1tuSEaRT8I1olYe1qKG8CFA.QDyUpjpGLW	Anowar colony old town bhadravati	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-23	Active	2026-01-23 08:48:07	2026-02-07 06:32:36
+1022	LA01022	Salma siddiqha	9449651786	NULL	$2y$10$gWG5RBPJDwaZXwGDOE8XWO/XRQP9wSBpd/mNBbZ9EYvIxnVlC9I7G	Aldur ckm(D)	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-23	Active	2026-01-23 15:58:53	2026-02-07 06:32:36
+1023	LA01023	Venkatesh J T skp	7975896662	NULL	$2y$10$ww31UmQS5ep264M1Fx1j8OdFLtZjDs8bS4zYU4yupl1/8GnMgDUsK	Bandhihalli skp	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-23	Active	2026-01-23 16:13:26	2026-02-07 06:32:36
+1024	LA01024	Ganga Haveri	9620238422	NULL	$2y$10$JbLEVUsvuQP6q8zIQOva/OhdcvjBewMgAcVTq5Sr1ZUGE.637C/ya	Ani shatr oni Ranebennur town Ranebennur	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:22:31	2026-02-07 06:32:36
+1025	LA01025	Ganga Haveri	9620238422	NULL	$2y$10$i3OTWb1LHKmB1b9bPRQk8OiYveK.fQ2TtXWXtPvSXI5SyM6hoEjZS	Ani shatr oni Ranebennur town Ranebennur	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Active	2026-01-24 05:23:50	2026-02-07 06:32:36
+1026	LA01026	GFK	7349739580	NULL	$2y$10$0VEGSZfgmQtrwyklXtxtBelgPYp9xGopvU8F2D7fhmp8rM73R5Cp2	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:44:10	2026-02-07 06:32:36
+1027	LA01027	GFK	7349739580	NULL	$2y$10$nnQ36LM1Y8DjDm4FwOIn.uE1a19pJIRzhd8CarSFP8D14lAgy12Vm	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:44:41	2026-02-07 06:32:36
+1028	LA01028	GFK	7349739580	NULL	$2y$10$iuWCMrmNvR92QtFOgtq9Tu8THnTMEHYEwIlfggrwF7dbyAeyF3kEi	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:44:53	2026-02-07 06:32:36
+1029	LA01029	GFK	7349739580	NULL	$2y$10$Vvj3ulLOHy/VHNj6xL5WeeDouOIjdkfO0f3Vd2iTRy7xH4thgBKTi	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:45:04	2026-02-07 06:32:36
+1030	LA01030	CHANSMMA. M	9643631537	NULL	$2y$10$fBucGN6tnQTJXWVhPEL.Z.DXc5t6q7bmaJyjKhmzsVeffy9X16j9y	SHAKATINAGAR	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Active	2026-01-24 05:45:11	2026-02-07 06:32:36
+1031	LA01031	GFK	7349739580	NULL	$2y$10$zprIhGHZKdM/kS8k.R65.uoJELHOSQvOkHy3Gyv9mzudct0pt2Cw2	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:45:20	2026-02-07 06:32:36
+1032	LA01032	GFK	7349739580	NULL	$2y$10$dnrzWPqsOC462fxowbLgwu84mo4woowFamVVEhAfgWk1ccw3vbxtC	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:45:29	2026-02-07 06:32:36
+1033	LA01033	KADECHAR KAVERI	9591473866	NULL	$2y$10$GZPYxpBqCKss26/5EaE9OuELLUYYExGp9vzw9qNOrnu4WNFF05EvO	HINBUPUR	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Active	2026-01-24 05:45:36	2026-02-07 06:32:36
+1034	LA01034	GFK	7349739580	NULL	$2y$10$HRhRgiA0RX5zAJj3vTpfee0xTN2UMRwUPAS1Ed6hql4WGPzhisyjW	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:45:45	2026-02-07 06:32:36
+1035	LA01035	GFK	7349739580	NULL	$2y$10$.XMmaDxnZ6.THOljnt7vnuRXp2nnm0RFAxkd5MsluSTwZ17MVM02m	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:48:02	2026-02-07 06:32:36
+1036	LA01036	GFK	7349739580	NULL	$2y$10$/uWQ.MaiRt0gyfEevABZ0.OZ5az/AJAjgtC4eITN7jG56pJc7qjPS	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:48:11	2026-02-07 06:32:36
+1037	LA01037	GFK	7349739580	NULL	$2y$10$qwU4Ga6btKulOrIwaS4f5eIpmFfDb6RgD7ccmSoSUVJPs9pYXSEpG	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:48:20	2026-02-07 06:32:36
+1038	LA01038	GFK	7349739580	NULL	$2y$10$027Z.MRv6CwU3/bbNfpVlu9G8ddAUimjpT72O3kvjyJOOEaE4cVzS	GDWUHIJ	NULL	NULL	NULL	NULL	NULL	NULL	NULL	GDP01562	NULL	ROYAL DIAMOND	2026-01-24	Inactive	2026-01-24 05:48:47	2026-02-07 06:32:36
+Installments
+16 row(s)
+
+InstallmentID	SchemeID	InstallmentName	InstallmentNumber	Amount	DrawDate	Benefits	ImageURL	Status	CreatedAt	IsReplayable	ReplaymentPercentage
+1	1	April	1	1000.00	2026-04-10		NULL	Active	2026-01-10 16:46:50	0	0.00
+2	1	May	2	1000.00	2026-05-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+3	1	June	3	1000.00	2026-06-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+4	1	July	4	1000.00	2026-07-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+5	1	August	5	1000.00	2026-08-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+6	1	September	6	1000.00	2026-09-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+7	1	October	7	1000.00	2026-10-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+8	1	Novemeber	8	1000.00	2026-11-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+9	1	December	9	1000.00	2026-12-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+10	1	January	10	1000.00	2027-01-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+11	1	February	11	1000.00	2027-02-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+12	1	March	12	1000.00	2027-03-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+13	1	April	13	1000.00	2027-04-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+14	1	May	14	1000.00	2027-05-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+15	1	June	15	1000.00	2027-06-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+16	1	July	16	1000.00	2027-07-10		NULL	Active	2026-01-10 16:46:51	0	0.00
+KYC
+20 row(s)
+
+KYCID	UserID	UserType	AadharNumber	PANNumber	IDProofType	IDProofImageURL	AddressProofType	AddressProofImageURL	Status	SubmittedAt	VerifiedAt	AdminID	Remarks	KYCStatus
+1	89	Promoter	913239317442	AWEPH9772J	PAN	id_proof_1746852263_681ed9a7147c4.jpg	Aadhar	address_proof_1746852263_681ed9a7147c4.jpg	Pending	2025-05-10 04:44:23	NULL	NULL	NULL	NULL
+2	123	Promoter	720422367815	CFFPK4698A	Aadhar	id_proof_1746941387_682035cb93eac.jpg	Aadhar	address_proof_1746941387_682035cb93eac.jpg	NULL	2025-05-11 05:29:47	NULL	NULL	NULL	NULL
+3	44	Promoter	815335341025	BVFPJ7933J	Aadhar	id_proof_1746969629_6820a41ddddbb.jpg	Aadhar	address_proof_1746969629_6820a41ddddbb.jpg	Pending	2025-05-11 13:20:29	NULL	NULL	NULL	NULL
+4	57	Promoter	336614746409	FCRPS8582K	Aadhar	id_proof_1747488293_68288e25e99e8.jpg	Aadhar	address_proof_1747488293_68288e25ea6db.jpg	Verified	2025-05-17 13:24:53	NULL	NULL	NULL	NULL
+5	15	Promoter	988578614415	DLTPK7291G	Aadhar	id_proof_1752382763_68733d2bcc418.JPG	Aadhar	address_proof_1752382763_68733d2bccbe5.jpg	Verified	2025-07-13 04:59:23	NULL	NULL	NULL	NULL
+6	453	Promoter	645402161925	ASLPG1280F	PAN	id_proof_1747193138_68240d32bc071.jpg	Aadhar	address_proof_1747193138_68240d32bc071.jpg	Verified	2025-08-24 16:18:13	NULL	NULL	NULL	NULL
+7	32	Promoter	579754154697	CTIPS2633A	PAN	id_proof_1752393485_6873670d6b805.jpeg	Aadhar	address_proof_1752393485_6873670d6bdb1.jpeg	Verified	2025-07-13 07:58:05	NULL	NULL	NULL	NULL
+8	11	Promoter	354778074114	GOSPS6712B	PAN	id_proof_1747305424_6825c3d0398e0.jpg	Aadhar	address_proof_1747305424_6825c3d0398e0.jpg	NULL	2025-05-15 10:37:04	NULL	NULL	NULL	NULL
+9	92	Promoter	505682993130	CKIPB5939B	PAN	id_proof_1747307844_6825cd444414d.jpg	Aadhar	address_proof_1747307844_6825cd444414d.jpg	NULL	2025-05-15 11:17:24	NULL	NULL	NULL	NULL
+11	420	Promoter	254652155354	ABCDE1234F	Aadhar	id_proof_1747468475_682840bba597c.jpeg	Aadhar	address_proof_1747468475_682840bba5da2.jpeg	Pending	2025-05-17 07:55:16	NULL	NULL	NULL	NULL
+16	528	Promoter	123412341234	ABCDE1234F	PAN	id_proof_1747472308_68284fb42a4e0.png	Aadhar	address_proof_1747470337_682848014d035.png	Verified	2025-05-17 08:58:28	NULL	NULL	NULL	NULL
+17	606	Promoter	675014306075	BQQPD6123C	Driving License	id_proof_1747588500_682a1594b2d7a.jpg	Voter ID	address_proof_1747588500_682a1594b4417.jpg	Verified	2025-05-18 17:15:45	NULL	NULL	NULL	NULL
+18	207	Promoter	515126736335	SWGPS2898J	PAN	id_proof_1747828831_682dc05f199dd.jpg	Aadhar	address_proof_1747828831_682dc05f1a51e.jpg	Verified	2025-05-21 12:01:04	NULL	NULL	NULL	NULL
+19	574	Promoter	538355139288	AMJPN1323L	Aadhar	id_proof_1747993613_6830440d7f289.jpg	Aadhar	address_proof_1747993613_6830440d7f8f6.jpg	Verified	2025-05-23 09:46:53	NULL	NULL	NULL	NULL
+20	652	Promoter	786875816676	FSBPP0828P	Aadhar	id_proof_1747993721_6830447920920.jpg	Aadhar	address_proof_1747993721_683044792172d.jpg	Verified	2025-05-23 09:48:41	NULL	NULL	NULL	NULL
+21	536	Promoter	667937085989	BKKPK9769F	Aadhar	id_proof_1748185421_6833314df1db4.jpg	Aadhar	address_proof_1748185421_6833314df2c40.jpg	Verified	2025-05-25 15:04:04	NULL	NULL	NULL	NULL
+22	132	Promoter	708429790362	FGZPS2412E	Aadhar	id_proof_1749351920_6844fdf0dbf66.jpg	Aadhar	address_proof_1749351920_6844fdf0dc2e9.jpg	Verified	2025-06-08 03:05:20	NULL	NULL	NULL	NULL
+23	222	Promoter	362553503306	FVEPP0746Q	Aadhar	id_proof_1749358543_684517cf483de.jpg	Aadhar	address_proof_1749358543_684517cf4893b.jpg	Verified	2025-06-08 04:55:43	NULL	NULL	NULL	NULL
+24	247	Promoter	437331110268	DEEPA5159D	PAN	id_proof_1749701797_684a54a55a67f.jpg	Aadhar	address_proof_1749701797_684a54a55aa52.jpg	Verified	2025-06-12 04:16:37	NULL	NULL	NULL	NULL
+25	660	Promoter	538355139288	AMJPN1323L	Aadhar	id_proof_1749723689_684aaa29ebc6f.jpg	Aadhar	address_proof_1749723689_684aaa29ec576.jpg	Verified	2025-06-12 10:21:29	NULL	NULL	NULL	NULL
+MessagingPreference
+1 row(s)
+
+PreferenceID	PreferredMethod	UpdatedAt
+1	WhatsApp	2025-10-15 07:13:43
+Notifications
+20 row(s)
+
+NotificationID	UserID	UserType	Message	IsRead	CreatedAt
+1	2	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-10 17:19:21
+2	2	Customer	Your 2 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-10 17:42:55
+3	3	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-11 06:44:07
+4	22	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-23 16:46:57
+5	23	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-23 16:49:46
+6	20	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-23 16:51:16
+7	21	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-23 16:51:44
+8	25	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-24 07:02:36
+9	46	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-24 15:11:36
+10	48	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-24 15:11:46
+11	51	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-24 15:24:44
+12	53	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-25 14:58:28
+13	66	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-25 15:05:13
+14	64	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-25 15:05:22
+15	58	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-25 16:05:16
+16	54	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-25 16:05:29
+17	57	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-26 06:22:59
+18	67	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-26 06:32:35
+19	52	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-26 06:39:54
+20	69	Customer	Your 1 Installment payment of ₹1,000.00 for Gold Savings Plan (LA) has been verified successfully.	0	2026-01-26 11:01:18
+PaymentCodeTransactions
+(0 rows)
+
+PaymentCodesPerMonth
+(0 rows)
+
+PaymentQR
+1 row(s)
+
+QRID	CustomerID	UPIQRImageURL	BankAccountName	BankAccountNumber	IFSCCode	BankName	BankBranch	BankAddress	RazorpayKeyID	RazorpayKeySecret	RazorpayContactID	RazorpayFundAccountID	RazorpayQRID	RazorpayQRStatus	CreatedAt
+1	NULL	uploads/qr/6815ce01bd23c_WhatsApp Image 2025-05-03 at 1.31.15 PM.jpeg	HDFC BANK	HDFC BANK	HDFC0008864	HDFC BANK	KURNAD	KURNAD ,NEAR BY GOLDENDREAM		GoldenDream		hisham@goldendream.in		Active	2025-04-19 16:39:49
+Payments
+20 row(s)
+
+PaymentID	CustomerID	PromoterID	AdminID	SchemeID	InstallmentID	Amount	PaymentCodeValue	ScreenshotURL	Status	SubmittedAt	VerifiedAt	PayerRemark	VerifierRemark
+4	1022	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6973a42371281.jpeg	Verified	2026-01-23 16:38:59	2026-01-23 16:46:57	NULL	VERIFIED BY TECHNICAL TEAM
+5	1023	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6973a4480671d.jpeg	Verified	2026-01-23 16:39:36	2026-01-23 16:49:46	NULL	VERIFIED BY TECHNICAL TEAM
+6	1020	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6973a541201cb.jpeg	Verified	2026-01-23 16:43:45	2026-01-23 16:51:16	NULL	VERIFIED BY TECHNICAL TEAM
+7	1021	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6973a559edf64.jpeg	Verified	2026-01-23 16:44:09	2026-01-23 16:51:44	NULL	VERIFIED BY TECHNICAL TEAM
+8	1025	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_69746d312d143.jpeg	Verified	2026-01-24 06:56:49	2026-01-24 07:02:36	NULL	Verified by Technical Team
+9	1046	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_697493daa5010.jpeg	Verified	2026-01-24 09:41:46	2026-01-24 15:11:36	NULL	Verified by Technical Team
+10	1048	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6974948a0f43b.jpeg	Verified	2026-01-24 09:44:42	2026-01-24 15:11:46	NULL	Verified by Technical Team
+11	1051	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6974e1b4452ba.jpeg	Verified	2026-01-24 15:13:56	2026-01-24 15:24:44	NULL	Verified by Technical Team
+12	1053	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6975ee170f1f5.jpeg	Verified	2026-01-25 10:19:03	2026-01-25 14:58:28	NULL	Verified by Technical Team
+13	1064	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_69763024435c1.jpeg	Verified	2026-01-25 15:00:52	2026-01-25 15:05:22	NULL	Verified by Technical Team
+14	1066	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6976308f91acd.jpeg	Verified	2026-01-25 15:02:39	2026-01-25 15:05:13	NULL	Verified by Technical Team
+15	1058	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_69763ebadfb8b.jpeg	Verified	2026-01-25 16:03:06	2026-01-25 16:05:16	NULL	Verified by Technical Team
+16	1054	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_69763f07ebef3.jpeg	Verified	2026-01-25 16:04:23	2026-01-25 16:05:29	NULL	Verified by Technical Team
+17	1057	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6976f734d4dea.jpeg	Verified	2026-01-26 05:10:12	2026-01-26 06:22:59	NULL	VERIFIED BY TECHNICAL
+18	1052	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6977056f9f4c6.jpeg	Verified	2026-01-26 06:10:55	2026-01-26 06:39:54	NULL	Verified by Technical Team
+19	1067	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_697708c274b80.jpeg	Verified	2026-01-26 06:25:06	2026-01-26 06:32:35	NULL	VERIFIED BY TECHNICAL
+20	1069	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_6977495cbba36.jpeg	Verified	2026-01-26 11:00:44	2026-01-26 11:01:18	NULL	Verified by Technical Team
+21	1072	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_69774b89dfb38.jpeg	Verified	2026-01-26 11:10:01	2026-01-27 04:39:11	NULL	Verified by Technical Team
+22	1076	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_697853919cbb0.jpeg	Verified	2026-01-27 05:56:33	2026-01-27 10:18:28	NULL	Verified by Technical Team
+23	1075	NULL	NULL	1	1	1000.00	0	uploads/payments/payment_697854389e3af.jpeg	Verified	2026-01-27 05:59:20	2026-01-27 10:19:58	NULL	Verified by Technical Team
+Popups
+3 row(s)
+
+PopupID	ImageURL	IsActive	CreatedBy	CreatedAt	UpdatedAt
+1	uploads/popups/popup_1768063879_69628387117f3.jpeg	0	1	2026-01-10 16:52:30	2026-01-10 16:53:10
+2	uploads/popups/popup_1768063919_696283afd1af7.jpeg	0	1	2026-01-10 16:53:11	2026-01-10 17:52:06
+3	uploads/popups/popup_1768067455_6962917f6e5a0.jpeg	1	1	2026-01-10 17:52:06	2026-01-10 17:52:06
+PromoterWallet
+20 row(s)
+
+BalanceID	UserID	PromoterUniqueID	BalanceAmount	Message	LastUpdated
+2	527	GDP0527	750.00	Commission from payment	2026-01-11 06:44:09
+3	96	GD011946	2300.00	Commission from payment	2026-02-06 09:15:34
+4	1034	GDP01034	0.00	Commission from payment	2026-02-06 09:53:10
+5	123	GD011521	3350.00	Parent commission earned from customer Chaitra Madar (LA01056) for Gold Savings Plan (LA) scheme	2026-02-06 09:15:34
+6	638	GDP0638	0.00	Commission from payment	2026-01-28 06:40:06
+7	106	GD011811	1300.00	Parent commission from payment	2026-02-05 09:22:30
+8	1486	GDP01486	400.00	Commission from payment	2026-01-24 07:02:36
+9	1345	GDP01345	50.00	Parent commission from payment	2026-01-24 07:02:36
+10	799	GDP0799	150.00	Parent commission from payment	2026-01-24 07:02:36
+11	791	GDP0791	150.00	Parent commission from payment	2026-01-24 07:02:36
+12	1540	GDP01540	0.00	Initial wallet creation upon registration	2026-01-24 07:31:36
+13	1541	GDP01541	0.00	Initial wallet creation upon registration	2026-01-24 08:35:47
+14	84	GD012111	2300.00	Commission from payment	2026-02-05 07:27:44
+15	932	GDP0932	2000.00	Commission from payment	2026-02-05 07:27:44
+16	815	GDP0815	4600.00	Commission from payment	2026-02-06 09:07:26
+17	77	GD012157	4300.00	Parent commission earned from customer JEEVAN P.J (LA01464) for Gold Savings Plan (LA) scheme	2026-02-07 06:15:21
+18	1542	GDP01542	0.00	Initial wallet creation upon registration	2026-01-25 03:10:51
+19	1543	GDP01543	0.00	Initial wallet creation upon registration	2026-01-25 09:03:56
+20	1544	GDP01544	0.00	Initial wallet creation upon registration	2026-01-25 09:06:03
+21	1545	GDP01545	0.00	Initial wallet creation upon registration	2026-01-25 09:06:59
+Promoters
+20 row(s)
+
+PromoterID	PromoterUniqueID	CustomerID	Name	Contact	Email	PasswordHash	Address	ProfileImageURL	BankAccountName	BankAccountNumber	IFSCCode	BankName	PaymentCodeCounter	ParentPromoterID	TeamName	Status	Commission	ParentCommission	CreatedAt	UpdatedAt
+1	GD014381	NULL	Panchami	8431327345	-	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD012772	ROYAL DIAMOND	Active	500	150	2025-04-19 13:01:03	2025-05-20 06:39:20
+2	GD014240	NULL	ADI SHIVA REDDY	9591038480	NULL	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD014381	ROYAL DIAMOND	Active	500	0	2025-04-19 13:01:03	2025-07-11 04:54:48
+3	GD014168	NULL	Ekanath shetty	9380769936	-	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD011516	ROYAL DIAMOND	Active	750	50	2025-04-19 13:01:03	2026-01-15 05:48:04
+4	GD014012	NULL	Harshad	9902777363	-	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD010572	ROYAL DIAMOND	Active	NULL		2025-04-19 13:01:03	2025-05-10 07:25:47
+5	GD013997	NULL	Uluva Ramanjineyulu	8501922145	uluvaramanjieneyulu@gmail.com	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD011521	ROYAL DIAMOND	Active	500	300	2025-04-19 13:01:03	2026-01-15 05:55:13
+6	GD013987	NULL	A Basavaraja	9480755098	Basavaraja@gmail.com	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD011521	ROYAL DIAMOND	Active	500	300	2025-04-19 13:01:03	2026-01-15 05:56:03
+7	GD013797	NULL	UMME NOOH SUHAIL SAYYED	9353426360	sayyed@gmail.com	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	x	-	-	0	GD010684	DYNAMIC 0.1	Active	500	250	2025-04-19 13:01:03	2025-07-11 04:57:08
+8	GD013761	NULL	BUKKE NAGESWARA NAIK	9393637788	NULL	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD012009	ROYAL DIAMOND	Active	400	400	2025-04-19 13:01:03	2026-01-15 05:56:27
+9	GD013760	NULL	Mohammed Navaz	9108799637	navaz@gmail.com	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD010015	GAME CHANGERS 0.1	Active	500	250	2025-04-19 13:01:03	2025-07-11 04:57:18
+10	GD013627	NULL	FATHIMA THAZIRA	8147034474	-	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	NULL	DREAM	Active	750		2025-04-19 13:01:03	2025-05-10 07:25:47
+11	GD013625	NULL	Sharanamma	9663435204	sharanamma@gmail.com	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD013224	ROYAL DIAMOND	Active	600	50	2025-04-19 13:01:03	2025-11-29 11:21:49
+12	GD013607	NULL	K SHEKSHAVALI	9704039604	shekshavali370@gmail.com	$2y$10$uUrlc3fwYdagPZkv5X0Xh.eAQ5b7qgEbER5zFr/8eySa49OkBUqRi	S/O Karur Dasthagiri Saheb, 88/111-1UP,ANGADI VEEDI, NEAR RLY STATION, CK DINNE, MAMILLAPALLE(RURAL),KADAPA, ANDHRA PRADESH-516004	uploads/profile/default.png	KARUR SHEKSHAVALI	1512500103215201	KARB0000151	Karnataka Bank Ltd	0	GD012009	ROYAL DIAMOND	Active	550	250	2025-04-19 13:01:03	2026-01-25 15:52:38
+13	GD013562	NULL	Ravi A	9945589511	-	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD013454	ROYAL DIAMOND	Active	NULL		2025-04-19 13:01:03	2025-05-10 07:25:47
+14	GD013559	NULL	Ubaid sab	6364448778	-	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD010015	GAME CHANGERS 0.1	Active	NULL		2025-04-19 13:01:03	2025-05-10 07:25:47
+15	GD013553	NULL	Sridhar Kuna	9885883553	kunasridhar001@gmail.com	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	Gopi Nagar, Kurnool.	uploads/profile/default.png	SRIDHAR KUNA	30448255913	SBIN0002756	STATE BANK OF INDIA	0	GD011521	ROYAL DIAMOND	Active	500	300	2025-04-19 13:01:04	2026-01-15 06:58:30
+16	GD013486	NULL	Kanike krishna	9849840017	kanikekrishna4651@gmail.com	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	Yemmiganur	uploads/profile/default.png	Kanike Krishna	33088369936	Sbin00955	State bank of india	0	GD013485	ROYAL DIAMOND	Active	500	0	2025-04-19 13:01:04	2025-11-12 06:12:14
+17	GD013485	NULL	K.Vykunta	9885595973	-	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD011521	ROYAL DIAMOND	Active	500	300	2025-04-19 13:01:04	2026-01-15 06:58:44
+18	GD013484	NULL	Ashwini	7760026340	NULL	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD012071	ROYAL DIAMOND	Active	500	300	2025-04-19 13:01:04	2026-01-15 07:43:14
+19	GD013454	NULL	SUMITHRA HK	9902882799	-	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD011515	ROYAL DIAMOND	Active	NULL		2025-04-19 13:01:04	2025-05-10 07:25:47
+20	GD013452	NULL	Hemanth M	8867741188	-	$2y$10$i3okg/gTbT/l.WyWUgTAjOYGeKH/zTlIAcrDFpzB2cEc89mj78py2	-	uploads/profile/default.png	-	-	-	-	0	GD011515	ROYAL DIAMOND	Active	NULL		2025-04-19 13:01:04	2025-05-10 07:25:47
+RememberTokens
+(0 rows)
+
+SMSAPIConfig
+1 row(s)
+
+ConfigID	APIProviderName	APIEndpoint	Username	Password	CustomerID	SourceAddress	DLTEntityID	DLTTemplateID	MessageType	MessageTemplate	Status	CreatedAt	UpdatedAt
+1	Airtel	https://iqsms.airtel.in/api/v1/send-prepaid-sms	f8758d62_260c_404b_8d4a_a15ce94593d4	jx0NgVQjBT	72c5ff0d-4624-4972-bc1c-dcef261dd7f7	PRGDVN	1001791223662244844	1007000046423973167	SERVICE_EXPLICIT	NULL	Active	2025-10-15 07:13:43	2026-01-10 17:24:19
+Schemes
+1 row(s)
+
+SchemeID	SchemeName	SchemeImageURL	Description	MonthlyPayment	TotalPayments	StartDate	Status	CreatedAt
+1	Gold Savings Plan (LA)	uploads/schemes/1768063539_WhatsApp Image 2026-01-10 at 10.15.13 PM.jpeg	3 crore worth of prizes	1000.00	16	NULL	Active	2026-01-10 16:46:50
+Subscriptions
+20 row(s)
+
+SubscriptionID	CustomerID	SchemeID	StartDate	EndDate	RenewalStatus	CreatedAt	UpdatedAt
+1	1022	1	2026-01-23	2027-05-23	Active	2026-01-23 16:38:59	2026-01-23 16:38:59
+2	1023	1	2026-01-23	2027-05-23	Active	2026-01-23 16:39:36	2026-01-23 16:39:36
+3	1020	1	2026-01-23	2027-05-23	Active	2026-01-23 16:43:45	2026-01-23 16:43:45
+4	1021	1	2026-01-23	2027-05-23	Active	2026-01-23 16:44:09	2026-01-23 16:44:09
+5	1025	1	2026-01-24	2027-05-24	Active	2026-01-24 06:56:49	2026-01-24 06:56:49
+6	1046	1	2026-01-24	2027-05-24	Active	2026-01-24 09:41:46	2026-01-24 09:41:46
+7	1048	1	2026-01-24	2027-05-24	Active	2026-01-24 09:44:42	2026-01-24 09:44:42
+8	1051	1	2026-01-24	2027-05-24	Active	2026-01-24 15:13:56	2026-01-24 15:13:56
+9	1053	1	2026-01-25	2027-05-25	Active	2026-01-25 10:19:03	2026-01-25 10:19:03
+10	1064	1	2026-01-25	2027-05-25	Active	2026-01-25 15:00:52	2026-01-25 15:00:52
+11	1066	1	2026-01-25	2027-05-25	Active	2026-01-25 15:02:39	2026-01-25 15:02:39
+12	1058	1	2026-01-25	2027-05-25	Active	2026-01-25 16:03:06	2026-01-25 16:03:06
+13	1054	1	2026-01-25	2027-05-25	Active	2026-01-25 16:04:23	2026-01-25 16:04:23
+14	1057	1	2026-01-26	2027-05-26	Active	2026-01-26 05:10:12	2026-01-26 05:10:12
+15	1052	1	2026-01-26	2027-05-26	Active	2026-01-26 06:10:55	2026-01-26 06:10:55
+16	1067	1	2026-01-26	2027-05-26	Active	2026-01-26 06:25:06	2026-01-26 06:25:06
+17	1069	1	2026-01-26	2027-05-26	Active	2026-01-26 11:00:44	2026-01-26 11:00:44
+18	1072	1	2026-01-26	2027-05-26	Active	2026-01-26 11:10:01	2026-01-26 11:10:01
+19	1076	1	2026-01-27	2027-05-27	Active	2026-01-27 05:56:33	2026-01-27 05:56:33
+20	1075	1	2026-01-27	2027-05-27	Active	2026-01-27 05:59:20	2026-01-27 05:59:20
+Teams
+(0 rows)
+
+WalletLogs
+20 row(s)
+
+LogID	PromoterUniqueID	Amount	Message	CreatedAt	TransactionType
+1	GDP0527	750.00	Initial wallet creation with commission from customer Azlan (LA02) for Gold Savings Plan (LA) scheme	2026-01-10 17:19:24	Credit
+2	GDP0527	750.00	Initial wallet creation with commission from customer muhammad azlan (LA03) for Gold Savings Plan (LA) scheme	2026-01-11 06:44:09	Credit
+3	GD011946	750.00	Initial wallet creation with commission from customer Salma siddiqha (LA01022) for Gold Savings Plan (LA) scheme	2026-01-23 16:46:57	Credit
+4	GDP01034	550.00	Initial wallet creation with commission from customer Venkatesh J T skp (LA01023) for Gold Savings Plan (LA) scheme	2026-01-23 16:49:47	Credit
+5	GD011946	200.00	Parent commission earned from customer Venkatesh J T skp (LA01023) for Gold Savings Plan (LA) scheme	2026-01-23 16:49:47	Credit
+6	GD011521	50.00	Initial wallet creation with parent commission from customer Venkatesh J T skp (LA01023) for Gold Savings Plan (LA) scheme	2026-01-23 16:49:47	Credit
+7	GD011521	50.00	Initial wallet creation with parent commission from customer Salma siddiqha (LA01022) for Gold Savings Plan (LA) scheme	2026-01-23 16:50:50	Credit
+8	GDP0638	400.00	Initial wallet creation with commission from customer Fayaz Ahemad (LA01020) for Gold Savings Plan (LA) scheme	2026-01-23 16:51:16	Credit
+9	GD011811	350.00	Initial wallet creation with parent commission from customer Fayaz Ahemad (LA01020) for Gold Savings Plan (LA) scheme	2026-01-23 16:51:16	Credit
+10	GD011521	50.00	Parent commission earned from customer Fayaz Ahemad (LA01020) for Gold Savings Plan (LA) scheme	2026-01-23 16:51:16	Credit
+11	GDP0638	400.00	Commission earned from customer MD Farhan (LA01021) for Gold Savings Plan (LA) scheme	2026-01-23 16:51:44	Credit
+12	GD011811	350.00	Parent commission earned from customer MD Farhan (LA01021) for Gold Savings Plan (LA) scheme	2026-01-23 16:51:44	Credit
+13	GD011521	50.00	Parent commission earned from customer MD Farhan (LA01021) for Gold Savings Plan (LA) scheme	2026-01-23 16:51:44	Credit
+14	GDP01486	400.00	Initial wallet creation with commission from customer Ganga Haveri (LA01025) for Gold Savings Plan (LA) scheme	2026-01-24 07:02:36	Credit
+15	GDP01345	50.00	Initial wallet creation with parent commission from customer Ganga Haveri (LA01025) for Gold Savings Plan (LA) scheme	2026-01-24 07:02:36	Credit
+16	GDP0799	150.00	Initial wallet creation with parent commission from customer Ganga Haveri (LA01025) for Gold Savings Plan (LA) scheme	2026-01-24 07:02:36	Credit
+17	GDP0791	150.00	Initial wallet creation with parent commission from customer Ganga Haveri (LA01025) for Gold Savings Plan (LA) scheme	2026-01-24 07:02:36	Credit
+18	GD012111	800.00	Initial wallet creation with commission from customer Manthradevathe S (LA01046) for Gold Savings Plan (LA) scheme	2026-01-24 15:11:36	Credit
+19	GDP0932	500.00	Initial wallet creation with commission from customer prajwal R (LA01048) for Gold Savings Plan (LA) scheme	2026-01-24 15:11:46	Credit
+20	GD012111	300.00	Parent commission earned from customer prajwal R (LA01048) for Gold Savings Plan (LA) scheme	2026-01-24 15:11:46	Credit
+WhatsAppAPIConfig
+1 row(s)
+
+ConfigID	APIProviderName	APIEndpoint	AccessToken	Token	InstanceID	Status	CreatedAt	UpdatedAt
+1	Just Message	https://justmessage.co.in/api/	68c7dc5ed5970	1234567	68CB97B63E7CF	Active	2025-04-20 07:05:46	2025-09-18 05:47:51
+WhatsAppQueue
+20 row(s)
+
+QueueID	PhoneNumber	Message	UserID	UserType	Status	Attempts	MaxAttempts	LastAttemptAt	CreatedAt	ProcessedAt
+1	6361425745	Welcome to Golden Dream! Dear SRUSTITH, you have successfully joined as a promoter. Your ID is: GDP01540 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1540	Promoter	Pending	0	3	NULL	2026-01-24 07:31:36	NULL
+2	8762673463	Welcome to Golden Dream! Dear Sujith kumar ES, you have successfully joined as a promoter. Your ID is: GDP01541 and your commission rate is: 400. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1541	Promoter	Pending	0	3	NULL	2026-01-24 08:35:47	NULL
+3	9916420137	Welcome to Golden Dream! Dear Sharanabasava, you have successfully joined as a promoter. Your ID is: GDP01542 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1542	Promoter	Pending	0	3	NULL	2026-01-25 03:10:51	NULL
+4	9535625839	Welcome to Golden Dream! Dear LOKESH, you have successfully joined as a promoter. Your ID is: GDP01543 and your commission rate is: 500. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1543	Promoter	Pending	0	3	NULL	2026-01-25 09:03:56	NULL
+5	7676605318	Welcome to Golden Dream! Dear MANJUNATH BUDOOR, you have successfully joined as a promoter. Your ID is: GDP01544 and your commission rate is: 500. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1544	Promoter	Pending	0	3	NULL	2026-01-25 09:06:03	NULL
+6	9900249206	Welcome to Golden Dream! Dear Satish N V, you have successfully joined as a promoter. Your ID is: GDP01545 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1545	Promoter	Pending	0	3	NULL	2026-01-25 09:06:59	NULL
+7	6361425745	Welcome to Golden Dream! Dear SRUSTITH, you have successfully joined as a promoter. Your ID is: GDP01546 and your commission rate is: 400. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1546	Promoter	Pending	0	3	NULL	2026-01-25 09:10:55	NULL
+8	8762673463	Welcome to Golden Dream! Dear Sujith kumar ES, you have successfully joined as a promoter. Your ID is: GDP01547 and your commission rate is: 400. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1547	Promoter	Pending	0	3	NULL	2026-01-25 09:59:43	NULL
+9	9483220328	Welcome to Golden Dream! Dear REKHA, you have successfully joined as a promoter. Your ID is: GDP01548 and your commission rate is: 400. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1548	Promoter	Pending	0	3	NULL	2026-01-25 11:38:06	NULL
+10	8147507598	Welcome to Golden Dream! Dear Nagesh, you have successfully joined as a promoter. Your ID is: GDP01549 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1549	Promoter	Pending	0	3	NULL	2026-01-25 12:54:19	NULL
+11	9845481227	Welcome to Golden Dream! Dear Fathima sharifa, you have successfully joined as a promoter. Your ID is: GDP01550 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1550	Promoter	Pending	0	3	NULL	2026-01-25 12:55:21	NULL
+12	8549010373	Welcome to Golden Dream! Dear MANJUNATHA HB, you have successfully joined as a promoter. Your ID is: GDP01551 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1551	Promoter	Pending	0	3	NULL	2026-01-26 06:40:20	NULL
+13	9482704474	Welcome to Golden Dream! Dear Thippesh yadav, you have successfully joined as a promoter. Your ID is: GDP01552 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1552	Promoter	Pending	0	3	NULL	2026-01-27 14:19:08	NULL
+14	9740005318	Welcome to Golden Dream! Dear Manjunath, you have successfully joined as a promoter. Your ID is: GDP01553 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1553	Promoter	Pending	0	3	NULL	2026-01-27 16:10:21	NULL
+15	9740005318	Welcome to Golden Dream! Dear Manjunath, you have successfully joined as a promoter. Your ID is: GDP01554 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1554	Promoter	Pending	0	3	NULL	2026-01-27 16:15:04	NULL
+16	9740005318	Welcome to Golden Dream! Dear Manjunath, you have successfully joined as a promoter. Your ID is: GDP01555 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1555	Promoter	Pending	0	3	NULL	2026-01-27 16:15:05	NULL
+17	9483097769	Welcome to Golden Dream! Dear ANIL KUMARA S.N, you have successfully joined as a promoter. Your ID is: GDP01556 and your commission rate is: 400. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1556	Promoter	Pending	0	3	NULL	2026-01-28 06:28:47	NULL
+18	6362218882	Welcome to Golden Dream! Dear GANESHA M.A, you have successfully joined as a promoter. Your ID is: GDP01557 and your commission rate is: 400. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1557	Promoter	Pending	0	3	NULL	2026-01-28 06:35:39	NULL
+19	8277234479	Welcome to Golden Dream! Dear ARUNA R.D, you have successfully joined as a promoter. Your ID is: GDP01558 and your commission rate is: 400. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1558	Promoter	Pending	0	3	NULL	2026-01-28 10:13:43	NULL
+20	9902669519	Welcome to Golden Dream! Dear Manjayya, you have successfully joined as a promoter. Your ID is: GDP01559 and your commission rate is: 0. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!	1559	Promoter	Pending	0	3	NULL	2026-01-29 08:05:32	NULL
+Winners
+(0 rows)
+
+Withdrawals
+12 row(s)
+
+WithdrawalID	UserID	UserType	Amount	Status	RequestedAt	ProcessedAt	AdminID	Remarks
+1	638	Promoter	800.00	Pending	2026-01-28 06:40:06	NULL	NULL	Withdrawal request for ₹800.00
+2	96	Promoter	1750.00	Pending	2026-01-30 01:06:36	NULL	NULL	Withdrawal request for ₹1,750.00
+3	660	Promoter	500.00	Pending	2026-02-02 10:49:13	NULL	NULL	Withdrawal request for ₹500.00
+4	1550	Promoter	1600.00	Pending	2026-02-04 13:55:36	NULL	NULL	Withdrawal request for ₹1,600.00
+5	1593	Promoter	40.00	Approved	2026-02-04 15:20:02	2026-02-05 10:14:10	39	verified by technical team
+6	1593	Promoter	3.00	Approved	2026-02-04 15:21:51	2026-02-05 10:14:20	39	verified by technical team
+7	1593	Promoter	357.00	Approved	2026-02-04 15:22:02	2026-02-05 10:14:31	39	verified by technical team
+8	1239	Promoter	500.00	Pending	2026-02-04 18:48:30	NULL	NULL	Withdrawal request for ₹500.00
+9	1034	Promoter	2800.00	Pending	2026-02-06 09:53:10	NULL	NULL	Withdrawal request for ₹2,800.00
+10	1537	Promoter	2400.00	Pending	2026-02-06 09:53:41	NULL	NULL	Withdrawal request for ₹2,400.00
+11	1505	Promoter	800.00	Pending	2026-02-06 15:49:57	NULL	NULL	Withdrawal request for ₹800.00
+12	1366	Promoter	400.00	Pending	2026-02-07 04:32:50	NULL	NULL	Withdrawal request for ₹400.00
+backups
+(0 rows)
