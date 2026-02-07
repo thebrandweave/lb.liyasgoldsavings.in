@@ -334,6 +334,11 @@ $pending_withdrawals = $stmt->fetch(PDO::FETCH_ASSOC)['pending_withdrawals'];
             <div class="dashboard-header">
                 <h2><i class="fas fa-chart-line"></i> Dashboard</h2>
                 <p>Welcome back, <?php echo htmlspecialchars($userData['customer_name']); ?>!</p>
+                <div class="mt-3">
+                    <a href="../payments/add.php" class="btn btn-sm" style="background: rgba(255,255,255,0.2); color: #fff; border: 1px solid rgba(255,255,255,0.5); padding: 8px 16px; border-radius: 8px; text-decoration: none; font-weight: 500;">
+                        <i class="fas fa-plus-circle"></i> Add Payment
+                    </a>
+                </div>
             </div>
 
             <div class="stats-row">

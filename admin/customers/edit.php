@@ -338,6 +338,14 @@ include("../components/topbar.php");
             border-color: rgba(231, 76, 60, 0.2);
         }
 
+        .btn-reset-pw {
+            background: var(--cs_warning) !important;
+        }
+        .btn-reset-pw:hover {
+            background: var(--cs_warning-hover) !important;
+            box-shadow: 0 4px 8px rgba(243, 156, 18, 0.25);
+        }
+
         /* Responsive styles */
         @media (max-width: 768px) {
             .form-grid {
@@ -426,6 +434,20 @@ include("../components/topbar.php");
                 </button>
             </div>
         </form>
+
+        <?php if (isset($_SESSION['admin_role']) && $_SESSION['admin_role'] === 'SuperAdmin'): ?>
+        <div class="form-card" style="margin-top: 24px;">
+            <div class="form-card-header">
+                <h3><i class="fas fa-key"></i> Reset Password</h3>
+            </div>
+            <div class="form-card-body">
+                <p style="margin: 0 0 12px; color: var(--cs_text-medium); font-size: 14px;">Set a new login password for this customer. They use their contact number and this password to sign in.</p>
+                <a href="reset-password.php?id=<?php echo (int)$customerId; ?>" class="btn btn-primary btn-reset-pw">
+                    <i class="fas fa-key"></i> Reset Customer Password
+                </a>
+            </div>
+        </div>
+        <?php endif; ?>
     </div>
 
     <script>

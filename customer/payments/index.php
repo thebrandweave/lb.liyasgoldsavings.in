@@ -827,6 +827,47 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
             overflow: hidden;
             position: relative;
         }
+        /* Locked voucher: not yet verified */
+        .voucher-card.voucher-locked {
+            position: relative;
+            filter: grayscale(0.85);
+            opacity: 0.88;
+        }
+        .voucher-card.voucher-locked::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            border-radius: 14px;
+            pointer-events: none;
+        }
+        .voucher-locked-badge {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+            color: #fff;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+            pointer-events: none;
+        }
+        .voucher-locked-badge i {
+            font-size: 42px;
+            opacity: 0.95;
+        }
+        .voucher-locked-badge span {
+            font-size: 15px;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .voucher-locked-badge small {
+            font-size: 12px;
+            opacity: 0.9;
+        }
         @media (max-width: 768px) {
             .voucher-card { flex-direction: column; }
             .voucher-left, .voucher-center, .voucher-right { min-width: 0; padding: 16px; }
@@ -845,13 +886,11 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
                 <div class="payment-header text-center">
                     <h2><i class="fas fa-money-bill-wave"></i> Payment History</h2>
                     <p class="mb-0">Track all your payments and their status</p>
-                    <?php if (!empty($unpaid_installments)): ?>
-                        <div class="mt-4">
-                            <a href="make_payment.php" class="btn btn-payment">
-                                <i class="fas fa-plus-circle"></i> Make New Payment
-                            </a>
-                        </div>
-                    <?php endif; ?>
+                    <div class="mt-4">
+                        <a href="add.php" class="btn btn-payment">
+                            <i class="fas fa-plus-circle"></i> Add Payment
+                        </a>
+                    </div>
                 </div>
 
                 <?php if (empty($payments)): ?>
@@ -859,15 +898,12 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
                         <i class="fas fa-receipt"></i>
                         <h3>No Payments Found</h3>
                         <p>You haven't made any payments yet.</p>
-                        <?php if (!empty($unpaid_installments)): ?>
-                            <a href="make_payment.php" class="btn btn-payment">
-                                <i class="fas fa-plus-circle"></i> Make New Payment
-                            </a>
-                        <?php else: ?>
-                            <a href="../schemes" class="btn btn-view">
-                                <i class="fas fa-gem"></i> Explore Schemes
-                            </a>
-                        <?php endif; ?>
+                        <a href="add.php" class="btn btn-payment me-2">
+                            <i class="fas fa-plus-circle"></i> Add Payment
+                        </a>
+                        <a href="../schemes" class="btn btn-view">
+                            <i class="fas fa-gem"></i> Explore Schemes
+                        </a>
                     </div>
                 <?php else: ?>
                     <div class="row mb-4">
@@ -906,7 +942,15 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
                     </div>
 
                     <?php foreach ($payments as $payment): ?>
-                        <div class="voucher-card">
+                        <?php $isLocked = ($payment['Status'] !== 'Verified'); ?>
+                        <div class="voucher-card<?php echo $isLocked ? ' voucher-locked' : ''; ?>">
+                            <?php if ($isLocked): ?>
+                                <div class="voucher-locked-badge">
+                                    <i class="fas fa-lock"></i>
+                                    <span>Awaiting confirmation</span>
+                                    <small>Voucher unlocks when payment is verified</small>
+                                </div>
+                            <?php endif; ?>
                             <div class="voucher-left">
                                 <div class="voucher-label">PAYMENT</div>
                                 <div class="voucher-amount">₹<?php echo number_format($payment['Amount'], 2); ?></div>
