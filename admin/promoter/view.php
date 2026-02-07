@@ -26,7 +26,7 @@ try {
               parent.Name as ParentName, 
               parent.PromoterUniqueID as ParentUniqueID 
               FROM Promoters p 
-              LEFT JOIN Promoters parent ON p.ParentPromoterID = parent.PromoterID 
+              LEFT JOIN Promoters parent ON TRIM(p.ParentPromoterID) = TRIM(parent.PromoterUniqueID) 
               WHERE p.PromoterID = ?";
 
     $stmt = $conn->prepare($query);
@@ -40,8 +40,8 @@ try {
         exit();
     }
 
-    // Get customer count
-    $stmt = $conn->prepare("SELECT COUNT(*) as customer_count FROM Customers WHERE PromoterID = ? AND Status = 'Active'");
+    // Get customer count (TRIM so stored PromoterID with spaces still matches)
+    $stmt = $conn->prepare("SELECT COUNT(*) as customer_count FROM Customers WHERE TRIM(PromoterID) = ? AND Status = 'Active'");
     $stmt->execute([$promoter['PromoterUniqueID']]);
     $customerCount = $stmt->fetch(PDO::FETCH_ASSOC)['customer_count'];
 
@@ -58,7 +58,7 @@ try {
     // Get recent customers (5)
     $stmt = $conn->prepare("SELECT CustomerID, CustomerUniqueID, Name, Contact, Email, Status, CreatedAt 
                            FROM Customers 
-                           WHERE PromoterID = ? 
+                           WHERE TRIM(PromoterID) = ? AND Status = 'Active'
                            ORDER BY CreatedAt DESC LIMIT 5");
     $stmt->execute([$promoter['PromoterUniqueID']]);
     $recentCustomers = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -70,7 +70,7 @@ try {
                             FROM Payments p 
                             LEFT JOIN Customers c ON p.CustomerID = c.CustomerID 
                             LEFT JOIN Schemes s ON p.SchemeID = s.SchemeID 
-                            WHERE c.PromoterID = ? 
+                            WHERE TRIM(c.PromoterID) = ? 
                             ORDER BY p.SubmittedAt DESC LIMIT 5");
     $stmt->execute([$promoter['PromoterUniqueID']]);
     $recentPayments = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -924,7 +924,7 @@ include("../components/topbar.php");
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-users"></i> Recent Customers</h3>
-                        <a href="../customers/index.php?promoter_id=<?php echo $promoter['PromoterID']; ?>" class="card-header-action">
+                        <a href="../customers/index.php?promoter_id=<?php echo urlencode($promoter['PromoterUniqueID']); ?>" class="card-header-action">
                             View All <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>
@@ -966,7 +966,7 @@ include("../components/topbar.php");
                 <div class="card">
                     <div class="card-header">
                         <h3><i class="fas fa-money-bill-wave"></i> Recent Payments</h3>
-                        <a href="../payments/index.php?promoter_id=<?php echo $promoter['PromoterID']; ?>" class="card-header-action">
+                        <a href="../payments/index.php?promoter_id=<?php echo urlencode($promoter['PromoterUniqueID']); ?>" class="card-header-action">
                             View All <i class="fas fa-arrow-right"></i>
                         </a>
                     </div>

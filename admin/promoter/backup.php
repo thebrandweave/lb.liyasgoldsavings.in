@@ -18,7 +18,7 @@ function getChildren($conn, $parentPromoterID)
     $promoterStmt = $conn->prepare("
         SELECT 
             p.*,
-            (SELECT COUNT(*) FROM Customers WHERE PromoterID = p.PromoterUniqueID) as customer_count,
+            (SELECT COUNT(*) FROM Customers WHERE TRIM(PromoterID) = TRIM(p.PromoterUniqueID) AND Status = 'Active') as customer_count,
             (SELECT COUNT(*) FROM Promoters WHERE ParentPromoterID = p.PromoterUniqueID) as sub_promoter_count
         FROM Promoters p
         WHERE p.ParentPromoterID = :parentId
@@ -34,7 +34,7 @@ function getChildren($conn, $parentPromoterID)
             c.*,
             'customer' as node_type
         FROM Customers c
-        WHERE c.PromoterID = :promoterId
+        WHERE TRIM(c.PromoterID) = :promoterId AND c.Status = 'Active'
         ORDER BY c.CreatedAt DESC
     ");
     $customerStmt->bindParam(':promoterId', $parentPromoterID);
@@ -52,7 +52,7 @@ try {
     $rootStmt = $conn->prepare("
         SELECT 
             p.*,
-            (SELECT COUNT(*) FROM Customers WHERE PromoterID = p.PromoterUniqueID) as customer_count,
+            (SELECT COUNT(*) FROM Customers WHERE TRIM(PromoterID) = TRIM(p.PromoterUniqueID) AND Status = 'Active') as customer_count,
             (SELECT COUNT(*) FROM Promoters WHERE ParentPromoterID = p.PromoterUniqueID) as sub_promoter_count
         FROM Promoters p
         WHERE p.ParentPromoterID IS NULL 

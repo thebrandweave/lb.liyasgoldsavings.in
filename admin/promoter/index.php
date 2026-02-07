@@ -36,14 +36,14 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
         ->setDescription('Promoters export generated on ' . date('Y-m-d H:i:s'));
 
     // Set headers
-    $headers = ['ID', 'Name', 'Contact', 'Email', 'Parent Promoter', 'Status', 'Payment Codes', 'Customers', 'Joined Date'];
+    $headers = ['ID', 'Name', 'Contact', 'Email', 'Parent Promoter', 'Status', 'Payment Codes', 'Active Customers', 'Joined Date'];
     $sheet->fromArray($headers, NULL, 'A1');
 
     // Get filtered data for export
     $exportQuery = "SELECT p.PromoterUniqueID, p.Name, p.Contact, p.Email, 
                     parent.Name as ParentName, p.Status, p.PaymentCodeCounter,
                     p.CreatedAt, 
-                    (SELECT COUNT(*) FROM Customers WHERE PromoterID = p.PromoterUniqueID) as CustomerCount
+                    (SELECT COUNT(*) FROM Customers WHERE TRIM(PromoterID) = TRIM(p.PromoterUniqueID) AND Status = 'Active') as CustomerCount
                     FROM Promoters p 
                     LEFT JOIN Promoters parent ON p.ParentPromoterID = parent.PromoterUniqueID"
         . $whereClause .
@@ -226,7 +226,7 @@ $totalPages = ceil($totalRecords / $recordsPerPage);
 $query = "SELECT p.PromoterID, p.PromoterUniqueID, p.Name, p.Contact, p.Email, 
           p.Status, p.CreatedAt, p.PaymentCodeCounter, parent.Name as ParentName,
           parent.PromoterUniqueID as ParentPromoterID,
-          (SELECT COUNT(*) FROM Customers WHERE PromoterID = p.PromoterUniqueID) as CustomerCount
+          (SELECT COUNT(*) FROM Customers WHERE TRIM(PromoterID) = TRIM(p.PromoterUniqueID) AND Status = 'Active') as CustomerCount
           FROM Promoters p 
           LEFT JOIN Promoters parent ON p.ParentPromoterID = parent.PromoterUniqueID"
     . $whereClause .
@@ -245,25 +245,25 @@ $stmt->execute();
 
 $promoters = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Get count of customers per promoter
+// Get count of customers per promoter (Customers.PromoterID stores PromoterUniqueID; use TRIM)
 $promoterCustomerCounts = [];
 if (!empty($promoters)) {
-    $promoterIds = array_column($promoters, 'PromoterID');
-    $placeholders = implode(',', array_fill(0, count($promoterIds), '?'));
+    $promoterUniqueIds = array_column($promoters, 'PromoterUniqueID');
+    $placeholders = implode(',', array_fill(0, count($promoterUniqueIds), '?'));
 
-    $countQuery = "SELECT PromoterID, COUNT(*) as customer_count 
+    $countQuery = "SELECT TRIM(PromoterID) as PromoterUniqueID, COUNT(*) as customer_count 
                    FROM Customers 
-                   WHERE PromoterID IN ($placeholders) 
-                   GROUP BY PromoterID";
+                   WHERE TRIM(PromoterID) IN ($placeholders) AND Status = 'Active'
+                   GROUP BY TRIM(PromoterID)";
 
     $stmt = $conn->prepare($countQuery);
-    foreach ($promoterIds as $key => $id) {
-        $stmt->bindValue($key + 1, $id);
+    foreach ($promoterUniqueIds as $key => $uid) {
+        $stmt->bindValue($key + 1, $uid);
     }
     $stmt->execute();
 
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
-        $promoterCustomerCounts[$row['PromoterID']] = $row['customer_count'];
+        $promoterCustomerCounts[$row['PromoterUniqueID']] = $row['customer_count'];
     }
 }
 
@@ -1142,7 +1142,7 @@ include("../components/topbar.php");
                                     <th>Parent Promoter</th>
                                     <th>Status</th>
                                     <th>Codes</th>
-                                    <th>Customers</th>
+                                    <th>Active Customers</th>
                                     <th>Joined</th>
                                     <th class="td-promoter-actions">Actions</th>
                                 </tr>
@@ -1179,7 +1179,7 @@ include("../components/topbar.php");
             </td>
             <td><span class="payment-code-counter" title="<?php echo $promoter['PaymentCodeCounter']; ?>"><?php echo $promoter['PaymentCodeCounter']; ?></span></td>
             <td>
-                <span class="customer-count" title="Customers: <?php echo $promoter['CustomerCount']; ?>">
+                <span class="customer-count" title="Active customers: <?php echo $promoter['CustomerCount']; ?>">
                     <i class="fas fa-users"></i>
                     <?php echo $promoter['CustomerCount']; ?>
                 </span>
