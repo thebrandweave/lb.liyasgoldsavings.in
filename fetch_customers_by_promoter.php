@@ -1,7 +1,7 @@
 <?php
 /**
  * Temporary script: fetch all customers where PromoterID (promoter unique id) = GDP0527
- * Run: http://localhost/la.goldendream.in/fetch_customers_by_promoter.php
+ * Run: https://la.goldendream.infetch_customers_by_promoter.php
  * Delete this file when done.
  */
 
