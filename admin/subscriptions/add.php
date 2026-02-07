@@ -28,7 +28,7 @@ if (isset($_GET['search_customer'])) {
         $searchStmt = $conn->prepare("
             SELECT c.*, p.Name as PromoterName, p.PromoterUniqueID 
             FROM Customers c 
-            LEFT JOIN Promoters p ON c.PromoterID = p.PromoterID 
+            LEFT JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID) 
             WHERE c.CustomerUniqueID = ? OR c.Contact = ? OR c.Email = ?
         ");
         $searchStmt->execute([$searchTerm, $searchTerm, $searchTerm]);
@@ -50,14 +50,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $email = trim($_POST['email']);
         $address = trim($_POST['address']);
         $schemeId = (int)$_POST['scheme_id'];
-        $promoterId = (int)$_POST['promoter_id'];
+        $promoterId = trim($_POST['promoter_id'] ?? '');
         $startDate = $_POST['start_date'];
         $paymentMethod = trim($_POST['payment_method']);
         $paymentStatus = trim($_POST['payment_status']);
         $amountPaid = (float)$_POST['amount_paid'];
         $existingCustomerId = isset($_POST['existing_customer_id']) ? (int)$_POST['existing_customer_id'] : null;
 
-        // Basic validation
+        // Basic validation (promoter_id is PromoterUniqueID string)
         if (empty($customerName) || empty($contact) || empty($schemeId) || empty($promoterId) || empty($startDate)) {
             throw new Exception("Please fill in all required fields.");
         }
@@ -391,8 +391,8 @@ include("../components/topbar.php");
                     <select name="promoter_id" class="form-control" required>
                         <option value="">Select Promoter</option>
                         <?php foreach ($promoters as $promoter): ?>
-                            <option value="<?php echo $promoter['PromoterID']; ?>"
-                                <?php echo (isset($customerData) && $customerData['PromoterID'] == $promoter['PromoterID']) ? 'selected' : (isset($_POST['promoter_id']) && $_POST['promoter_id'] == $promoter['PromoterID']) ? 'selected' : ''; ?>>
+                            <option value="<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>"
+                                <?php echo (isset($customerData) && trim($customerData['PromoterID'] ?? '') === $promoter['PromoterUniqueID']) ? 'selected' : (isset($_POST['promoter_id']) && $_POST['promoter_id'] === $promoter['PromoterUniqueID']) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($promoter['Name']); ?>
                                 (<?php echo $promoter['PromoterUniqueID']; ?>)
                             </option>

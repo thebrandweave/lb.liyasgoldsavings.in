@@ -2,8 +2,8 @@
 
 class Database
 {
-   // private $host = "82.25.121.121";
-    private $host = "localhost";
+    private $host = "82.25.121.121";
+   // private $host = "localhost";
     private $db_name = "u232955123_LAGD_DB";
     private $username = "u232955123_LAGD_USER";
     private $password = "1UdVp67/";
@@ -17,7 +17,7 @@ class Database
     //public $conn;
 
     // Base URL configuration
-    public static $baseUrl = "https://la.goldendream.in/";
+    public static $baseUrl = "http://localhost/la.goldendream.in//";
 
     public function getConnection()
     {
@@ -31,7 +31,7 @@ class Database
             );
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            $baseUrl = "https://la.goldendream.in/";
+            $baseUrl = "http://localhost/la.goldendream.in//";
 
             header("Location: " . $baseUrl . "noInternet/");
         }

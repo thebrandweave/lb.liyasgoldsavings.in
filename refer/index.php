@@ -241,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $name,
                     $contact,
                     $passwordHash,
-                    $promoterID,
+                    trim($promoterID),
                     $promoterData['TeamName'],
                     'Inactive',
                     date('Y-m-d'),

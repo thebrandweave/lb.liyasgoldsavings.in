@@ -90,7 +90,7 @@ if (isset($_GET['status']) && !empty($_GET['status']) && isset($_GET['id']) && !
 // Search and filtering
 $search = isset($_GET['search']) ? $_GET['search'] : '';
 $status = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
-$promoterId = isset($_GET['promoter_id']) ? $_GET['promoter_id'] : '';
+$promoterId = isset($_GET['promoter_id']) ? trim($_GET['promoter_id']) : '';
 $referredBy = isset($_GET['referred_by']) ? $_GET['referred_by'] : '';
 $schemeFilter = isset($_GET['scheme_id']) ? $_GET['scheme_id'] : '';
 $installmentFilter = isset($_GET['installment_id']) ? $_GET['installment_id'] : '';
@@ -115,7 +115,7 @@ if (!empty($status)) {
 }
 
 if (!empty($promoterId)) {
-    $conditions[] = "c.PromoterID = :promoterId";
+    $conditions[] = "TRIM(c.PromoterID) = :promoterId";
     $params[':promoterId'] = $promoterId;
 }
 
@@ -210,13 +210,13 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
             c.Name, 
             c.Contact, 
             c.Email, 
-                    CONCAT(p.PromoterUniqueID, ' - ', p.Name) as PromoterName,
+            COALESCE(NULLIF(TRIM(CONCAT(p.PromoterUniqueID, ' - ', p.Name)), ''), c.PromoterID) as PromoterName,
             c.Status, 
             c.JoinedDate,
             COUNT(py.PaymentID) as total_payments,
             COALESCE(SUM(CASE WHEN py.Status = 'Verified' THEN py.Amount ELSE 0 END), 0) as total_amount
-                    FROM Customers c 
-        LEFT JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID
+        FROM Customers c 
+        LEFT JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID)
         LEFT JOIN Payments py ON c.CustomerID = py.CustomerID" .
         $whereClause .
         " GROUP BY c.CustomerID
@@ -314,10 +314,10 @@ $stmt->execute($params);
 $totalRecords = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 $totalPages = ceil($totalRecords / $recordsPerPage);
 
-// Get customers with pagination
-$query = "SELECT c.*, CONCAT(p.PromoterUniqueID, ' - ', p.Name) as PromoterName 
+// Get customers with pagination (COALESCE: show stored PromoterID when JOIN fails e.g. collation/whitespace)
+$query = "SELECT c.*, COALESCE(NULLIF(TRIM(CONCAT(p.PromoterUniqueID, ' - ', p.Name)), ''), c.PromoterID) as PromoterName 
           FROM Customers c 
-          LEFT JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID" .
+          LEFT JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID)" .
     $whereClause .
     " ORDER BY c.JoinedDate DESC LIMIT :offset, :limit";
 
@@ -1045,11 +1045,12 @@ include("../components/topbar.php");
 
                     <div class="filter-group">
                         <label for="promoter_id">Promoter:</label>
-                        <select name="promoter_id" id="promoter_id" class="filter-select promoter-select">
+                        <input type="hidden" name="promoter_id" id="promoter_id_value" value="<?php echo htmlspecialchars($promoterId); ?>">
+                        <select id="promoter_id" class="filter-select promoter-select">
                             <option value="">All Promoters</option>
                             <?php foreach ($promoters as $promoter): ?>
                                 <option value="<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>"
-                                    <?php echo ($promoterId == $promoter['PromoterUniqueID']) ? 'selected' : ''; ?>>
+                                    <?php echo ($promoterId === $promoter['PromoterUniqueID']) ? 'selected' : ''; ?>>
                                     <?php echo htmlspecialchars($promoter['PromoterUniqueID'] . ' - ' . $promoter['Name']); ?>
                                 </option>
                             <?php endforeach; ?>
@@ -1132,7 +1133,7 @@ include("../components/topbar.php");
                                         <td><?php echo htmlspecialchars($customer['Name']); ?></td>
                                         <td><?php echo htmlspecialchars($customer['Contact']); ?></td>
                                         <td><?php echo !empty($customer['Email']) ? htmlspecialchars($customer['Email']) : '-'; ?></td>
-                                        <td><?php echo !empty($customer['PromoterName']) ? htmlspecialchars($customer['PromoterName']) : 'Direct'; ?></td>
+                                        <td><?php echo (isset($customer['PromoterName']) && (string)$customer['PromoterName'] !== '') ? htmlspecialchars($customer['PromoterName']) : 'Direct'; ?></td>
                                         <td><span class="customer-status status-<?php echo strtolower($customer['Status']); ?>"><?php echo $customer['Status']; ?></span></td>
                                         <td><?php echo !empty($customer['JoinedDate']) ? date('M d, Y', strtotime($customer['JoinedDate'])) : '-'; ?></td>
                                         <td class="action-buttons-cell">
@@ -1375,6 +1376,10 @@ include("../components/topbar.php");
                     }
                 }
             });
+            $('.promoter-select').on('change', function() {
+                $('#promoter_id_value').val($(this).val() || '');
+            });
+            $('#promoter_id_value').val($('.promoter-select').val() || '');
 
             // Initialize Select2 for scheme dropdown
             $('.scheme-select').select2({
@@ -1392,7 +1397,8 @@ include("../components/topbar.php");
 
             // Preserve selected values after form submission
             <?php if (!empty($promoterId)): ?>
-                $('.promoter-select').val('<?php echo $promoterId; ?>').trigger('change');
+                $('.promoter-select').val('<?php echo addslashes($promoterId); ?>').trigger('change');
+                $('#promoter_id_value').val('<?php echo addslashes($promoterId); ?>');
             <?php endif; ?>
             
             <?php if (!empty($schemeFilter)): ?>

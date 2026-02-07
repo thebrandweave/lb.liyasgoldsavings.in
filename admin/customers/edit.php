@@ -35,7 +35,7 @@ try {
 try {
     $query = "SELECT c.*, p.Name as PromoterName, p.PromoterUniqueID as PromoterUniqueID 
               FROM Customers c 
-              LEFT JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID 
+              LEFT JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID) 
               WHERE c.CustomerID = ?";
     $stmt = $conn->prepare($query);
     $stmt->execute([$customerId]);
@@ -64,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $contact = trim($_POST['contact']);
         $email = !empty($_POST['email']) ? trim($_POST['email']) : null;
         $address = !empty($_POST['address']) ? trim($_POST['address']) : null;
-        $promoterId = $customer['PromoterID'];
+        $promoterId = trim($_POST['promoter_id'] ?? $customer['PromoterID'] ?? '');
         $status = $_POST['status'];
 
         // Validation

@@ -27,7 +27,7 @@ try {
               p.PromoterUniqueID,
               p.Contact as PromoterContact
               FROM Customers c 
-              LEFT JOIN Promoters p ON c.PromoterID = p.PromoterID 
+              LEFT JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID) 
               WHERE c.CustomerID = ?";
 
     $stmt = $conn->prepare($query);

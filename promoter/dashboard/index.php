@@ -26,12 +26,12 @@ function getStats($conn) {
         $promoter = $stmt->fetch(PDO::FETCH_ASSOC);
 
         // Get total customers
-        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM Customers WHERE PromoterID = ?");
+        $stmt = $conn->prepare("SELECT COUNT(*) as total FROM Customers WHERE TRIM(PromoterID) = ?");
         $stmt->execute([$promoter['PromoterUniqueID']]);
         $customers = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 
         // Get active customers
-        $stmt = $conn->prepare("SELECT COUNT(*) as active FROM Customers WHERE PromoterID = ? AND Status = 'Active'");
+        $stmt = $conn->prepare("SELECT COUNT(*) as active FROM Customers WHERE TRIM(PromoterID) = ? AND Status = 'Active'");
         $stmt->execute([$promoter['PromoterUniqueID']]);
         $activeCustomers = $stmt->fetch(PDO::FETCH_ASSOC)['active'];
 
@@ -54,7 +54,7 @@ function getStats($conn) {
             FROM Schemes s 
             INNER JOIN Subscriptions sub ON s.SchemeID = sub.SchemeID 
             INNER JOIN Customers c ON sub.CustomerID = c.CustomerID 
-            WHERE c.PromoterID = ? AND s.Status = 'Active'
+            WHERE TRIM(c.PromoterID) = ? AND s.Status = 'Active'
         ");
         $stmt->execute([$promoter['PromoterUniqueID']]);
         $schemes = $stmt->fetch(PDO::FETCH_ASSOC)['total'];

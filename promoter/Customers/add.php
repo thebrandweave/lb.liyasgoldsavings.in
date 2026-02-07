@@ -95,7 +95,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $stmt->execute([
                             $customerUniqueID, $name, $contact, $email, $passwordHash, 
                             $address, $dateOfBirth, $gender, $bankAccountName, 
-                            $bankAccountNumber, $ifscCode, $bankName, $promoterUniqueID
+                            $bankAccountNumber, $ifscCode, $bankName, trim($promoterUniqueID)
                         ]);
 
                         $customerId = $conn->lastInsertId();
@@ -136,7 +136,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt->execute([
                         $name, $contact, $passwordHash, 
                         $address, $dateOfBirth, $gender, $bankAccountName, 
-                        $bankAccountNumber, $ifscCode, $bankName, $promoterUniqueID
+                        $bankAccountNumber, $ifscCode, $bankName, trim($promoterUniqueID)
                     ]);
 
                     $customerId = $conn->lastInsertId();

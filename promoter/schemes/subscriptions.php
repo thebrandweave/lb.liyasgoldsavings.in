@@ -58,7 +58,7 @@ try {
             $action = $_POST['action'];
 
             // Verify if customer belongs to this promoter
-            $stmt = $conn->prepare("SELECT CustomerID FROM Customers WHERE CustomerID = ? AND PromoterID = ?");
+            $stmt = $conn->prepare("SELECT CustomerID FROM Customers WHERE CustomerID = ? AND TRIM(PromoterID) = ?");
             $stmt->execute([$customerId, $promoterUniqueID]);
             if (!$stmt->fetch()) {
                 throw new Exception("Invalid customer.");
@@ -113,7 +113,7 @@ try {
                 AND p.Status = 'Verified'
             ) as TotalVerifiedPayments
         FROM Customers c
-        JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID
+        JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID)
         LEFT JOIN Subscriptions s ON c.CustomerID = s.CustomerID AND s.SchemeID = ?
         WHERE p.PromoterUniqueID = ? AND c.Status = 'Active'
         ORDER BY c.Name ASC

@@ -15,12 +15,12 @@ function fetchPromotersOfCustomer($customerUniqueID, $conn)
             throw new Exception("No promoter found for the customer.");
         }
 
-        $currentPromoterID = $customer['PromoterID'];
+        $currentPromoterID = trim($customer['PromoterID'] ?? '');
         error_log("Customer PromoterID: " . $currentPromoterID);
 
         while ($currentPromoterID) {
             // Fetch promoter details
-            $stmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission FROM Promoters WHERE PromoterUniqueID = ?");
+            $stmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
             $stmt->execute([$currentPromoterID]);
             $promoter = $stmt->fetch(PDO::FETCH_ASSOC);
 
@@ -34,7 +34,7 @@ function fetchPromotersOfCustomer($customerUniqueID, $conn)
             error_log("Fetched Promoter: " . print_r($promoter, true));
 
             // Move to the parent promoter
-            $currentPromoterID = $promoter['ParentPromoterID'];
+            $currentPromoterID = trim($promoter['ParentPromoterID'] ?? '');
         }
     } catch (Exception $e) {
         error_log("Error fetching promoters: " . $e->getMessage());

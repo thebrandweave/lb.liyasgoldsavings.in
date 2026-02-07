@@ -25,7 +25,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $password = $_POST['password'] ?? '';
     $confirmPassword = $_POST['confirm_password'] ?? '';
     $address = trim($_POST['address'] ?? '');
-    $promoterId = $_POST['promoter_id'] ?? '';
+    $promoterId = trim($_POST['promoter_id'] ?? '');
     $referredBy = trim($_POST['referred_by'] ?? '');
 
     // Basic validation
@@ -328,8 +328,8 @@ include("../components/topbar.php");
                         <select name="promoter_id" id="promoter_id" class="form-control">
                             <option value="">Select Promoter</option>
                             <?php foreach ($promoters as $promoter): ?>
-                                <option value="<?php echo $promoter['PromoterID']; ?>" <?php echo (isset($_POST['promoter_id']) && $_POST['promoter_id'] == $promoter['PromoterID']) ? 'selected' : ''; ?>>
-                                    <?php echo htmlspecialchars($promoter['Name']); ?> (<?php echo $promoter['PromoterUniqueID']; ?>)
+                                <option value="<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>" <?php echo (isset($_POST['promoter_id']) && $_POST['promoter_id'] == $promoter['PromoterUniqueID']) ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($promoter['Name']); ?> (<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>)
                                 </option>
                             <?php endforeach; ?>
                         </select>

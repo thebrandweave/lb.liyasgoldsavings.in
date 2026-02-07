@@ -26,7 +26,7 @@ try {
                 FROM Subscriptions sub 
                 JOIN Customers c ON sub.CustomerID = c.CustomerID 
                 WHERE sub.SchemeID = s.SchemeID 
-                AND c.PromoterID = ? 
+                AND TRIM(c.PromoterID) = ? 
                 AND sub.RenewalStatus = 'Active'
             ) as ActiveSubscribers
         FROM Schemes s 

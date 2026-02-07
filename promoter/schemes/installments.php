@@ -55,7 +55,7 @@ try {
     $stmt = $conn->prepare("
         SELECT c.*, s.SubscriptionID, s.StartDate as SubscriptionStartDate, s.EndDate as SubscriptionEndDate
         FROM Customers c
-        JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID
+        JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID)
         LEFT JOIN Subscriptions s ON c.CustomerID = s.CustomerID AND s.SchemeID = ?
         WHERE c.CustomerID = ? AND p.PromoterUniqueID = ? AND c.Status = 'Active'
     ");
