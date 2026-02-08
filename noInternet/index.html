@@ -80,6 +80,26 @@
         color: var(--success);
       }
 
+      .maintenance-message {
+        display: none;
+        color: var(--text-color);
+      }
+
+      .maintenance-message .status-icon {
+        color: var(--accent-color);
+      }
+
+      .maintenance-gif {
+        max-width: 280px;
+        width: 100%;
+        height: auto;
+        border-radius: 12px;
+        margin: 16px 0 24px;
+        display: block;
+        margin-left: auto;
+        margin-right: auto;
+      }
+
       .status-description {
         color: var(--subtext-color);
         font-size: 16px;
@@ -178,15 +198,19 @@
         </button>
       </div>
 
-      <div class="online-message" id="onlineMsg">
-        <i class="fas fa-wifi status-icon online-icon"></i>
-        <div class="status-message">You are Online</div>
-        <div class="status-description">
-          Great! You're connected to the internet. You can continue using Golden Dream.
+      <div class="maintenance-message" id="maintenanceMsg">
+        <i class="fas fa-tools status-icon"></i>
+        <div class="status-message">Under Maintenance</div>
+        <div class="status-description" style="color: var(--error); font-weight: 500;">
+          Server is temporarily unavailable. Please try again later.
         </div>
-        <button class="retry-button" onclick="window.location.href='../'">
-          <i class="fas fa-home"></i>
-          Go to Homepage
+        <img src="../assets/maintenance.gif" alt="Maintenance" class="maintenance-gif">
+        <div class="status-description">
+          We're working to get things back to normal. Thank you for your patience.
+        </div>
+        <button class="retry-button" onclick="window.location.href='../landing/'">
+          <i class="fas fa-sync-alt"></i>
+          Try Again
         </button>
       </div>
     </div>
@@ -208,11 +232,11 @@
 
       function updateOnlineStatus() {
         document.getElementById("offlineMsg").style.display = "none";
-        document.getElementById("onlineMsg").style.display = "block";
+        document.getElementById("maintenanceMsg").style.display = "block";
       }
 
       function updateOfflineStatus() {
-        document.getElementById("onlineMsg").style.display = "none";
+        document.getElementById("maintenanceMsg").style.display = "none";
         document.getElementById("offlineMsg").style.display = "block";
       }
 
