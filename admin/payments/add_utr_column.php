@@ -1,7 +1,7 @@
 <?php
 /**
  * One-time script: Add UTRNumber column to Payments table.
- * Run once: http://localhost/la.goldendream.in/admin/payments/add_utr_column.php
+ * Run once: https://la.goldendream.inadmin/payments/add_utr_column.php
  * Delete this file after running.
  */
 

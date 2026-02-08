@@ -1,7 +1,7 @@
 <?php
 /**
  * Lists all database tables and shows up to 20 rows from each in basic HTML.
- * Run: http://localhost/la.goldendream.in/list_tables_sample.php
+ * Run: https://la.goldendream.inlist_tables_sample.php
  * Remove this file when not needed.
  */
 
