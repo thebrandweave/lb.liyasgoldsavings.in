@@ -723,19 +723,19 @@ include("../components/topbar.php");
                     </a>
 
                     <?php if ($customer['Status'] == 'Active'): ?>
-                        <a href="index.php?status=deactivate&id=<?php echo $customer['CustomerID']; ?>"
+                        <a href="index.php?status=Inactive&id=<?php echo $customer['CustomerID']; ?>"
                             class="btn btn-warning"
                             onclick="return confirm('Are you sure you want to deactivate this customer?');">
                             <i class="fas fa-ban"></i> Deactivate
                         </a>
                     <?php elseif ($customer['Status'] == 'Inactive'): ?>
-                        <a href="index.php?status=activate&id=<?php echo $customer['CustomerID']; ?>"
+                        <a href="index.php?status=Active&id=<?php echo $customer['CustomerID']; ?>"
                             class="btn btn-primary"
                             onclick="return confirm('Are you sure you want to activate this customer?');">
                             <i class="fas fa-check"></i> Activate
                         </a>
                     <?php elseif ($customer['Status'] == 'Suspended'): ?>
-                        <a href="index.php?status=activate&id=<?php echo $customer['CustomerID']; ?>"
+                        <a href="index.php?status=Active&id=<?php echo $customer['CustomerID']; ?>"
                             class="btn btn-primary"
                             onclick="return confirm('Are you sure you want to activate this suspended customer?');">
                             <i class="fas fa-check"></i> Unsuspend
