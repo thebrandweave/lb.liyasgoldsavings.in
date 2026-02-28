@@ -21,6 +21,30 @@ define('SMS_SOURCE_WELCOME', 'PGDVTR');
 define('SMS_TEMPLATE_PAYMENT_ID', '1007000046423973167');
 define('SMS_SOURCE_PAYMENT', 'PRGDVN');
 
+/** Log file path (relative to this config folder) */
+define('SMS_LOG_FILE', __DIR__ . '/sms_log.txt');
+
+/**
+ * Append one SMS attempt to sms_log.txt.
+ * @param string $type welcome|payment_verified|payment_rejected
+ * @param string $phone Full phone e.g. 918088122761
+ * @param bool $success Whether send succeeded
+ * @param string $detail Optional: HTTP code, error message or response (truncated)
+ */
+function smsHelperLog($type, $phone, $success, $detail = '') {
+    $masked = (strlen($phone) > 6) ? substr($phone, 0, 2) . str_repeat('*', strlen($phone) - 6) . substr($phone, -4) : '***';
+    $line = date('Y-m-d H:i:s') . ' | TYPE=' . $type . ' | PHONE=' . $masked . ' | SUCCESS=' . ($success ? '1' : '0');
+    if ($detail !== '') {
+        $detail = str_replace(["\r", "\n"], ' ', $detail);
+        if (strlen($detail) > 300) {
+            $detail = substr($detail, 0, 300) . '...';
+        }
+        $line .= ' | ' . $detail;
+    }
+    $line .= "\n";
+    @file_put_contents(SMS_LOG_FILE, $line, FILE_APPEND | LOCK_EX);
+}
+
 /**
  * Send one SMS via Airtel API (same cURL as test/sms.php).
  * @param array $data Payload: customerId, destinationAddress, message, sourceAddress, messageType, dltTemplateId, entityId
@@ -71,6 +95,7 @@ function smsHelperPhone($phone) {
 function sendWelcomeSMSHardcoded($phoneNumber, $customerName, $customerUniqueID) {
     $phone = smsHelperPhone($phoneNumber);
     if (strlen($phone) < 12) {
+        smsHelperLog('welcome', $phone ?: $phoneNumber, false, 'invalid phone');
         error_log("SMSHelper welcome: invalid phone");
         return false;
     }
@@ -88,6 +113,8 @@ function sendWelcomeSMSHardcoded($phoneNumber, $customerName, $customerUniqueID)
     ];
 
     $result = smsHelperSend($data);
+    $detail = $result['ok'] ? 'HTTP ' . $result['httpCode'] : 'HTTP ' . $result['httpCode'] . ' ' . $result['response'];
+    smsHelperLog('welcome', $phone, $result['ok'], $detail);
     if (!$result['ok']) {
         error_log("SMSHelper welcome failed: HTTP " . $result['httpCode'] . " " . $result['response']);
     }
@@ -102,6 +129,7 @@ function sendWelcomeSMSHardcoded($phoneNumber, $customerName, $customerUniqueID)
 function sendPaymentVerifiedSMSHardcoded($phoneNumber, $customerName, $amount) {
     $phone = smsHelperPhone($phoneNumber);
     if (strlen($phone) < 12) {
+        smsHelperLog('payment_verified', $phone ?: $phoneNumber, false, 'invalid phone');
         error_log("SMSHelper payment verified: invalid phone");
         return false;
     }
@@ -119,6 +147,8 @@ function sendPaymentVerifiedSMSHardcoded($phoneNumber, $customerName, $amount) {
     ];
 
     $result = smsHelperSend($data);
+    $detail = $result['ok'] ? 'HTTP ' . $result['httpCode'] : 'HTTP ' . $result['httpCode'] . ' ' . $result['response'];
+    smsHelperLog('payment_verified', $phone, $result['ok'], $detail);
     if (!$result['ok']) {
         error_log("SMSHelper payment verified failed: HTTP " . $result['httpCode'] . " " . $result['response']);
     }
@@ -132,6 +162,7 @@ function sendPaymentVerifiedSMSHardcoded($phoneNumber, $customerName, $amount) {
 function sendPaymentRejectedSMSHardcoded($phoneNumber, $customerName, $amount, $remarks = '') {
     $phone = smsHelperPhone($phoneNumber);
     if (strlen($phone) < 12) {
+        smsHelperLog('payment_rejected', $phone ?: $phoneNumber, false, 'invalid phone');
         error_log("SMSHelper payment rejected: invalid phone");
         return false;
     }
@@ -152,6 +183,8 @@ function sendPaymentRejectedSMSHardcoded($phoneNumber, $customerName, $amount, $
     ];
 
     $result = smsHelperSend($data);
+    $detail = $result['ok'] ? 'HTTP ' . $result['httpCode'] : 'HTTP ' . $result['httpCode'] . ' ' . $result['response'];
+    smsHelperLog('payment_rejected', $phone, $result['ok'], $detail);
     if (!$result['ok']) {
         error_log("SMSHelper payment rejected failed: HTTP " . $result['httpCode'] . " " . $result['response']);
     }
