@@ -42,7 +42,22 @@ function smsHelperLog($type, $phone, $success, $detail = '') {
         $line .= ' | ' . $detail;
     }
     $line .= "\n";
-    @file_put_contents(SMS_LOG_FILE, $line, FILE_APPEND | LOCK_EX);
+
+    $logFile = SMS_LOG_FILE;
+    $written = @file_put_contents($logFile, $line, FILE_APPEND | LOCK_EX);
+    if ($written === false) {
+        $fallbackDir = __DIR__ . '/../logs';
+        if (!is_dir($fallbackDir)) {
+            @mkdir($fallbackDir, 0755, true);
+        }
+        if (is_dir($fallbackDir)) {
+            $logFile = $fallbackDir . '/sms_log.txt';
+            $written = @file_put_contents($logFile, $line, FILE_APPEND | LOCK_EX);
+        }
+        if ($written === false && function_exists('error_log')) {
+            error_log('SMSHelper: could not write sms_log to ' . SMS_LOG_FILE . ' or ' . (isset($fallbackDir) ? $fallbackDir . '/sms_log.txt' : 'fallback'));
+        }
+    }
 }
 
 /**
