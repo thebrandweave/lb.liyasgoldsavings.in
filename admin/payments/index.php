@@ -7,10 +7,9 @@ $menuPath = "../";
 $currentPage = "payments";
 require_once("./clearSession.php");
 require_once("../../config/config.php");
-require_once("../../config/SMSAPI.php");
+require_once("../../config/SMSHelper.php");
 $database = new Database();
 $conn = $database->getConnection();
-$smsAPI = new SMSAPI($database);
 
 // Handle Payment Verification
 if (isset($_POST['action']) && isset($_POST['payment_id'])) {
@@ -63,19 +62,11 @@ if (isset($_POST['action']) && isset($_POST['payment_id'])) {
     ");
         $stmt->execute([$payment['CustomerID'], $notificationMessage]);
 
-        // Send SMS notification to customer
+        // Send SMS notification to customer (hardcoded Airtel templates)
         if ($newStatus === 'Verified') {
-            // Use DLT template with variables:
-            // var1 = "Name - CustomerUniqueID", var2 = amount (no decimals)
-            $var1 = trim($payment['CustomerName'] . ' - ' . $payment['CustomerUniqueID']);
-            $smsAPI->sendSMS($payment['Contact'], '', $var1, number_format($payment['Amount'], 0));
+            sendPaymentVerifiedSMSHardcoded($payment['Contact'], $payment['CustomerName'], $payment['Amount']);
         } else {
-            $plainMessage = "Dear " . $payment['CustomerName'] . ", your payment of Rs " . number_format($payment['Amount'], 0) .
-                " for " . $payment['SchemeName'] . " has been " . strtolower($newStatus);
-            if (!empty($verifierRemark)) {
-                $plainMessage .= ". Remarks: " . $verifierRemark;
-            }
-            $smsAPI->sendSMS($payment['Contact'], $plainMessage);
+            sendPaymentRejectedSMSHardcoded($payment['Contact'], $payment['CustomerName'], $payment['Amount'], $verifierRemark);
         }
 
         // Log the activity

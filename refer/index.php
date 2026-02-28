@@ -4,10 +4,9 @@ include './loader.php';
 
 // Database connection
 require_once("../config/config.php");
-require_once("../config/SMSAPI.php");
+require_once("../config/SMSHelper.php");
 $database = new Database();
 $conn = $database->getConnection();
-$smsAPI = new SMSAPI($database);
 
 // Function to send WhatsApp message asynchronously
 function sendWhatsAppMessageAsync($phoneNumber, $message, $userId, $userType)
@@ -327,8 +326,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Send welcome SMS after successful registration (non-blocking)
             if ($registrationType === 'customer') {
-                // Send welcome SMS using Airtel SMS API
-                $smsAPI->sendWelcomeSMS($contact, $name, $uniqueID);
+                sendWelcomeSMSHardcoded($contact, $name, $uniqueID);
             } else {
                 // For promoters, we can still use WhatsApp or add a promoter welcome SMS template later
                 // For now, keeping the existing WhatsApp queue for promoters
