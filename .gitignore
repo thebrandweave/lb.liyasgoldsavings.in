@@ -1,1 +1,5 @@
 /mainWebsite
+
+# SMS log files (generated at runtime)
+config/sms_log.txt
+logs/sms_log.txt
