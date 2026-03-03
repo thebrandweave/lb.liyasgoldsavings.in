@@ -9,7 +9,6 @@ if (!isset($_SESSION['promoter_id'])) {
 
 $menuPath = "../";
 $currentPage = "withdrawals";
-$promoterUniqueID = $_SESSION['promoter_id'];
 
 // Database connection
 require_once("../../config/config.php");
@@ -20,31 +19,37 @@ $message = '';
 $messageType = '';
 
 try {
-    // Get promoter's wallet balance
-    $stmt = $conn->prepare("
-        SELECT 
-            pw.BalanceAmount,
-            pw.Message,
-            pw.LastUpdated,
-            p.PromoterUniqueID,
-            (
-                SELECT COUNT(*) 
-                FROM WalletLogs wl 
-                WHERE wl.PromoterUniqueID = p.PromoterUniqueID
-            ) as TotalTransactions
-        FROM PromoterWallet pw
-        JOIN Promoters p ON p.PromoterID = pw.UserID
-        WHERE p.PromoterID = ?
-    ");
+    // Get promoter's PromoterUniqueID (same as dashboard)
+    $stmt = $conn->prepare("SELECT PromoterUniqueID FROM Promoters WHERE PromoterID = ?");
     $stmt->execute([$_SESSION['promoter_id']]);
-    $wallet = $stmt->fetch(PDO::FETCH_ASSOC);
+    $promoter = $stmt->fetch(PDO::FETCH_ASSOC);
+    $promoterUniqueID = $promoter ? $promoter['PromoterUniqueID'] : null;
+
+    // Get promoter's wallet balance by PromoterUniqueID (same as dashboard - UserID can be NULL in some rows)
+    $wallet = null;
+    if ($promoterUniqueID) {
+        $stmt = $conn->prepare("
+            SELECT 
+                pw.BalanceAmount,
+                pw.Message,
+                pw.LastUpdated,
+                (
+                    SELECT COUNT(*) 
+                    FROM WalletLogs wl 
+                    WHERE wl.PromoterUniqueID = pw.PromoterUniqueID
+                ) as TotalTransactions
+            FROM PromoterWallet pw
+            WHERE pw.PromoterUniqueID = ?
+        ");
+        $stmt->execute([$promoterUniqueID]);
+        $wallet = $stmt->fetch(PDO::FETCH_ASSOC);
+    }
 
     // Set default values if no wallet found
     $balance = $wallet ? $wallet['BalanceAmount'] : 0;
     $walletMessage = $wallet ? $wallet['Message'] : '';
     $lastUpdated = $wallet ? $wallet['LastUpdated'] : null;
     $totalTransactions = $wallet ? $wallet['TotalTransactions'] : 0;
-    $promoterUniqueID = $wallet ? $wallet['PromoterUniqueID'] : null;
     // Debug log
     error_log("Promoter ID from session: " . $_SESSION['promoter_id']);
     error_log("Promoter Unique ID from wallet: " . $promoterUniqueID);
@@ -117,14 +122,14 @@ try {
             $remarks = "Withdrawal request for ₹" . number_format($amount, 2);
             $stmt->execute([$_SESSION['promoter_id'], $amount, $remarks]);
 
-            // Update wallet balance
+            // Update wallet balance (by PromoterUniqueID to match wallet lookup)
             $stmt = $conn->prepare("
                 UPDATE PromoterWallet 
                 SET BalanceAmount = BalanceAmount - ?,
                     LastUpdated = CURRENT_TIMESTAMP
-                WHERE UserID = ?
+                WHERE PromoterUniqueID = ?
             ");
-            $stmt->execute([$amount, $_SESSION['promoter_id']]);
+            $stmt->execute([$amount, $promoterUniqueID]);
 
             // Add wallet log entry
             $stmt = $conn->prepare("
