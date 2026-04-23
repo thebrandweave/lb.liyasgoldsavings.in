@@ -161,7 +161,49 @@ class WhatsAppMetaAPI
             ];
         }
 
-        return $this->sendRequest($payload);
+        $result = $this->sendRequest($payload);
+
+        // Meta can return 132001 when the template exists but not for this translation
+        // (for example: template created in "en", request sent as "en_US").
+        // Retry once with base language code.
+        $errorCode = $result['response']['error']['code'] ?? null;
+        if (
+            !$result['success'] &&
+            (int)$errorCode === 132001 &&
+            strpos($language, '_') !== false
+        ) {
+            $baseLanguage = strtolower(explode('_', $language)[0]);
+            $payload['template']['language']['code'] = $baseLanguage;
+            $this->writeLog('retry_language_fallback', $phone, 'Retrying template with language=' . $baseLanguage);
+            $retryResult = $this->sendRequest($payload);
+            if ($retryResult['success']) {
+                return $retryResult;
+            }
+        }
+
+        // Meta 132000 can happen when localizable params count does not match template expectation.
+        // Example: sent 3 params, template expects 2.
+        if (
+            !$result['success'] &&
+            (int)$errorCode === 132000 &&
+            !empty($parameters) &&
+            isset($result['response']['error']['error_data']['details'])
+        ) {
+            $details = (string)$result['response']['error']['error_data']['details'];
+            if (preg_match('/expected number of params \((\d+)\)/', $details, $m)) {
+                $expected = (int)$m[1];
+                if ($expected >= 0 && $expected < count($parameters)) {
+                    $payload['template']['components'][0]['parameters'] = array_slice($parameters, 0, $expected);
+                    $this->writeLog('retry_param_count_fallback', $phone, 'Retrying with params=' . $expected);
+                    $retryResult = $this->sendRequest($payload);
+                    if ($retryResult['success']) {
+                        return $retryResult;
+                    }
+                }
+            }
+        }
+
+        return $result;
     }
 }
 

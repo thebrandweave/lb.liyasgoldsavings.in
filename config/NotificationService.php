@@ -63,10 +63,10 @@ class NotificationService
 
         if ($channels['whatsapp']) {
             $params = [
-                ['type' => 'text', 'text' => (string)$customerName],
-                ['type' => 'text', 'text' => (string)$customerUniqueID]
+                ['type' => 'text', 'parameter_name' => 'customer_name', 'text' => (string)$customerName],
+                ['type' => 'text', 'parameter_name' => 'customer_id', 'text' => (string)$customerUniqueID]
             ];
-            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_welcome_customer', 'en_US', $params);
+            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_welcome_customer', null, $params);
         }
 
         return $result;
@@ -83,11 +83,10 @@ class NotificationService
 
         if ($channels['whatsapp']) {
             $params = [
-                ['type' => 'text', 'text' => (string)$customerName],
-                ['type' => 'text', 'text' => number_format((float)$amount, 0, '', '')],
-                ['type' => 'text', 'text' => date('Y-m-d')]
+                ['type' => 'text', 'parameter_name' => 'customer_name', 'text' => (string)$customerName],
+                ['type' => 'text', 'parameter_name' => 'payment_amount', 'text' => number_format((float)$amount, 0, '', '')]
             ];
-            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_payment_received', 'en_US', $params);
+            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_payment_received', null, $params);
         }
 
         return $result;
@@ -104,11 +103,11 @@ class NotificationService
 
         if ($channels['whatsapp']) {
             $params = [
-                ['type' => 'text', 'text' => (string)$customerName],
-                ['type' => 'text', 'text' => number_format((float)$amount, 0, '', '')],
-                ['type' => 'text', 'text' => ($remarks !== '' ? $remarks : 'not_available')]
+                ['type' => 'text', 'parameter_name' => 'customer_name', 'text' => (string)$customerName],
+                ['type' => 'text', 'parameter_name' => 'payment_amount', 'text' => number_format((float)$amount, 0, '', '')],
+                ['type' => 'text', 'parameter_name' => 'rejection_remarks', 'text' => ($remarks !== '' ? $remarks : 'not_available')]
             ];
-            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_payment_rejected', 'en_US', $params);
+            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_payment_rejected', null, $params);
         }
 
         return $result;
