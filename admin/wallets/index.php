@@ -6,10 +6,10 @@ session_start();
 $menuPath = "../";
 $currentPage = "wallets";
 require_once("../../config/config.php");
-require_once("../../config/SMSAPI.php");
+require_once("../../config/NotificationService.php");
 $database = new Database();
 $conn = $database->getConnection();
-$smsAPI = new SMSAPI($database);
+$notificationService = new NotificationService($database);
 
 // Handle Wallet Update
 if (isset($_POST['action']) && isset($_POST['promoter_id'])) {
@@ -63,7 +63,7 @@ if (isset($_POST['action']) && isset($_POST['promoter_id'])) {
         if (!empty($message)) {
             $smsMessage .= ". Remarks: " . $message;
         }
-        $smsAPI->sendSMS($promoter['Contact'], $smsMessage);
+        $notificationService->sendGeneric($promoter['Contact'], $smsMessage);
 
         // Log the activity
         $stmt = $conn->prepare("INSERT INTO ActivityLogs (UserID, UserType, Action, IPAddress) VALUES (?, 'Admin', ?, ?)");

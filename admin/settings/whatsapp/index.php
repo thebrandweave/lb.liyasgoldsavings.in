@@ -28,15 +28,16 @@ try {
 
     // If no settings exist, create a default record
     if (!$settings) {
-        $stmt = $conn->prepare("INSERT INTO WhatsAppAPIConfig (APIProviderName, APIEndpoint, AccessToken, Token, InstanceID, Status) VALUES ('', '', '', '', '', 'Active')");
+        $stmt = $conn->prepare("INSERT INTO WhatsAppAPIConfig (APIProviderName, APIEndpoint, AccessToken, Token, InstanceID, PhoneNumberID, DefaultTemplateName, TemplateLanguageCode, Status) VALUES ('Meta Cloud API', 'https://graph.facebook.com/v25.0', '', '', '', '', 'hello_world', 'en_US', 'Active')");
         $stmt->execute();
         $settings = [
             'ConfigID' => $conn->lastInsertId(),
-            'APIProviderName' => '',
-            'APIEndpoint' => '',
+            'APIProviderName' => 'Meta Cloud API',
+            'APIEndpoint' => 'https://graph.facebook.com/v25.0',
             'AccessToken' => '',
-            'Token' => '',
-            'InstanceID' => '',
+            'PhoneNumberID' => '',
+            'DefaultTemplateName' => 'hello_world',
+            'TemplateLanguageCode' => 'en_US',
             'Status' => 'Active'
         ];
     }
@@ -52,22 +53,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Update existing record
         $stmt = $conn->prepare("
             UPDATE WhatsAppAPIConfig SET 
-                APIProviderName = :providerName,
+                APIProviderName = 'Meta Cloud API',
                 APIEndpoint = :endpoint,
                 AccessToken = :accessToken,
-                Token = :token,
-                InstanceID = :instanceId,
+                PhoneNumberID = :phoneNumberId,
+                DefaultTemplateName = :defaultTemplateName,
+                TemplateLanguageCode = :templateLanguageCode,
                 Status = :status
             WHERE ConfigID = :configId
         ");
 
         $params = [
             ':configId' => $settings['ConfigID'],
-            ':providerName' => $_POST['provider_name'],
             ':endpoint' => $_POST['api_endpoint'],
             ':accessToken' => $_POST['access_token'],
-            ':token' => $_POST['token'],
-            ':instanceId' => $_POST['instance_id'],
+            ':phoneNumberId' => $_POST['phone_number_id'],
+            ':defaultTemplateName' => $_POST['default_template_name'],
+            ':templateLanguageCode' => $_POST['template_language_code'],
             ':status' => $_POST['status']
         ];
 
@@ -100,7 +102,7 @@ include("../../components/topbar.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WhatsApp API Settings</title>
+    <title>WhatsApp Meta Cloud API Settings</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../assets/css/admin.css">
@@ -247,7 +249,7 @@ include("../../components/topbar.php");
 <body>
     <div class="content-wrapper">
         <div class="page-header">
-            <h1 class="page-title">WhatsApp API Settings</h1>
+            <h1 class="page-title">WhatsApp Meta Cloud API Settings</h1>
             <a href="../" class="btn btn-secondary">
                 <i class="fas fa-arrow-left"></i> Back to Settings
             </a>
@@ -278,20 +280,14 @@ include("../../components/topbar.php");
             <div class="form-section">
                 <h2 class="section-title">
                     <i class="fab fa-whatsapp"></i>
-                    WhatsApp Business API Configuration
+                    Meta Cloud API Configuration
                 </h2>
-                <div class="form-group">
-                    <label for="provider_name">API Provider Name</label>
-                    <input type="text" id="provider_name" name="provider_name" class="form-control"
-                        value="<?php echo htmlspecialchars($settings['APIProviderName'] ?? ''); ?>" required>
-                    <p class="help-text">Enter the name of your WhatsApp Business API provider</p>
-                </div>
 
                 <div class="form-group">
                     <label for="api_endpoint">API Endpoint</label>
                     <input type="url" id="api_endpoint" name="api_endpoint" class="form-control"
                         value="<?php echo htmlspecialchars($settings['APIEndpoint'] ?? ''); ?>" required>
-                    <p class="help-text">The base URL for the WhatsApp API service</p>
+                    <p class="help-text">Meta Graph API base URL (example: https://graph.facebook.com/v25.0)</p>
                 </div>
             </div>
 
@@ -305,21 +301,25 @@ include("../../components/topbar.php");
                     <label for="access_token">Access Token</label>
                     <input type="password" id="access_token" name="access_token" class="form-control"
                         value="<?php echo htmlspecialchars($settings['AccessToken'] ?? ''); ?>" required>
-                    <p class="help-text">Your WhatsApp Business API access token</p>
+                    <p class="help-text">Meta App system user access token</p>
                 </div>
-
                 <div class="form-group">
-                    <label for="token">API Token</label>
-                    <input type="password" id="token" name="token" class="form-control"
-                        value="<?php echo htmlspecialchars($settings['Token'] ?? ''); ?>" required>
-                    <p class="help-text">Your WhatsApp Business API authentication token</p>
+                    <label for="phone_number_id">Phone Number ID</label>
+                    <input type="text" id="phone_number_id" name="phone_number_id" class="form-control"
+                        value="<?php echo htmlspecialchars($settings['PhoneNumberID'] ?? ''); ?>" required>
+                    <p class="help-text">Meta WhatsApp Phone Number ID (used in /{phone-number-id}/messages endpoint)</p>
                 </div>
-
                 <div class="form-group">
-                    <label for="instance_id">Instance ID</label>
-                    <input type="text" id="instance_id" name="instance_id" class="form-control"
-                        value="<?php echo htmlspecialchars($settings['InstanceID'] ?? ''); ?>" required>
-                    <p class="help-text">Your unique WhatsApp Business API instance identifier</p>
+                    <label for="default_template_name">Default Template Name</label>
+                    <input type="text" id="default_template_name" name="default_template_name" class="form-control"
+                        value="<?php echo htmlspecialchars($settings['DefaultTemplateName'] ?? 'hello_world'); ?>" required>
+                    <p class="help-text">Fallback template name for generic notifications (example: hello_world)</p>
+                </div>
+                <div class="form-group">
+                    <label for="template_language_code">Template Language Code</label>
+                    <input type="text" id="template_language_code" name="template_language_code" class="form-control"
+                        value="<?php echo htmlspecialchars($settings['TemplateLanguageCode'] ?? 'en_US'); ?>" required>
+                    <p class="help-text">Template language code (example: en_US)</p>
                 </div>
             </div>
 

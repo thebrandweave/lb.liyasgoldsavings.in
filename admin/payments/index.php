@@ -7,9 +7,10 @@ $menuPath = "../";
 $currentPage = "payments";
 require_once("./clearSession.php");
 require_once("../../config/config.php");
-require_once("../../config/SMSHelper.php");
+require_once("../../config/NotificationService.php");
 $database = new Database();
 $conn = $database->getConnection();
+$notificationService = new NotificationService($database);
 
 // Handle Payment Verification
 if (isset($_POST['action']) && isset($_POST['payment_id'])) {
@@ -62,11 +63,11 @@ if (isset($_POST['action']) && isset($_POST['payment_id'])) {
     ");
         $stmt->execute([$payment['CustomerID'], $notificationMessage]);
 
-        // Send SMS notification to customer (hardcoded Airtel templates)
+        // Send notification based on enabled channels (SMS / WhatsApp / both)
         if ($newStatus === 'Verified') {
-            sendPaymentVerifiedSMSHardcoded($payment['Contact'], $payment['CustomerName'], $payment['Amount']);
+            $notificationService->sendPaymentVerified($payment['Contact'], $payment['CustomerName'], $payment['Amount']);
         } else {
-            sendPaymentRejectedSMSHardcoded($payment['Contact'], $payment['CustomerName'], $payment['Amount'], $verifierRemark);
+            $notificationService->sendPaymentRejected($payment['Contact'], $payment['CustomerName'], $payment['Amount'], $verifierRemark);
         }
 
         // Log the activity

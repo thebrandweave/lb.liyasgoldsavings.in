@@ -26,8 +26,19 @@
         UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
     );
 
+    -- Notification Channel Settings (supports SMS, WhatsApp, or both)
+    CREATE TABLE IF NOT EXISTS NotificationChannelSettings (
+        SettingID INT AUTO_INCREMENT PRIMARY KEY,
+        IsSMSEnabled TINYINT(1) NOT NULL DEFAULT 1,
+        IsWhatsAppEnabled TINYINT(1) NOT NULL DEFAULT 1,
+        UpdatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    );
+
     -- Insert default messaging preference
     INSERT IGNORE INTO MessagingPreference (PreferredMethod) VALUES ('WhatsApp');
+
+    -- Insert default channel settings
+    INSERT IGNORE INTO NotificationChannelSettings (SettingID, IsSMSEnabled, IsWhatsAppEnabled) VALUES (1, 1, 1);
 
     -- Insert default SMS configuration with actual Airtel credentials
     INSERT IGNORE INTO SMSAPIConfig (

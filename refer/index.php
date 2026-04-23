@@ -5,8 +5,10 @@ include './loader.php';
 // Database connection
 require_once("../config/config.php");
 require_once("../config/SMSHelper.php");
+require_once("../config/NotificationService.php");
 $database = new Database();
 $conn = $database->getConnection();
+$notificationService = new NotificationService($database);
 
 // Function to send WhatsApp message asynchronously
 function sendWhatsAppMessageAsync($phoneNumber, $message, $userId, $userType)
@@ -326,12 +328,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
             // Send welcome SMS after successful registration (non-blocking)
             if ($registrationType === 'customer') {
-                sendWelcomeSMSHardcoded($contact, $name, $uniqueID);
+                $notificationService->sendWelcomeCustomer($contact, $name, $uniqueID);
             } else {
-                // For promoters, we can still use WhatsApp or add a promoter welcome SMS template later
-                // For now, keeping the existing WhatsApp queue for promoters
                 $welcomeMessage = "Welcome to Golden Dream! Dear $name, you have successfully joined as a promoter. Your ID is: $uniqueID and your commission rate is: $commission. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!";
-                queueWhatsAppMessage($contact, $welcomeMessage, $userId, 'Promoter');
+                $notificationService->sendGeneric($contact, $welcomeMessage);
             }
 
             // Instead of redirecting, we'll just set a flag to show the success message

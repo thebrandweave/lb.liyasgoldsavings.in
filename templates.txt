@@ -1,0 +1,216 @@
+WhatsApp Template Drafts (Based on Existing SMS Templates)
+Brand: Golden Dream / PROGEEDEE Ventures Private Limited
+Language: English
+
+Notes:
+- Use variables in WhatsApp body as named placeholders like {{customer_name}}, {{customer_id}}, etc.
+- Keep template names lowercase_with_underscores.
+- Header type below is TEXT (you can switch to IMAGE if needed).
+- Button URLs should use your live domain.
+
+============================================================
+1) WELCOME CUSTOMER (from SMS welcome template)
+============================================================
+Template Name: gd_welcome_customer
+Category: UTILITY
+
+HEADER (TEXT):
+Customer Registration Update
+
+BODY:
+Dear {{customer_name}}, your registration for the Golden Dream Savings Plan is completed.
+Your Customer ID is {{customer_id}} in our records.
+For account support, please use the button below.
+
+FOOTER:
+Golden Dream Team
+
+BUTTONS:
+1. Quick Reply Button: Get Support
+
+Variables:
+{{customer_name}} = Customer Name
+{{customer_id}} = Customer ID
+
+------------------------------------------------------------
+JSON-style Components (for reference)
+------------------------------------------------------------
+header:  "Welcome to Golden Dream"
+body:    "Dear {{customer_name}}, your registration for the Golden Dream Savings Plan is completed. Your Customer ID is {{customer_id}}. For account support, please use the button below."
+footer:  "Golden Dream Team"
+buttons: [
+  { "type": "QUICK_REPLY", "text": "Get Support" }
+]
+
+============================================================
+2) PAYMENT RECEIVED (from SMS payment verified template)
+============================================================
+Template Name: gd_payment_received
+Category: UTILITY
+
+HEADER (TEXT):
+Payment Confirmation
+
+BODY:
+Dear {{customer_name}}, thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan.
+We have received your payment of Rs {{payment_amount}} successfully.
+Payment date is {{payment_date}} as recorded in our system.
+
+FOOTER:
+Golden Dream Team
+
+BUTTONS:
+1. URL Button: View Payments
+   URL: https://la.goldendream.in/customer/payments/
+2. Quick Reply Button: Download Receipt
+
+Variables:
+{{customer_name}} = Customer Name
+{{payment_amount}} = Amount
+{{payment_date}} = Payment Date
+
+============================================================
+3) WALLET CREDIT/DEBIT (from admin wallet SMS)
+============================================================
+Template Name: gd_wallet_update
+Category: UTILITY
+
+HEADER (TEXT):
+Wallet Transaction Alert
+
+BODY:
+Account holder {{promoter_name}}, a wallet transaction has been processed.
+Transaction type is {{wallet_action}} and transaction amount is Rs {{transaction_amount}}.
+Available balance is Rs {{new_balance_amount}} as per current records.
+Admin remarks are {{admin_remarks}} for reference.
+
+FOOTER:
+System Generated Notification
+
+
+BUTTONS:
+1. URL Button: View Wallet Statement
+   URL: https://la.goldendream.in/promoter/wallet/
+2. Quick Reply Button: Raise Support Ticket
+
+Variables:
+{{promoter_name}} = Promoter Name
+{{wallet_action}} = credited/debited
+{{transaction_amount}} = Transaction Amount
+{{new_balance_amount}} = New Balance
+{{admin_remarks}} = Remarks (use "not_available" if none)
+
+============================================================
+4) WITHDRAWAL STATUS (from admin withdrawal SMS)
+============================================================
+Template Name: gd_withdrawal_status
+Category: UTILITY
+
+HEADER (TEXT):
+Withdrawal Update
+
+BODY:
+Dear {{user_name}}, your withdrawal request of Rs {{withdrawal_amount}} has been {{withdrawal_status}}.
+Remarks from admin are {{admin_remarks}} for this withdrawal request.
+
+FOOTER:
+Golden Dream Team
+
+BUTTONS:
+1. URL Button: View Withdrawals
+   URL: https://la.goldendream.in/customer/withdrawals/
+2. Quick Reply Button: Raise Query
+
+Variables:
+{{user_name}} = User Name
+{{withdrawal_amount}} = Withdrawal Amount
+{{withdrawal_status}} = approved/rejected
+{{admin_remarks}} = Admin Remarks (use "not_available" if none)
+
+============================================================
+5) PENDING INSTALLMENT REMINDER (from send_reminders SMS)
+============================================================
+Template Name: gd_payment_reminder
+Category: UTILITY
+
+HEADER (TEXT):
+Payment Reminder
+
+BODY:
+Dear {{customer_name}},
+This is a reminder that your payment for {{scheme_name}} - {{installment_name}} is pending.
+Amount due is Rs {{due_amount}} for this installment.
+Due date is {{due_date}} for this payment.
+Please submit your payment at the earliest.
+If already paid, please ignore this message.
+
+FOOTER:
+Thank you, Golden Dream Team
+
+BUTTONS:
+1. URL Button: Pay Now
+   URL: https://la.goldendream.in/customer/subscriptions/
+2. Quick Reply Button: Already Paid
+3. Quick Reply Button: Need Help
+
+Variables:
+{{customer_name}} = Customer Name
+{{scheme_name}} = Scheme Name
+{{installment_name}} = Installment Name
+{{due_amount}} = Amount
+{{due_date}} = Due Date
+
+============================================================
+6) PAYMENT REJECTED (based on SMS helper rejected text)
+============================================================
+Template Name: gd_payment_rejected
+Category: UTILITY
+
+HEADER (TEXT):
+Payment Status Alert
+
+BODY:
+Dear {{customer_name}}, your payment of Rs {{payment_amount}} has been rejected by our team.
+Remarks: {{rejection_remarks}}.
+Please retry the payment.
+
+FOOTER:
+Golden Dream Support
+
+BUTTONS:
+1. URL Button: Retry Payment
+   URL: https://la.goldendream.in/customer/subscriptions/
+2. Quick Reply Button: Contact Support
+
+Variables:
+{{customer_name}} = Customer Name
+{{payment_amount}} = Amount
+{{rejection_remarks}} = Rejection Remark (use "not_available" if none)
+
+============================================================
+7) PROMOTER REGISTRATION SUCCESS (utility)
+============================================================
+Template Name: gd_promoter_registration_success
+Category: UTILITY
+
+HEADER (TEXT):
+Promoter Registration Update
+
+BODY:
+Dear {{promoter_name}}, your promoter registration is completed in our system.
+Promoter ID is {{promoter_id}} for your account records.
+Assigned commission rate is {{commission_rate}} as per current plan.
+For account access, please use the login button below.
+
+FOOTER:
+System Generated Notification
+
+BUTTONS:
+1. URL Button: Open Promoter Login
+   URL: https://la.goldendream.in/promoter/login.php
+2. Quick Reply Button: Contact Support
+
+Variables:
+{{promoter_name}} = Promoter Name
+{{promoter_id}} = Promoter ID
+{{commission_rate}} = Commission Rate

@@ -3,3 +3,7 @@
 # SMS log files (generated at runtime)
 config/sms_log.txt
 logs/sms_log.txt
+
+# WhatsApp log files (generated at runtime)
+config/whatsapp_log.txt
+logs/whatsapp_log.txt

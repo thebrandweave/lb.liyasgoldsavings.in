@@ -331,6 +331,32 @@ include("../components/sidebar.php");
                         </a>
                     </div>
                 </div>
+                <div class="settings-card">
+                    <div class="settings-card-content">
+                        <div class="settings-icon">
+                            <i class="fas fa-bell"></i>
+                        </div>
+                        <h3 class="settings-title">Notification Channels</h3>
+                        <p class="settings-description">Enable SMS, WhatsApp, or both channels for system notifications.</p>
+                        <a href="notifications/" class="settings-action">
+                            <i class="fas fa-cog"></i>
+                            Manage Settings
+                        </a>
+                    </div>
+                </div>
+                <div class="settings-card">
+                    <div class="settings-card-content">
+                        <div class="settings-icon">
+                            <i class="fab fa-whatsapp"></i>
+                        </div>
+                        <h3 class="settings-title">WhatsApp Integration</h3>
+                        <p class="settings-description">Configure Meta Cloud API credentials and template defaults.</p>
+                        <a href="whatsapp/" class="settings-action">
+                            <i class="fas fa-cog"></i>
+                            Manage Settings
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
 

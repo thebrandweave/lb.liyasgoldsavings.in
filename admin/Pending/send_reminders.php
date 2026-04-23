@@ -1,10 +1,10 @@
 <?php
 session_start();
 require_once("../../config/config.php");
-require_once("../../config/SMSAPI.php");
+require_once("../../config/NotificationService.php");
 $database = new Database();
 $conn = $database->getConnection();
-$smsAPI = new SMSAPI($database);
+$notificationService = new NotificationService($database);
 
 // Get POST data
 $data = json_decode(file_get_contents('php://input'), true);
@@ -66,8 +66,8 @@ try {
             $message .= "Thank you,\nGolden Dreams Team";
 
             // Send SMS via Airtel (plain reminder message)
-            $result = $smsAPI->sendSMS($phone, $message);
-            if ($result) {
+            $result = $notificationService->sendGeneric($phone, $message);
+            if (!empty($result['sms']) || (!empty($result['whatsapp']) && !empty($result['whatsapp']['success']))) {
                 $successCount++;
             } else {
                 $failedCount++;

@@ -6,10 +6,10 @@ $menuPath = "../";
 $currentPage = "withdrawals";
 
 require_once("../../config/config.php");
-require_once("../../config/SMSAPI.php");
+require_once("../../config/NotificationService.php");
 $database = new Database();
 $conn = $database->getConnection();
-$smsAPI = new SMSAPI($database);
+$notificationService = new NotificationService($database);
 
 // Handle withdrawal action
 if (isset($_POST['action']) && isset($_POST['withdrawal_id'])) {
@@ -105,7 +105,7 @@ if (isset($_POST['action']) && isset($_POST['withdrawal_id'])) {
         if (!empty($adminRemark)) {
             $smsMessage .= ". Remarks: " . $adminRemark;
         }
-        $smsAPI->sendSMS($withdrawal['UserContact'], $smsMessage);
+        $notificationService->sendGeneric($withdrawal['UserContact'], $smsMessage);
 
         // Log the activity
         $stmt = $conn->prepare("

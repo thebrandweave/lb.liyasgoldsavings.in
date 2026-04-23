@@ -1,7 +1,7 @@
 <?php
 require_once '../config/config.php';
 require_once '../config/jwt_config.php';
-require_once '../config/SMSAPI.php';
+require_once '../config/NotificationService.php';
 
 header('Content-Type: application/json');
 
@@ -55,13 +55,13 @@ try {
     $customerData = $stmt->fetch(PDO::FETCH_ASSOC);
     $customerUniqueID = $customerData['CustomerUniqueID'];
 
-    // Send welcome SMS to customer
+    // Send welcome notification based on enabled channels
     try {
-        $smsAPI = new SMSAPI($database);
-        $smsAPI->sendWelcomeSMS($phoneNumber, $fullName, $customerUniqueID);
+        $notificationService = new NotificationService($database);
+        $notificationService->sendWelcomeCustomer($phoneNumber, $fullName, $customerUniqueID);
     } catch (Exception $e) {
-        // Log error but don't fail registration if SMS fails
-        error_log("Failed to send welcome SMS: " . $e->getMessage());
+        // Log error but don't fail registration if notification fails
+        error_log("Failed to send welcome notification: " . $e->getMessage());
     }
 
     // Generate JWT Token
