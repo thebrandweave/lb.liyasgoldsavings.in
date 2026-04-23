@@ -134,7 +134,7 @@ class WhatsAppMetaAPI
         return $result;
     }
 
-    public function sendTemplate($phoneNumber, $templateName = null, $languageCode = null, $parameters = [])
+    public function sendTemplate($phoneNumber, $templateName = null, $languageCode = null, $parameters = [], $buttonParameters = [])
     {
         $phone = $this->formatPhone($phoneNumber);
         $template = $templateName ?: ($this->config['DefaultTemplateName'] ?? 'hello_world');
@@ -152,13 +152,34 @@ class WhatsAppMetaAPI
             ]
         ];
 
-        if (!empty($parameters)) {
-            $payload['template']['components'] = [
-                [
+        if (!empty($parameters) || !empty($buttonParameters)) {
+            $payload['template']['components'] = [];
+
+            if (!empty($parameters)) {
+                $payload['template']['components'][] = [
                     'type' => 'body',
                     'parameters' => $parameters
-                ]
-            ];
+                ];
+            }
+
+            // Dynamic URL button parameters, format:
+            // [ ['index' => 0, 'text' => 'la'] ]
+            foreach ($buttonParameters as $btn) {
+                if (!isset($btn['index']) || !isset($btn['text'])) {
+                    continue;
+                }
+                $payload['template']['components'][] = [
+                    'type' => 'button',
+                    'sub_type' => 'url',
+                    'index' => (string)$btn['index'],
+                    'parameters' => [
+                        [
+                            'type' => 'text',
+                            'text' => (string)$btn['text']
+                        ]
+                    ]
+                ];
+            }
         }
 
         $result = $this->sendRequest($payload);

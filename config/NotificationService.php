@@ -66,7 +66,10 @@ class NotificationService
                 ['type' => 'text', 'parameter_name' => 'customer_name', 'text' => (string)$customerName],
                 ['type' => 'text', 'parameter_name' => 'customer_id', 'text' => (string)$customerUniqueID]
             ];
-            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_welcome_customer', null, $params);
+            $buttonParams = [
+                ['index' => 0, 'text' => 'la']
+            ];
+            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_customer_register', null, $params, $buttonParams);
         }
 
         return $result;
