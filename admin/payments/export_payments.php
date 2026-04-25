@@ -88,6 +88,8 @@ try {
             c.Contact,
             s.SchemeName,
             p.Amount,
+            p.UTRNumber,
+            p.StaffName,
             p.PaymentCodeValue,
             p.ScreenshotURL,
             p.Status,
@@ -124,6 +126,8 @@ try {
         'Contact',
         'Scheme',
         'Amount',
+        'UTR Number',
+        'Staff Name',
         'Payment Code',
         'Screenshot',
         'Status',
@@ -153,7 +157,7 @@ try {
             'horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER,
         ],
     ];
-    $sheet->getStyle('A1:Q1')->applyFromArray($headerStyle);
+    $sheet->getStyle('A1:S1')->applyFromArray($headerStyle);
 
     // Add data
     $row = 2;
@@ -164,22 +168,24 @@ try {
         $sheet->setCellValue('D' . $row, $payment['Contact']);
         $sheet->setCellValue('E' . $row, $payment['SchemeName']);
         $sheet->setCellValue('F' . $row, number_format($payment['Amount'], 2));
-        $sheet->setCellValue('G' . $row, $payment['PaymentCodeValue']);
-        $sheet->setCellValue('H' . $row, $payment['ScreenshotURL']);
-        $sheet->setCellValue('I' . $row, $payment['Status']);
-        $sheet->setCellValue('J' . $row, date('Y-m-d H:i:s', strtotime($payment['SubmittedAt'])));
-        $sheet->setCellValue('K' . $row, $payment['VerifiedAt'] ? date('Y-m-d H:i:s', strtotime($payment['VerifiedAt'])) : '');
-        $sheet->setCellValue('L' . $row, $payment['PromoterUniqueID']);
-        $sheet->setCellValue('M' . $row, $payment['PromoterName']);
-        $sheet->setCellValue('N' . $row, $payment['VerifierName']);
-        $sheet->setCellValue('O' . $row, $payment['PayerRemark']);
-        $sheet->setCellValue('P' . $row, $payment['VerifierRemark']);
-        $sheet->setCellValue('Q' . $row, $payment['InstallmentNumber']);
+        $sheet->setCellValue('G' . $row, $payment['UTRNumber'] ?? '');
+        $sheet->setCellValue('H' . $row, $payment['StaffName'] ?? '');
+        $sheet->setCellValue('I' . $row, $payment['PaymentCodeValue']);
+        $sheet->setCellValue('J' . $row, $payment['ScreenshotURL']);
+        $sheet->setCellValue('K' . $row, $payment['Status']);
+        $sheet->setCellValue('L' . $row, date('Y-m-d H:i:s', strtotime($payment['SubmittedAt'])));
+        $sheet->setCellValue('M' . $row, $payment['VerifiedAt'] ? date('Y-m-d H:i:s', strtotime($payment['VerifiedAt'])) : '');
+        $sheet->setCellValue('N' . $row, $payment['PromoterUniqueID']);
+        $sheet->setCellValue('O' . $row, $payment['PromoterName']);
+        $sheet->setCellValue('P' . $row, $payment['VerifierName']);
+        $sheet->setCellValue('Q' . $row, $payment['PayerRemark']);
+        $sheet->setCellValue('R' . $row, $payment['VerifierRemark']);
+        $sheet->setCellValue('S' . $row, $payment['InstallmentNumber']);
         $row++;
     }
 
     // Auto-size columns
-    foreach (range('A', 'Q') as $col) {
+    foreach (range('A', 'S') as $col) {
         $sheet->getColumnDimension($col)->setAutoSize(true);
     }
 

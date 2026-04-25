@@ -46,6 +46,7 @@ $submittedSchemeId = $_POST['scheme_id'] ?? '';
 $submittedInstallmentId = $_POST['installment_id'] ?? '';
 $submittedAmount = $_POST['amount'] ?? '';
 $submittedUtrNumber = $_POST['utr_number'] ?? '';
+$submittedStaffName = $_POST['staff_name'] ?? '';
 $submittedPayerRemark = $_POST['payer_remark'] ?? '';
 $submittedIsCashPayment = isset($_POST['is_cash_payment']);
 $submittedIsExtraPayment = isset($_POST['is_extra_payment']);
@@ -56,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $customerId = $_POST['customer_id'];
         $amount = $_POST['amount'];
         $utrNumber = trim($_POST['utr_number'] ?? '');
+        $staffName = trim($_POST['staff_name'] ?? '');
         $isCashPayment = isset($_POST['is_cash_payment']) ? true : false;
         $isExtraPayment = isset($_POST['is_extra_payment']) ? true : false;
         $payerRemark = trim($_POST['payer_remark'] ?? '');
@@ -117,20 +119,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Insert payment record
         if ($isExtraPayment) {
             $stmt = $conn->prepare("
-                INSERT INTO Payments (CustomerID, Amount, UTRNumber, ScreenshotURL, Status, PayerRemark)
-                VALUES (?, ?, ?, ?, 'Pending', ?)
+                INSERT INTO Payments (CustomerID, Amount, UTRNumber, StaffName, ScreenshotURL, Status, PayerRemark)
+                VALUES (?, ?, ?, ?, ?, 'Pending', ?)
             ");
             $stmt->execute([
                 $customerId,
                 $amount,
                 $utrNumber,
+                $staffName !== '' ? $staffName : null,
                 "uploads/payments/" . $fileName,
                 $payerRemark
             ]);
         } else {
             $stmt = $conn->prepare("
-                INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, ScreenshotURL, Status, PayerRemark)
-                VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?)
+                INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, StaffName, ScreenshotURL, Status, PayerRemark)
+                VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending', ?)
             ");
             $stmt->execute([
                 $customerId,
@@ -138,6 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $installmentId,
                 $amount,
                 $utrNumber,
+                $staffName !== '' ? $staffName : null,
                 "uploads/payments/" . $fileName,
                 $payerRemark
             ]);
@@ -404,6 +408,11 @@ include("../components/topbar.php");
                 <div class="form-group">
                     <label for="utr_number">UTR Number <span class="required">*</span></label>
                     <input type="text" name="utr_number" id="utr_number" class="form-control" maxlength="50" required placeholder="Bank UTR/Reference number" value="<?php echo htmlspecialchars($submittedUtrNumber); ?>">
+                </div>
+
+                <div class="form-group">
+                    <label for="staff_name">Staff name</label>
+                    <input type="text" name="staff_name" id="staff_name" class="form-control" maxlength="255" placeholder="Name of staff who collected or recorded this payment" value="<?php echo htmlspecialchars($submittedStaffName); ?>">
                 </div>
 
                 <div class="form-group">

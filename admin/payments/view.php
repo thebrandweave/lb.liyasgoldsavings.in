@@ -670,6 +670,11 @@ include("../components/topbar.php");
                         <?php endif; ?>
 
                         <div class="detail-item">
+                            <div class="detail-label">Staff name</div>
+                            <div class="detail-value"><?php echo !empty(trim($payment['StaffName'] ?? '')) ? htmlspecialchars($payment['StaffName']) : '—'; ?></div>
+                        </div>
+
+                        <div class="detail-item">
                             <div class="detail-label">Status</div>
                             <div class="detail-value">
                                 <span class="status-badge status-<?php echo strtolower($payment['Status']); ?>">

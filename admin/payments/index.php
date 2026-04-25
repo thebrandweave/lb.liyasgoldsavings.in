@@ -1263,6 +1263,11 @@ include("../components/topbar.php");
                                 </div>
 
                                 <div class="detail-item">
+                                    <span class="detail-label">Staff name</span>
+                                    <span class="detail-value"><?php echo !empty(trim($payment['StaffName'] ?? '')) ? htmlspecialchars($payment['StaffName']) : '—'; ?></span>
+                                </div>
+
+                                <div class="detail-item">
                                     <span class="detail-label">Submitted At</span>
                                     <span class="detail-value"><?php echo date('M d, Y H:i', strtotime($payment['SubmittedAt'])); ?></span>
                                 </div>

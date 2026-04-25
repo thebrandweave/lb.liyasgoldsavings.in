@@ -147,6 +147,8 @@ CREATE TABLE Payments (
     InstallmentID INT,
 
     Amount DECIMAL(10,2) ,
+    UTRNumber VARCHAR(50) NOT NULL DEFAULT '',
+    StaffName VARCHAR(255) DEFAULT NULL,
     PaymentCodeValue INT DEFAULT 0,
     ScreenshotURL VARCHAR(255) ,
     Status ENUM('Pending', 'Verified', 'Rejected') DEFAULT 'Pending',
