@@ -1,4 +1,5 @@
 /mainWebsite
+/onemorewebsite
 
 # SMS log files (generated at runtime)
 config/sms_log.txt

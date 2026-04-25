@@ -330,8 +330,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             if ($registrationType === 'customer') {
                 $notificationService->sendWelcomeCustomer($contact, $name, $uniqueID);
             } else {
-                $welcomeMessage = "Welcome to Golden Dream! Dear $name, you have successfully joined as a promoter. Your ID is: $uniqueID and your commission rate is: $commission. You can now login to your promoter dashboard and start your journey with us. Thank you for choosing Golden Dream!";
-                $notificationService->sendGeneric($contact, $welcomeMessage);
+                $notificationService->sendPromoterRegistrationSuccess($contact, $name, $uniqueID, $commission);
             }
 
             // Instead of redirecting, we'll just set a flag to show the success message

@@ -63,7 +63,14 @@ if (isset($_POST['action']) && isset($_POST['promoter_id'])) {
         if (!empty($message)) {
             $smsMessage .= ". Remarks: " . $message;
         }
-        $notificationService->sendGeneric($promoter['Contact'], $smsMessage);
+        $notificationService->sendWalletUpdate(
+            $promoter['Contact'],
+            $promoter['Name'],
+            ($action === 'add' ? 'credited' : 'debited'),
+            $amount,
+            $newBalance,
+            $message
+        );
 
         // Log the activity
         $stmt = $conn->prepare("INSERT INTO ActivityLogs (UserID, UserType, Action, IPAddress) VALUES (?, 'Admin', ?, ?)");

@@ -56,17 +56,16 @@ try {
                 $phone = '91' . $phone;
             }
 
-            // Prepare message
-            $message = "Dear " . $customer['Name'] . ",\n\n";
-            $message .= "This is a reminder that your payment for " . $installment['SchemeName'] . " - " . $installment['InstallmentName'] . " is pending.\n\n";
-            $message .= "Amount: ₹" . number_format($installment['Amount'], 2) . "\n";
-            $message .= "Due Date: " . date('d M Y', strtotime($installment['DrawDate'])) . "\n\n";
-            $message .= "Please submit your payment at the earliest to avoid any inconvenience.\n\n";
-            $message .= "If already paid, please ignore this message.\n\n";
-            $message .= "Thank you,\nGolden Dreams Team";
-
-            // Send SMS via Airtel (plain reminder message)
-            $result = $notificationService->sendGeneric($phone, $message);
+            $installmentName = $installment['InstallmentName'] ?? ('Installment ' . ($installment['InstallmentNumber'] ?? ''));
+            $dueDate = date('d M Y', strtotime($installment['DrawDate']));
+            $result = $notificationService->sendPaymentReminder(
+                $phone,
+                $customer['Name'],
+                $installment['SchemeName'],
+                $installmentName,
+                $installment['Amount'],
+                $dueDate
+            );
             if (!empty($result['sms']) || (!empty($result['whatsapp']) && !empty($result['whatsapp']['success']))) {
                 $successCount++;
             } else {

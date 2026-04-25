@@ -65,7 +65,14 @@ if (isset($_POST['action']) && isset($_POST['payment_id'])) {
 
         // Send notification based on enabled channels (SMS / WhatsApp / both)
         if ($newStatus === 'Verified') {
-            $notificationService->sendPaymentVerified($payment['Contact'], $payment['CustomerName'], $payment['Amount']);
+            $notificationService->sendPaymentVerified(
+                $payment['Contact'],
+                $payment['CustomerName'],
+                $payment['Amount'],
+                $payment['CustomerUniqueID'],
+                $payment['SchemeName'],
+                'Installment ' . ($payment['InstallmentNumber'] ?? '')
+            );
         } else {
             $notificationService->sendPaymentRejected($payment['Contact'], $payment['CustomerName'], $payment['Amount'], $verifierRemark);
         }

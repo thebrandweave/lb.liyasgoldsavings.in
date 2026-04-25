@@ -1,216 +1,342 @@
-WhatsApp Template Drafts (Based on Existing SMS Templates)
-Brand: Golden Dream / PROGEEDEE Ventures Private Limited
-Language: English
-
-Notes:
-- Use variables in WhatsApp body as named placeholders like {{customer_name}}, {{customer_id}}, etc.
-- Keep template names lowercase_with_underscores.
-- Header type below is TEXT (you can switch to IMAGE if needed).
-- Button URLs should use your live domain.
-
-============================================================
-1) WELCOME CUSTOMER (from SMS welcome template)
-============================================================
-Template Name: gd_welcome_customer
-Category: UTILITY
-
-HEADER (TEXT):
-Customer Registration Update
-
-BODY:
-Dear {{customer_name}}, your registration for the Golden Dream Savings Plan is completed.
-Your Customer ID is {{customer_id}} in our records.
-For account support, please use the button below.
-
-FOOTER:
-Golden Dream Team
-
-BUTTONS:
-1. Quick Reply Button: Get Support
-
-Variables:
-{{customer_name}} = Customer Name
-{{customer_id}} = Customer ID
-
-------------------------------------------------------------
-JSON-style Components (for reference)
-------------------------------------------------------------
-header:  "Welcome to Golden Dream"
-body:    "Dear {{customer_name}}, your registration for the Golden Dream Savings Plan is completed. Your Customer ID is {{customer_id}}. For account support, please use the button below."
-footer:  "Golden Dream Team"
-buttons: [
-  { "type": "QUICK_REPLY", "text": "Get Support" }
-]
-
-============================================================
-2) PAYMENT RECEIVED (from SMS payment verified template)
-============================================================
-Template Name: gd_payment_received
-Category: UTILITY
-
-HEADER (TEXT):
-Payment Confirmation
-
-BODY:
-Dear {{customer_name}}, thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan.
-We have received your payment of Rs {{payment_amount}} successfully.
-Payment date is {{payment_date}} as recorded in our system.
-
-FOOTER:
-Golden Dream Team
-
-BUTTONS:
-1. URL Button: View Payments
-   URL: https://la.goldendream.in/customer/payments/
-2. Quick Reply Button: Download Receipt
-
-Variables:
-{{customer_name}} = Customer Name
-{{payment_amount}} = Amount
-{{payment_date}} = Payment Date
-
-============================================================
-3) WALLET CREDIT/DEBIT (from admin wallet SMS)
-============================================================
-Template Name: gd_wallet_update
-Category: UTILITY
-
-HEADER (TEXT):
-Wallet Transaction Alert
-
-BODY:
-Account holder {{promoter_name}}, a wallet transaction has been processed.
-Transaction type is {{wallet_action}} and transaction amount is Rs {{transaction_amount}}.
-Available balance is Rs {{new_balance_amount}} as per current records.
-Admin remarks are {{admin_remarks}} for reference.
-
-FOOTER:
-System Generated Notification
-
-
-BUTTONS:
-1. URL Button: View Wallet Statement
-   URL: https://la.goldendream.in/promoter/wallet/
-2. Quick Reply Button: Raise Support Ticket
-
-Variables:
-{{promoter_name}} = Promoter Name
-{{wallet_action}} = credited/debited
-{{transaction_amount}} = Transaction Amount
-{{new_balance_amount}} = New Balance
-{{admin_remarks}} = Remarks (use "not_available" if none)
-
-============================================================
-4) WITHDRAWAL STATUS (from admin withdrawal SMS)
-============================================================
-Template Name: gd_withdrawal_status
-Category: UTILITY
-
-HEADER (TEXT):
-Withdrawal Update
-
-BODY:
-Dear {{user_name}}, your withdrawal request of Rs {{withdrawal_amount}} has been {{withdrawal_status}}.
-Remarks from admin are {{admin_remarks}} for this withdrawal request.
-
-FOOTER:
-Golden Dream Team
-
-BUTTONS:
-1. URL Button: View Withdrawals
-   URL: https://la.goldendream.in/customer/withdrawals/
-2. Quick Reply Button: Raise Query
-
-Variables:
-{{user_name}} = User Name
-{{withdrawal_amount}} = Withdrawal Amount
-{{withdrawal_status}} = approved/rejected
-{{admin_remarks}} = Admin Remarks (use "not_available" if none)
-
-============================================================
-5) PENDING INSTALLMENT REMINDER (from send_reminders SMS)
-============================================================
-Template Name: gd_payment_reminder
-Category: UTILITY
-
-HEADER (TEXT):
-Payment Reminder
-
-BODY:
-Dear {{customer_name}},
-This is a reminder that your payment for {{scheme_name}} - {{installment_name}} is pending.
-Amount due is Rs {{due_amount}} for this installment.
-Due date is {{due_date}} for this payment.
-Please submit your payment at the earliest.
-If already paid, please ignore this message.
-
-FOOTER:
-Thank you, Golden Dream Team
-
-BUTTONS:
-1. URL Button: Pay Now
-   URL: https://la.goldendream.in/customer/subscriptions/
-2. Quick Reply Button: Already Paid
-3. Quick Reply Button: Need Help
-
-Variables:
-{{customer_name}} = Customer Name
-{{scheme_name}} = Scheme Name
-{{installment_name}} = Installment Name
-{{due_amount}} = Amount
-{{due_date}} = Due Date
-
-============================================================
-6) PAYMENT REJECTED (based on SMS helper rejected text)
-============================================================
-Template Name: gd_payment_rejected
-Category: UTILITY
-
-HEADER (TEXT):
-Payment Status Alert
-
-BODY:
-Dear {{customer_name}}, your payment of Rs {{payment_amount}} has been rejected by our team.
-Remarks: {{rejection_remarks}}.
-Please retry the payment.
-
-FOOTER:
-Golden Dream Support
-
-BUTTONS:
-1. URL Button: Retry Payment
-   URL: https://la.goldendream.in/customer/subscriptions/
-2. Quick Reply Button: Contact Support
-
-Variables:
-{{customer_name}} = Customer Name
-{{payment_amount}} = Amount
-{{rejection_remarks}} = Rejection Remark (use "not_available" if none)
-
-============================================================
-7) PROMOTER REGISTRATION SUCCESS (utility)
-============================================================
-Template Name: gd_promoter_registration_success
-Category: UTILITY
-
-HEADER (TEXT):
-Promoter Registration Update
-
-BODY:
-Dear {{promoter_name}}, your promoter registration is completed in our system.
-Promoter ID is {{promoter_id}} for your account records.
-Assigned commission rate is {{commission_rate}} as per current plan.
-For account access, please use the login button below.
-
-FOOTER:
-System Generated Notification
-
-BUTTONS:
-1. URL Button: Open Promoter Login
-   URL: https://la.goldendream.in/promoter/login.php
-2. Quick Reply Button: Contact Support
-
-Variables:
-{{promoter_name}} = Promoter Name
-{{promoter_id}} = Promoter ID
-{{commission_rate}} = Commission Rate
+{
+  "data": [
+    {
+      "name": "gd_promoter_registration_success",
+      "parameter_format": "NAMED",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Promoter Registration Update"
+        },
+        {
+          "type": "BODY",
+          "text": "Dear {{promoter_name}}, your promoter registration is completed in our system.\nPromoter ID is {{promoter_id}} for your account records.\nAssigned commission rate is Rs.{{commission_rate}} per referal.\nFor account access, please use the login button below.",
+          "example": {
+            "body_text_named_params": [
+              {
+                "param_name": "promoter_name",
+                "example": "Azlan"
+              },
+              {
+                "param_name": "promoter_id",
+                "example": "GDP001"
+              },
+              {
+                "param_name": "commission_rate",
+                "example": "200"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "System Generated Notification"
+        }
+      ],
+      "language": "en",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "sub_category": "CUSTOM",
+      "is_primary_device_delivery_only": false,
+      "id": "1924431534842882"
+    },
+    {
+      "name": "gd_payment_rejected",
+      "parameter_format": "NAMED",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Payment Status Alert"
+        },
+        {
+          "type": "BODY",
+          "text": "Dear {{customer_name}}, your payment of Rs {{payment_amount}} has been rejected by our team.\nRemarks: {{rejection_remarks}}.\nPlease retry the payment.",
+          "example": {
+            "body_text_named_params": [
+              {
+                "param_name": "customer_name",
+                "example": "Azlan"
+              },
+              {
+                "param_name": "payment_amount",
+                "example": "1000"
+              },
+              {
+                "param_name": "rejection_remarks",
+                "example": "insufficeint funds"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Golden Dream Support"
+        }
+      ],
+      "language": "en",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "sub_category": "CUSTOM",
+      "is_primary_device_delivery_only": false,
+      "id": "1594016768334687"
+    },
+    {
+      "name": "gd_payment_reminder",
+      "parameter_format": "NAMED",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Payment Reminder"
+        },
+        {
+          "type": "BODY",
+          "text": "Dear {{customer_name}},\nThis is a reminder that your payment for {{scheme_name}} - {{installment_name}} is pending.\nAmount due is Rs {{due_amount}} for this installment.\nDue date is {{due_date}} for this payment.\nPlease submit your payment at the earliest.\nIf already paid, please ignore this message.",
+          "example": {
+            "body_text_named_params": [
+              {
+                "param_name": "customer_name",
+                "example": "Azlan"
+              },
+              {
+                "param_name": "scheme_name",
+                "example": "Golden dream"
+              },
+              {
+                "param_name": "installment_name",
+                "example": "April 26"
+              },
+              {
+                "param_name": "due_amount",
+                "example": "1000"
+              },
+              {
+                "param_name": "due_date",
+                "example": "10-01-2026"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Thank you, Golden Dream Team"
+        }
+      ],
+      "language": "en",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "sub_category": "CUSTOM",
+      "is_primary_device_delivery_only": false,
+      "id": "922129667322007"
+    },
+    {
+      "name": "gd_withdrawal_status",
+      "parameter_format": "NAMED",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Withdrawal Update"
+        },
+        {
+          "type": "BODY",
+          "text": "Dear {{user_name}}, your withdrawal request of Rs {{withdrawal_amount}} has been {{withdrawal_status}}.\nRemarks from admin are {{admin_remarks}} for this withdrawal request.",
+          "example": {
+            "body_text_named_params": [
+              {
+                "param_name": "user_name",
+                "example": "Azlan"
+              },
+              {
+                "param_name": "withdrawal_amount",
+                "example": "1000"
+              },
+              {
+                "param_name": "withdrawal_status",
+                "example": "Completed"
+              },
+              {
+                "param_name": "admin_remarks",
+                "example": "sucess"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Golden Dream Team"
+        }
+      ],
+      "language": "en",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "sub_category": "CUSTOM",
+      "is_primary_device_delivery_only": false,
+      "id": "973984885167521"
+    },
+    {
+      "name": "gd_wallet_update",
+      "parameter_format": "NAMED",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Wallet Update"
+        },
+        {
+          "type": "BODY",
+          "text": "Account holder {{promoter_name}}, a wallet transaction has been processed.\nTransaction type is {{wallet_action}} and transaction amount is Rs {{transaction_amount}}.\nAvailable balance is Rs {{new_balance_amount}} as per current records.\nAdmin remarks are {{admin_remarks}} for reference.",
+          "example": {
+            "body_text_named_params": [
+              {
+                "param_name": "promoter_name",
+                "example": "Azlan"
+              },
+              {
+                "param_name": "wallet_action",
+                "example": "Credited"
+              },
+              {
+                "param_name": "transaction_amount",
+                "example": "1000"
+              },
+              {
+                "param_name": "new_balance_amount",
+                "example": "10000"
+              },
+              {
+                "param_name": "admin_remarks",
+                "example": "enjoy"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Golden Dream Team"
+        }
+      ],
+      "language": "en",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "sub_category": "CUSTOM",
+      "is_primary_device_delivery_only": false,
+      "id": "1313034510713469"
+    },
+    {
+      "name": "gd_payment_received",
+      "parameter_format": "NAMED",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Payment Confirmation"
+        },
+        {
+          "type": "BODY",
+          "text": "Dear {{customer_name}}, thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan.\nWe have received your payment of Rs {{payment_amount}} successfully.",
+          "example": {
+            "body_text_named_params": [
+              {
+                "param_name": "customer_name",
+                "example": "Azlan"
+              },
+              {
+                "param_name": "payment_amount",
+                "example": "1000"
+              }
+            ]
+          }
+        },
+        {
+          "type": "FOOTER",
+          "text": "Golden Dream Team"
+        }
+      ],
+      "language": "en",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "sub_category": "CUSTOM",
+      "is_primary_device_delivery_only": false,
+      "id": "2158902661534042"
+    },
+    {
+      "name": "gd_customer_register",
+      "parameter_format": "NAMED",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Customer Registration Update"
+        },
+        {
+          "type": "BODY",
+          "text": "Dear {{customer_name}}, your registration for the Golden Dream Savings Plan is completed.\nYour Customer ID is {{customer_id}} in our records.",
+          "example": {
+            "body_text_named_params": [
+              {
+                "param_name": "customer_name",
+                "example": "Azlan"
+              },
+              {
+                "param_name": "customer_id",
+                "example": "GD0001"
+              }
+            ]
+          }
+        },
+        {
+          "type": "BUTTONS",
+          "buttons": [
+            {
+              "type": "URL",
+              "text": "Visit website",
+              "url": "https://goldendream.in/{{1}}",
+              "example": [
+                "https://la.goldendream.in/la"
+              ]
+            }
+          ]
+        }
+      ],
+      "language": "en",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "sub_category": "CUSTOM",
+      "is_primary_device_delivery_only": false,
+      "id": "1495768002224580"
+    },
+    {
+      "name": "hello_world",
+      "parameter_format": "POSITIONAL",
+      "components": [
+        {
+          "type": "HEADER",
+          "format": "TEXT",
+          "text": "Hello World"
+        },
+        {
+          "type": "BODY",
+          "text": "Welcome and congratulations!! This message demonstrates your ability to send a WhatsApp message notification from the Cloud API, hosted by Meta. Thank you for taking the time to test with us."
+        },
+        {
+          "type": "FOOTER",
+          "text": "WhatsApp Business Platform sample message"
+        }
+      ],
+      "language": "en_US",
+      "status": "APPROVED",
+      "category": "UTILITY",
+      "is_primary_device_delivery_only": false,
+      "id": "943035518720603"
+    }
+  ],
+  "paging": {
+    "cursors": {
+      "before": "QVFIU1loMU56TkU0akFYc2pOUUdBMHN3X2JmQ2Y5aWhzNW5hYVpkM1ZAMVURBWV9JajJFX1h4QmxpR0x2N2U5ZAHVCLVpRcUZA1YWlDZA3RnZAnpCaUVhSFp5R1BB",
+      "after": "QVFIUzZAiS2JQNTBfbTRjZAWY3UFRoVC1rT2NFNWNQb19OYVVhTnYweEoxTmdKS1lQY0trWkg0S3lsRzhyWFREVnJJbndKMnRxRXBad2dDX3B0MTQ4MjE2MWV3"
+    }
+  }
+}

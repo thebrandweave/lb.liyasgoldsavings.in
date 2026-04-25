@@ -105,7 +105,13 @@ if (isset($_POST['action']) && isset($_POST['withdrawal_id'])) {
         if (!empty($adminRemark)) {
             $smsMessage .= ". Remarks: " . $adminRemark;
         }
-        $notificationService->sendGeneric($withdrawal['UserContact'], $smsMessage);
+        $notificationService->sendWithdrawalStatus(
+            $withdrawal['UserContact'],
+            $withdrawal['UserName'],
+            $withdrawal['Amount'],
+            $newStatus,
+            $adminRemark
+        );
 
         // Log the activity
         $stmt = $conn->prepare("
