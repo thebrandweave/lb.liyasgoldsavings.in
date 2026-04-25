@@ -42,6 +42,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $installmentId = isset($_POST['installment_id']) ? (int) $_POST['installment_id'] : 0;
     $amount = isset($_POST['amount']) ? (float) $_POST['amount'] : 0;
     $utrNumber = trim($_POST['utr_number'] ?? '');
+    $staffName = trim($_POST['staff_name'] ?? '');
     $payerRemark = trim($_POST['payer_remark'] ?? '');
 
     if (!$schemeId || !$installmentId || $amount <= 0) {
@@ -92,8 +93,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     // Insert payment (online only: UTR + screenshot)
                     $screenshotUrl = 'uploads/payments/' . $fileName;
                     $stmt = $db->prepare("
-                        INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, ScreenshotURL, Status, PayerRemark, SubmittedAt)
-                        VALUES (?, ?, ?, ?, ?, ?, 'Pending', ?, NOW())
+                        INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, StaffName, ScreenshotURL, Status, PayerRemark, SubmittedAt)
+                        VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending', ?, NOW())
                     ");
                     $stmt->execute([
                         $customerId,
@@ -101,6 +102,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $installmentId,
                         $amount,
                         $utrNumber,
+                        $staffName !== '' ? $staffName : null,
                         $screenshotUrl,
                         $payerRemark ?: null
                     ]);
@@ -244,6 +246,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <div class="mb-3">
                             <label class="form-label">UTR / Reference number <span class="text-danger">*</span></label>
                             <input type="text" name="utr_number" id="utr_number" class="form-control" maxlength="50" required placeholder="Bank UTR or reference">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Staff name</label>
+                            <input type="text" name="staff_name" id="staff_name" class="form-control" maxlength="255" placeholder="Enter staff name (optional)">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Payment screenshot <span class="text-danger">*</span></label>
