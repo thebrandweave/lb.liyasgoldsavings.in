@@ -89,6 +89,13 @@ $error_message = '';
 // Handle form submission
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
+        $utrNumber = trim($_POST['utr_number'] ?? '');
+        $payerRemark = trim($_POST['payer_remark'] ?? '');
+
+        if ($utrNumber === '') {
+            throw new Exception('UTR / reference number is required');
+        }
+
         // Validate file upload
         if (!isset($_FILES['payment_screenshot']) || $_FILES['payment_screenshot']['error'] !== UPLOAD_ERR_OK) {
             throw new Exception('Please upload a payment screenshot');
@@ -147,15 +154,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Create payment record
         $stmt = $db->prepare("
             INSERT INTO Payments (
-                CustomerID, SchemeID, InstallmentID, Amount, Status, ScreenshotURL, SubmittedAt
-            ) VALUES (?, ?, ?, ?, 'Pending', ?, NOW())
+                CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, Status, ScreenshotURL, PayerRemark, SubmittedAt
+            ) VALUES (?, ?, ?, ?, ?, 'Pending', ?, ?, NOW())
         ");
         $stmt->execute([
             $userData['customer_id'],
             $schemeId,
             $selectedInstallmentId,
             $scheme['MonthlyPayment'],
-            'uploads/payments/' . $filename
+            $utrNumber,
+            'uploads/payments/' . $filename,
+            $payerRemark !== '' ? $payerRemark : null
         ]);
 
         // Log activity
@@ -520,9 +529,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                         <div class="payment-screenshot mt-4">
                                             <h5><i class="fas fa-camera"></i> Payment Screenshot</h5>
                                             <div class="mb-3">
+                                                <label for="utr_number" class="form-label">UTR / Reference Number</label>
+                                                <input type="text" class="form-control" id="utr_number" name="utr_number" maxlength="50" required>
+                                                <div class="form-text text-secondary">Enter bank UTR/reference used for this transfer</div>
+                                            </div>
+                                            <div class="mb-3">
                                                 <label for="payment_screenshot" class="form-label">Upload payment screenshot (JPEG/PNG, max 5MB)</label>
                                                 <input type="file" class="form-control" id="payment_screenshot" name="payment_screenshot" accept="image/jpeg,image/png" required>
                                                 <div class="form-text text-secondary">Please upload a clear screenshot of your payment transaction</div>
+                                            </div>
+                                            <div class="mb-3">
+                                                <label for="payer_remark" class="form-label">Remark (optional)</label>
+                                                <textarea class="form-control" id="payer_remark" name="payer_remark" rows="2" maxlength="255" placeholder="Add any note about the payment"></textarea>
                                             </div>
                                         </div>
 
