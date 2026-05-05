@@ -34,6 +34,20 @@ foreach ($schemes as $scheme) {
     $schemesWithInstallments[] = $scheme;
 }
 
+$preselectedSchemeId = isset($_GET['scheme_id']) ? (int) $_GET['scheme_id'] : 0;
+if ($preselectedSchemeId > 0) {
+    $isValidPreselectedScheme = false;
+    foreach ($schemesWithInstallments as $scheme) {
+        if ((int) $scheme['SchemeID'] === $preselectedSchemeId) {
+            $isValidPreselectedScheme = true;
+            break;
+        }
+    }
+    if (!$isValidPreselectedScheme) {
+        $preselectedSchemeId = 0;
+    }
+}
+
 $error_message = '';
 $success_message = '';
 
@@ -227,7 +241,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <select name="scheme_id" id="scheme_id" class="form-select form-control" required>
                                 <option value="">Select scheme</option>
                                 <?php foreach ($schemesWithInstallments as $s): ?>
-                                    <option value="<?php echo $s['SchemeID']; ?>" data-monthly="<?php echo (float)$s['MonthlyPayment']; ?>">
+                                    <option value="<?php echo $s['SchemeID']; ?>" data-monthly="<?php echo (float)$s['MonthlyPayment']; ?>" <?php echo ((int)$s['SchemeID'] === $preselectedSchemeId) ? 'selected' : ''; ?>>
                                         <?php echo htmlspecialchars($s['SchemeName']); ?> (₹<?php echo number_format($s['MonthlyPayment'], 2); ?>)
                                     </option>
                                 <?php endforeach; ?>
@@ -296,12 +310,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 opt.dataset.amount = inst.Amount;
                 installmentSelect.appendChild(opt);
             });
+
+            if (installments.length > 0) {
+                installmentSelect.value = installments[0].InstallmentID;
+                amountInput.value = installments[0].Amount;
+            }
         });
 
         installmentSelect.addEventListener('change', function() {
             const opt = this.options[this.selectedIndex];
             if (opt && opt.dataset.amount) amountInput.value = opt.dataset.amount;
         });
+
+        if (schemeSelect.value) {
+            schemeSelect.dispatchEvent(new Event('change'));
+        }
     </script>
 </body>
 </html>

@@ -499,7 +499,7 @@ foreach ($nextPayments as $payment) {
                                             </div>
                                             <div>
                                                 <?php if ($subscription['pending_installments'] > 0): ?>
-                                                    <a href="make_payment.php?scheme_id=<?php echo $subscription['SchemeID']; ?>"
+                                                    <a href="../payments/add.php?scheme_id=<?php echo $subscription['SchemeID']; ?>"
                                                         class="btn btn-payment me-2">
                                                         <i class="fas fa-money-bill-wave"></i> Make Payment
                                                     </a>
