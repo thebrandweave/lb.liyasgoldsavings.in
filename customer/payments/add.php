@@ -52,25 +52,24 @@ if ($latestSubscription) {
     $autoSchemeId = (int) $latestSubscription['SchemeID'];
 
     $stmt = $db->prepare("
-        SELECT MAX(i.InstallmentNumber) AS last_paid_installment_no
-        FROM Payments p
-        INNER JOIN Installments i ON i.InstallmentID = p.InstallmentID
-        WHERE p.CustomerID = ? AND p.SchemeID = ? AND p.Status IN ('Pending', 'Verified')
-    ");
-    $stmt->execute([$customerId, $autoSchemeId]);
-    $lastPaidInstallmentNo = (int) ($stmt->fetchColumn() ?: 0);
-    $nextInstallmentNo = $lastPaidInstallmentNo + 1;
-
-    $stmt = $db->prepare("
         SELECT InstallmentID
-        FROM Installments
-        WHERE SchemeID = ? AND Status = 'Active' AND InstallmentNumber = ?
+        FROM Installments i
+        WHERE i.SchemeID = ? AND i.Status = 'Active'
+          AND NOT EXISTS (
+              SELECT 1
+              FROM Payments p
+              WHERE p.CustomerID = ?
+                AND p.SchemeID = i.SchemeID
+                AND p.InstallmentID = i.InstallmentID
+                AND p.Status IN ('Pending', 'Verified')
+          )
+        ORDER BY i.InstallmentNumber ASC
         LIMIT 1
     ");
-    $stmt->execute([$autoSchemeId, $nextInstallmentNo]);
+    $stmt->execute([$autoSchemeId, $customerId]);
     $autoInstallmentId = (int) ($stmt->fetchColumn() ?: 0);
 
-    // Fallback to first installment if no previous payment or next installment doesn't exist.
+    // Fallback to first active installment if all are already paid/pending or mapping is unavailable.
     if ($autoInstallmentId <= 0) {
         $stmt = $db->prepare("
             SELECT InstallmentID
