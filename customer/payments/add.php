@@ -34,18 +34,78 @@ foreach ($schemes as $scheme) {
     $schemesWithInstallments[] = $scheme;
 }
 
-$preselectedSchemeId = isset($_GET['scheme_id']) ? (int) $_GET['scheme_id'] : 0;
-if ($preselectedSchemeId > 0) {
-    $isValidPreselectedScheme = false;
-    foreach ($schemesWithInstallments as $scheme) {
-        if ((int) $scheme['SchemeID'] === $preselectedSchemeId) {
-            $isValidPreselectedScheme = true;
-            break;
+$autoSchemeId = 0;
+$autoInstallmentId = 0;
+
+// Auto-select latest active subscription and derive next installment from last submitted payment.
+$stmt = $db->prepare("
+    SELECT SubscriptionID, SchemeID
+    FROM Subscriptions
+    WHERE CustomerID = ? AND RenewalStatus = 'Active'
+    ORDER BY StartDate DESC, SubscriptionID DESC
+    LIMIT 1
+");
+$stmt->execute([$customerId]);
+$latestSubscription = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if ($latestSubscription) {
+    $autoSchemeId = (int) $latestSubscription['SchemeID'];
+
+    $stmt = $db->prepare("
+        SELECT MAX(i.InstallmentNumber) AS last_paid_installment_no
+        FROM Payments p
+        INNER JOIN Installments i ON i.InstallmentID = p.InstallmentID
+        WHERE p.CustomerID = ? AND p.SchemeID = ? AND p.Status IN ('Pending', 'Verified')
+    ");
+    $stmt->execute([$customerId, $autoSchemeId]);
+    $lastPaidInstallmentNo = (int) ($stmt->fetchColumn() ?: 0);
+    $nextInstallmentNo = $lastPaidInstallmentNo + 1;
+
+    $stmt = $db->prepare("
+        SELECT InstallmentID
+        FROM Installments
+        WHERE SchemeID = ? AND Status = 'Active' AND InstallmentNumber = ?
+        LIMIT 1
+    ");
+    $stmt->execute([$autoSchemeId, $nextInstallmentNo]);
+    $autoInstallmentId = (int) ($stmt->fetchColumn() ?: 0);
+
+    // Fallback to first installment if no previous payment or next installment doesn't exist.
+    if ($autoInstallmentId <= 0) {
+        $stmt = $db->prepare("
+            SELECT InstallmentID
+            FROM Installments
+            WHERE SchemeID = ? AND Status = 'Active'
+            ORDER BY InstallmentNumber ASC
+            LIMIT 1
+        ");
+        $stmt->execute([$autoSchemeId]);
+        $autoInstallmentId = (int) ($stmt->fetchColumn() ?: 0);
+    }
+}
+
+$preselectedSchemeId = isset($_GET['scheme_id']) ? (int) $_GET['scheme_id'] : $autoSchemeId;
+$preselectedInstallmentId = isset($_GET['installment_id']) ? (int) $_GET['installment_id'] : $autoInstallmentId;
+
+$isValidPreselectedScheme = false;
+$isValidPreselectedInstallment = false;
+foreach ($schemesWithInstallments as $scheme) {
+    if ((int) $scheme['SchemeID'] === $preselectedSchemeId) {
+        $isValidPreselectedScheme = true;
+        foreach ($scheme['installments'] as $installment) {
+            if ((int) $installment['InstallmentID'] === $preselectedInstallmentId) {
+                $isValidPreselectedInstallment = true;
+                break;
+            }
         }
+        break;
     }
-    if (!$isValidPreselectedScheme) {
-        $preselectedSchemeId = 0;
-    }
+}
+if (!$isValidPreselectedScheme) {
+    $preselectedSchemeId = 0;
+}
+if (!$isValidPreselectedInstallment) {
+    $preselectedInstallmentId = 0;
 }
 
 $error_message = '';
@@ -287,6 +347,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         const schemesData = <?php echo json_encode($schemesWithInstallments); ?>;
+        const preselectedInstallmentId = <?php echo (int) $preselectedInstallmentId; ?>;
         const schemeSelect = document.getElementById('scheme_id');
         const installmentSelect = document.getElementById('installment_id');
         const amountInput = document.getElementById('amount');
@@ -312,8 +373,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             });
 
             if (installments.length > 0) {
-                installmentSelect.value = installments[0].InstallmentID;
-                amountInput.value = installments[0].Amount;
+                let selectedInstallment = installments[0];
+                if (preselectedInstallmentId > 0) {
+                    const matchedInstallment = installments.find(inst => parseInt(inst.InstallmentID, 10) === preselectedInstallmentId);
+                    if (matchedInstallment) {
+                        selectedInstallment = matchedInstallment;
+                    }
+                }
+                installmentSelect.value = selectedInstallment.InstallmentID;
+                amountInput.value = selectedInstallment.Amount;
             }
         });
 
