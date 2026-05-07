@@ -1324,6 +1324,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                             pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" 
                                             maxlength="10"
                                             placeholder="Enter 10-character PAN NO"
+                                            oninput="this.value = this.value.toUpperCase()"
                                             style="text-transform: uppercase;"
                                         >
                                         <i class="fas fa-address-card"></i>
@@ -1503,6 +1504,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                     pattern="[A-Z]{5}[0-9]{4}[A-Z]{1}" 
                                     maxlength="10"
                                     placeholder="Enter 10-character PAN NO"
+                                    oninput="this.value = this.value.toUpperCase()"
                                     style="text-transform: uppercase;"
                                 >
                                 <i class="fas fa-address-card"></i>
