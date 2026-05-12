@@ -322,7 +322,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Staff name</label>
-                            <input type="text" name="staff_name" id="staff_name" class="form-control" maxlength="255" placeholder="Enter staff name (optional)">
+                            <input type="text" name="staff_name" id="staff_name" class="form-control" maxlength="255" required placeholder="Enter staff name">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Payment screenshot <span class="text-danger">*</span></label>
