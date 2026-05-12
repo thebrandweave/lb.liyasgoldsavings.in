@@ -122,74 +122,111 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $error_message = 'Please select scheme, installment and enter amount.';
     } elseif (empty($utrNumber)) {
         $error_message = 'UTR number is required.';
-    } elseif (!isset($_FILES['screenshot']) || $_FILES['screenshot']['error'] !== UPLOAD_ERR_OK) {
-        $error_message = 'Please upload payment screenshot (online payment only).';
+    } elseif ($staffName === '') {
+        $error_message = 'Staff name is required.';
     } else {
-        $file = $_FILES['screenshot'];
-        $allowedTypes = ['image/jpeg', 'image/png'];
-        $maxSize = 5 * 1024 * 1024; // 5MB
-        if (!in_array($file['type'], $allowedTypes)) {
-            $error_message = 'Only JPEG and PNG images allowed.';
-        } elseif ($file['size'] > $maxSize) {
-            $error_message = 'File size must be under 5MB.';
+        $stmt = $db->prepare("
+            SELECT 1 FROM Installments
+            WHERE InstallmentID = ? AND SchemeID = ? AND Status = 'Active'
+            LIMIT 1
+        ");
+        $stmt->execute([$installmentId, $schemeId]);
+        if (!$stmt->fetch()) {
+            $error_message = 'Invalid installment for the selected scheme.';
         } else {
-            $uploadDir = __DIR__ . '/uploads/payments/';
-            if (!is_dir($uploadDir)) {
-                mkdir($uploadDir, 0777, true);
-            }
-            $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) ?: 'jpg';
-            $fileName = uniqid() . '.' . $ext;
-            $targetPath = $uploadDir . $fileName;
-
-            if (move_uploaded_file($file['tmp_name'], $targetPath)) {
-                try {
-                    $db->beginTransaction();
-
-                    // Ensure subscription exists (auto-subscribe)
-                    $stmt = $db->prepare("
-                        SELECT SubscriptionID FROM Subscriptions
-                        WHERE CustomerID = ? AND SchemeID = ? AND RenewalStatus = 'Active'
-                    ");
-                    $stmt->execute([$customerId, $schemeId]);
-                    if (!$stmt->fetch()) {
-                        $stmt = $db->prepare("SELECT TotalPayments FROM Schemes WHERE SchemeID = ?");
-                        $stmt->execute([$schemeId]);
-                        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-                        $totalMonths = $row ? (int) $row['TotalPayments'] : 12;
-                        $stmt = $db->prepare("
-                            INSERT INTO Subscriptions (CustomerID, SchemeID, StartDate, EndDate, RenewalStatus)
-                            VALUES (?, ?, CURDATE(), DATE_ADD(CURDATE(), INTERVAL ? MONTH), 'Active')
-                        ");
-                        $stmt->execute([$customerId, $schemeId, $totalMonths]);
-                    }
-
-                    // Insert payment (online only: UTR + screenshot)
-                    $screenshotUrl = 'uploads/payments/' . $fileName;
-                    $stmt = $db->prepare("
-                        INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, StaffName, ScreenshotURL, Status, PayerRemark, SubmittedAt)
-                        VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending', ?, NOW())
-                    ");
-                    $stmt->execute([
-                        $customerId,
-                        $schemeId,
-                        $installmentId,
-                        $amount,
-                        $utrNumber,
-                        $staffName !== '' ? $staffName : null,
-                        $screenshotUrl,
-                        $payerRemark ?: null
-                    ]);
-
-                    $db->commit();
-                    $_SESSION['success_message'] = 'Payment submitted successfully. It will be verified shortly.';
-                    header('Location: index.php');
-                    exit;
-                } catch (Exception $e) {
-                    $db->rollBack();
-                    $error_message = 'Error saving payment: ' . $e->getMessage();
-                }
+            $stmt = $db->prepare("
+                SELECT 1 FROM Payments
+                WHERE CustomerID = ? AND SchemeID = ? AND InstallmentID = ?
+                  AND Status IN ('Pending', 'Verified')
+                LIMIT 1
+            ");
+            $stmt->execute([$customerId, $schemeId, $installmentId]);
+            if ($stmt->fetch()) {
+                $error_message = 'You already submitted a payment for this scheme and installment. Please wait for verification or contact support if you need help.';
+            } elseif (!isset($_FILES['screenshot']) || $_FILES['screenshot']['error'] !== UPLOAD_ERR_OK) {
+                $error_message = 'Please upload payment screenshot (online payment only).';
             } else {
-                $error_message = 'Failed to upload screenshot.';
+                $file = $_FILES['screenshot'];
+                $allowedTypes = ['image/jpeg', 'image/png'];
+                $maxSize = 5 * 1024 * 1024; // 5MB
+                if (!in_array($file['type'], $allowedTypes)) {
+                    $error_message = 'Only JPEG and PNG images allowed.';
+                } elseif ($file['size'] > $maxSize) {
+                    $error_message = 'File size must be under 5MB.';
+                } else {
+                    $uploadDir = __DIR__ . '/uploads/payments/';
+                    if (!is_dir($uploadDir)) {
+                        mkdir($uploadDir, 0777, true);
+                    }
+                    $ext = strtolower(pathinfo($file['name'], PATHINFO_EXTENSION)) ?: 'jpg';
+                    $fileName = uniqid() . '.' . $ext;
+                    $targetPath = $uploadDir . $fileName;
+
+                    if (move_uploaded_file($file['tmp_name'], $targetPath)) {
+                        try {
+                            $db->beginTransaction();
+
+                            // Ensure subscription exists (auto-subscribe)
+                            $stmt = $db->prepare("
+                                SELECT SubscriptionID FROM Subscriptions
+                                WHERE CustomerID = ? AND SchemeID = ? AND RenewalStatus = 'Active'
+                            ");
+                            $stmt->execute([$customerId, $schemeId]);
+                            if (!$stmt->fetch()) {
+                                $stmt = $db->prepare("SELECT TotalPayments FROM Schemes WHERE SchemeID = ?");
+                                $stmt->execute([$schemeId]);
+                                $row = $stmt->fetch(PDO::FETCH_ASSOC);
+                                $totalMonths = $row ? (int) $row['TotalPayments'] : 12;
+                                $stmt = $db->prepare("
+                                    INSERT INTO Subscriptions (CustomerID, SchemeID, StartDate, EndDate, RenewalStatus)
+                                    VALUES (?, ?, CURDATE(), DATE_ADD(CURDATE(), INTERVAL ? MONTH), 'Active')
+                                ");
+                                $stmt->execute([$customerId, $schemeId, $totalMonths]);
+                            }
+
+                            // Re-check duplicate inside transaction (race: two tabs submitting)
+                            $stmt = $db->prepare("
+                                SELECT 1 FROM Payments
+                                WHERE CustomerID = ? AND SchemeID = ? AND InstallmentID = ?
+                                  AND Status IN ('Pending', 'Verified')
+                                LIMIT 1
+                            ");
+                            $stmt->execute([$customerId, $schemeId, $installmentId]);
+                            if ($stmt->fetch()) {
+                                $db->rollBack();
+                                @unlink($targetPath);
+                                $error_message = 'You already submitted a payment for this scheme and installment. Please wait for verification or contact support if you need help.';
+                            } else {
+                                // Insert payment (online only: UTR + screenshot)
+                                $screenshotUrl = 'uploads/payments/' . $fileName;
+                                $stmt = $db->prepare("
+                                    INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, StaffName, ScreenshotURL, Status, PayerRemark, SubmittedAt)
+                                    VALUES (?, ?, ?, ?, ?, ?, ?, 'Pending', ?, NOW())
+                                ");
+                                $stmt->execute([
+                                    $customerId,
+                                    $schemeId,
+                                    $installmentId,
+                                    $amount,
+                                    $utrNumber,
+                                    $staffName,
+                                    $screenshotUrl,
+                                    $payerRemark ?: null
+                                ]);
+
+                                $db->commit();
+                                $_SESSION['success_message'] = 'Payment submitted successfully. It will be verified shortly.';
+                                header('Location: index.php');
+                                exit;
+                            }
+                        } catch (Exception $e) {
+                            $db->rollBack();
+                            $error_message = 'Error saving payment: ' . $e->getMessage();
+                        }
+                    } else {
+                        $error_message = 'Failed to upload screenshot.';
+                    }
+                }
             }
         }
     }
@@ -321,7 +358,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <input type="text" name="utr_number" id="utr_number" class="form-control" maxlength="50" required placeholder="Bank UTR or reference">
                         </div>
                         <div class="mb-3">
-                            <label class="form-label">Staff name</label>
+                            <label class="form-label">Staff name <span class="text-danger">*</span></label>
                             <input type="text" name="staff_name" id="staff_name" class="form-control" maxlength="255" required placeholder="Enter staff name">
                         </div>
                         <div class="mb-3">
