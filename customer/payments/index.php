@@ -953,7 +953,7 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
                             <?php endif; ?>
                             <div class="voucher-left">
                                 <div class="voucher-label">PAYMENT</div>
-                                <div class="voucher-amount">₹<?php echo number_format($payment['Amount'], 2); ?></div>
+                                <div class="voucher-amount">₹<?php echo number_format($payment['Amount']); ?></div>
                                 <div class="voucher-id">Voucher ID: <?php echo $payment['PaymentID']; ?></div>
                             </div>
                             <div class="voucher-center">
