@@ -1259,7 +1259,7 @@ include("../components/topbar.php");
 
                                 <div class="detail-item">
                                     <span class="detail-label">Amount</span>
-                                    <span class="detail-value">₹<?php echo number_format($payment['Amount'], 2); ?></span>
+                                    <span class="detail-value">₹<?php echo number_format($payment['Amount']); ?></span>
                                 </div>
 
                                 <div class="detail-item">
