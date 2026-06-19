@@ -285,9 +285,9 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
     <a href="./about.php" class="nav-link-item <?= ($currentPage == 'about.php') ? 'active' : '' ?>">About Us</a>
 
-    <a href="./gallery.php" class="nav-link-item <?= ($currentPage == 'gallery.php') ? 'active' : '' ?>">Gallery</a>
+    <!-- <a href="./gallery.php" class="nav-link-item <?= ($currentPage == 'gallery.php') ? 'active' : '' ?>">Gallery</a> -->
 
-    <a href="./contact.php" class="nav-link-item <?= ($currentPage == 'contact.php') ? 'active' : '' ?>">Contact Us</a>
+    <!-- <a href="./contact.php" class="nav-link-item <?= ($currentPage == 'contact.php') ? 'active' : '' ?>">Contact Us</a> -->
 </div>
 
             <!-- Right: Country & Premium CTA Actions -->
