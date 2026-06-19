@@ -294,7 +294,7 @@ verifyAuth();
         <div class="sidebar-header">
             <div class="sidebar-logo">
                 <i class="fas fa-chart-line"></i>
-                <span>LA Admin Dashboard</span>
+                <span>LB Admin Dashboard</span>
             </div>
             <div class="toggle-btn" id="toggle-sidebar">
                 <!-- <i class="fas fa-angle-left"></i> -->
