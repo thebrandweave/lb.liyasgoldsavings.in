@@ -182,7 +182,7 @@
                 <h2>9. Contact</h2>
                 <div class="contact">
                     For privacy-related questions, contact us at:
-                    <a href="mailto:support@la.goldendream.in">support@la.goldendream.in</a>
+                    <a href="mailto:support@lb.liyasgoldsavings.in">support@lb.liyasgoldsavings.in</a>
                 </div>
             </div>
 

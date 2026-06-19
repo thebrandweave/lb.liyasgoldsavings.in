@@ -4,8 +4,8 @@
  * 1) WalletLogs (direct commission messages) – primary
  * 2) ActivityLogs (Registered new customer) – fallback
  *
- * Dry run:  https://la.goldendream.inremap_customers_promoters.php
- * Apply:    https://la.goldendream.inremap_customers_promoters.php?run=1
+ * Dry run:  https://lb.liyasgoldsavings.inremap_customers_promoters.php
+ * Apply:    https://lb.liyasgoldsavings.inremap_customers_promoters.php?run=1
  */
 
 require_once __DIR__ . '/config/config.php';

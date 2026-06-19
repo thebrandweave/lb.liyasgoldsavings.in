@@ -265,11 +265,11 @@ class SMSAPI
 
             // Welcome template details from screenshot
             // Template ID: 1007289085098641045
-            // Template: "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is var. Visit https://la.goldendream.in/ for more details."
+            // Template: "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is var. Visit https://lb.liyasgoldsavings.in/ for more details."
             // Source Address: PGDVTR
             // Variables: var1 = Customer Name, var2 = Customer Unique ID
 
-            $welcomeTemplate = "Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://la.goldendream.in/ for more details.";
+            $welcomeTemplate = "Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://lb.liyasgoldsavings.in/ for more details.";
 
             // Format the welcome message
             $message = str_replace('{var1}', $customerName, $welcomeTemplate);

@@ -17,7 +17,7 @@ class Database
     public $conn;
 
     // Base URL configuration
-    public static $baseUrl = "https://la.goldendream.in/";
+    public static $baseUrl = "https://lb.liyasgoldsavings.in/";
 
     public function getConnection()
     {
@@ -31,7 +31,7 @@ class Database
             );
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-            $baseUrl = "https://la.goldendream.in/";
+            $baseUrl = "https://lb.liyasgoldsavings.in/";
 
             header("Location: " . $baseUrl . "noInternet/");
         }

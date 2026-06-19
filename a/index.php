@@ -1,1 +1,1 @@
-<?php header("Location: https://la.goldendream.in/admin");
+<?php header("Location: https://lb.liyasgoldsavings.in/admin");

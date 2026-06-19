@@ -224,7 +224,7 @@ if (isLoggedIn()) {
         </form>
 
         <!-- <div class="signup-link">
-            <p class="mb-0">Don't have an account? <a href="https://la.goldendream.in//refer?id=GDP0001&ref=NTAw">Sign up here</a></p>
+            <p class="mb-0">Don't have an account? <a href="https://lb.liyasgoldsavings.in//refer?id=GDP0001&ref=NTAw">Sign up here</a></p>
         </div> -->
     </div>
 

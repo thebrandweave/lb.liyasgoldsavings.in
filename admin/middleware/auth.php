@@ -5,7 +5,7 @@ function verifyAuth()
 {
     // Check for JWT token in cookie
     if (!isset($_COOKIE['admin_token'])) {
-        header("Location: https://la.goldendream.in/admin/login.php");
+        header("Location: https://lb.liyasgoldsavings.in/admin/login.php");
         // header("Location:http://localhost/goldendream/admin/login.php");
         exit();
     }
@@ -16,7 +16,7 @@ function verifyAuth()
     if (!$decoded) {
         // Token is invalid or expired
         setcookie('admin_token', '', time() - 3600, '/');
-        header("Location: https://la.goldendream.in/admin/login.php");
+        header("Location: https://lb.liyasgoldsavings.in/admin/login.php");
         // header("Location:http://localhost/goldendream/admin/login.php");
         exit();
     }
