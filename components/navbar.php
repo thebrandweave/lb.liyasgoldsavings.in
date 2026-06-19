@@ -271,10 +271,10 @@
             <div class="nav-links-wrapper" id="navLinksMenu">
                 <a href="./" class="nav-link-item active">Home</a>
                 <a href="./about.php" class="nav-link-item">About Us</a>
-                <a href="./gallery.php" class="nav-link-item">Gallery</a>
+                <!-- <a href="./gallery.php" class="nav-link-item">Gallery</a> -->
                 <a href="./career.php" class="nav-link-item">Career</a>
                 <!-- <a href="./savings-plan.php" class="nav-link-item">Savings Plan</a> -->
-                <a href="./contact.php" class="nav-link-item">Contact Us</a>
+                <!-- <a href="./contact.php" class="nav-link-item">Contact Us</a> -->
             </div>
 
             <!-- Right: Country & Premium CTA Actions -->
