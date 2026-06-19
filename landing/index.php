@@ -8,9 +8,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoldenDream - Your Financial Future</title>
-    <link rel="icon" type="image/png" href="./landing_assets/images/1gdLogo.png">
-    <link rel="shortcut icon" type="image/png" href="./landing_assets/images/1gdLogo.png">
-    <link rel="apple-touch-icon" href="./landing_assets/images/1gdLogo.png">
+    <link rel="icon" type="image/png" href="./landing_assets/images/gdlogofooter.png">
+    <link rel="shortcut icon" type="image/png" href="./landing_assets/images/gdlogofooter.png">
+    <link rel="apple-touch-icon" href="./landing_assets/images/gdlogofooter.png">
     <meta name="description" content="GoldenDream - Strategic investments across high-growth sectors. We partner with visionary companies to create sustainable value and drive innovation.">
     <meta name="keywords" content="venture capital, private equity, investments, portfolio companies, technology, healthcare, renewable energy, GoldenDream, India">
     <meta name="author" content="GoldenDream">
@@ -3270,7 +3270,7 @@ header {
     <footer id="contact">
         <div class="footer-content">
             <div class="footer-section">
-                <img src="./landing_assets/images/1gdLogo.png" alt="logo" class="footer-logo">
+                <img src="./landing_assets/images/gdlogofooter.png" alt="logo" class="footer-logo">
                 <p>Empowering your financial future with secure investment opportunities and expert guidance. Join us in building a prosperous tomorrow.</p>
                 <div class="social-links">
                     <a href="https://www.instagram.com/pro_gd_ventures_pvt/"><i class="fab fa-instagram"></i></a>
