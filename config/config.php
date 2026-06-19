@@ -33,7 +33,9 @@ class Database
         } catch (PDOException $e) {
             $baseUrl = "https://lb.liyasgoldsavings.in/";
 
-            header("Location: " . $baseUrl . "noInternet/");
+           catch (PDOException $e) {
+    die("Database Error: " . $e->getMessage());
+}
         }
 
         return $this->conn;
