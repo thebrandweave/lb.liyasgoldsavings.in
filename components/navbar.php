@@ -252,15 +252,6 @@
         display: none;
     }
 }
-
-.nav-link-item.active {
-    opacity: 1;
-    color: #AA771C;
-}
-
-.nav-link-item.active::after {
-    width: 100%;
-}
     </style>
 
 
@@ -276,18 +267,14 @@
                 </a>
             </div>
 
-           <?php
-$currentPage = basename($_SERVER['PHP_SELF']);
-?>
-
-<div class="nav-links-wrapper" id="navLinksMenu">
-    <a href="./" class="nav-link-item <?= ($currentPage == 'index.php' || $currentPage == '') ? 'active' : '' ?>">Home</a>
-
-    <a href="./about.php" class="nav-link-item <?= ($currentPage == 'about.php') ? 'active' : '' ?>">About Us</a>
-
-    <a href="./career.php" class="nav-link-item <?= ($currentPage == 'career.php') ? 'active' : '' ?>">Career</a>
-
-</div>
+            <!-- Center: Navigation Links -->
+            <div class="nav-links-wrapper" id="navLinksMenu">
+                <a href="./" class="nav-link-item active">Home</a>
+                <a href="./about.php" class="nav-link-item">About Us</a>
+                <a href="./gallery.php" class="nav-link-item">Gallery</a>
+                <!-- <a href="./savings-plan.php" class="nav-link-item">Savings Plan</a> -->
+                <a href="./contact.php" class="nav-link-item">Contact Us</a>
+            </div>
 
             <!-- Right: Country & Premium CTA Actions -->
             <div class="nav-actions-wrapper">
