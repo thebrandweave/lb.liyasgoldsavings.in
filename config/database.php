@@ -2,11 +2,10 @@
 
 class Database
 {
-      private $host = "82.25.121.121";
-    // private $host = "localhost";
-    private $db_name = "u232955123_LB_DB";
-    private $username = "u232955123_LB_DB";
-    private $password = "Brandweave@24";
+    private $host;
+    private $db_name;
+    private $username;
+    private $password;
     public $conn;
 
     // Base URL configuration
@@ -15,6 +14,23 @@ class Database
     public function getConnection()
     {
         $this->conn = null;
+
+        // Automatically detect if running locally (localhost / Windows)
+        $isLocalhost = in_array($_SERVER['HTTP_HOST'] ?? '', ['localhost', '127.0.0.1']) || 
+                       (isset($_SERVER['SERVER_ADDR']) && $_SERVER['SERVER_ADDR'] === '127.0.0.1') ||
+                       strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
+
+        if ($isLocalhost) {
+            $this->host = "localhost";
+            $this->db_name = "la-main";
+            $this->username = "root";
+            $this->password = "";
+        } else {
+            $this->host = "82.25.121.121";
+            $this->db_name = "u232955123_LB_DB";
+            $this->username = "u232955123_LB_DB";
+            $this->password = "Brandweave@24";
+        }
 
         try {
             $this->conn = new PDO(
