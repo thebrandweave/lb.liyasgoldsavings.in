@@ -8,9 +8,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GoldenDream - Your Financial Future</title>
-    <link rel="icon" type="image/png" href="./landing_assets/images/gdLogo.png">
-    <link rel="shortcut icon" type="image/png" href="./landing_assets/images/gdLogo.png">
-    <link rel="apple-touch-icon" href="./landing_assets/images/gdLogo.png">
+    <link rel="icon" type="image/png" href="./landing_assets/images/1gdLogo.png">
+    <link rel="shortcut icon" type="image/png" href="./landing_assets/images/1gdLogo.png">
+    <link rel="apple-touch-icon" href="./landing_assets/images/1gdLogo.png">
     <meta name="description" content="GoldenDream - Strategic investments across high-growth sectors. We partner with visionary companies to create sustainable value and drive innovation.">
     <meta name="keywords" content="venture capital, private equity, investments, portfolio companies, technology, healthcare, renewable energy, GoldenDream, India">
     <meta name="author" content="GoldenDream">
@@ -33,7 +33,7 @@
     <meta name="twitter:title" content="GoldenDream - Building Tomorrow's Market Leaders">
     <meta name="twitter:description" content="Strategic investments across high-growth sectors that are shaping tomorrow's economy.">
     <meta name="twitter:image" content="https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=1200&auto=format&fit=crop">
-
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css">
     <!-- Structured Data -->
     <script type="application/ld+json">
         {
@@ -116,14 +116,14 @@
         }
 
         header {
-            background: rgba(255, 255, 255, 0);
+            background: #fffff;
             border-bottom: 1px solid var(--border-color);
             position: sticky;
             top: 0;
             z-index: 1000;
-            backdrop-filter: blur(10px);
+            /* backdrop-filter: blur(10px); */
             max-width: 100vw !important;
-            overflow-x: hidden;
+            /* overflow-x: hidden; */
             transition: all 0.3s ease;
         }
 
@@ -458,14 +458,24 @@
             overflow-x: hidden;
         }
 
+        /* .cta-card::before{
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(135deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
+        } */
+
         footer::before {
             content: '';
             position: absolute;
             top: 0;
             left: 0;
             width: 100%;
-            height: 4px;
-            background: linear-gradient(90deg, var(--accent-color), #00d4aa);
+            height: 2px;
+            background: linear-gradient(135deg, #e6ca9f 0%, #fff5e5 60%, #ffeed2 100%);
         }
 
         .footer-content {
@@ -482,11 +492,14 @@
         }
 
         .footer-section h3 {
-            color: var(--accent-color);
-            font-size: 1.3rem;
+            background:linear-gradient(180deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
+            font-size: 1.2rem;
             margin-bottom: 24px;
             position: relative;
+            font-weight:600;
             padding-bottom: 12px;
+              -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
         }
 
         .footer-section h3::after {
@@ -496,7 +509,7 @@
             left: 0;
             width: 40px;
             height: 2px;
-            background: var(--accent-color);
+            background:linear-gradient(135deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
         }
 
         .footer-section p {
@@ -525,12 +538,17 @@
         }
 
         .footer-section ul li a:hover {
-            color: var(--accent-color);
+            background: linear-gradient(180deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
+              -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
             transform: translateX(5px);
         }
 
         .footer-section ul li a i {
             font-size: 0.9rem;
+            background:linear-gradient(135deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
+              -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
         }
 
         .contact-info {
@@ -547,7 +565,9 @@
         }
 
         .contact-item i {
-            color: var(--accent-color);
+            background:linear-gradient(180deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
+              -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
             font-size: 1.2rem;
         }
 
@@ -567,10 +587,11 @@
             border-radius: 50%;
             color: #fff;
             transition: all 0.3s ease;
+            text-decoration:none;
         }
 
         .social-links a:hover {
-            background: var(--accent-color);
+            background: linear-gradient(0deg, #dfb270 0%, #f9bf68 10%, #000000 100%);
             transform: translateY(-3px);
         }
 
@@ -794,13 +815,19 @@
             left: auto;
         }
 
-        .section {
-            padding: 6rem 0;
+        .section-1 {
+            padding: 3rem 0 6rem;
+            z-index:-10;
+            background:linear-gradient(340deg, #000000 30%, #a16a13 100%, #a16a13 100%);
+        }
+          .section-2 {
+            padding: 3rem 0 5rem;
+            /* background-color: black; */
         }
 
         .section-title {
             font-weight: 800;
-            color: var(--c-primary);
+            color: white;
             font-size: clamp(2rem, 4vw, 3rem);
             letter-spacing: -0.02em;
         }
@@ -844,7 +871,7 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            background: rgba(255, 0, 0, 0.9);
+            background: #a16b14;
             width: 60px;
             height: 60px;
             border-radius: 50%;
@@ -901,46 +928,1322 @@
                 padding: 1rem 0;
             }
         }
-    </style>
+        /* ==========================
+   HERO SECTION
+========================== */
+
+.hero {
+    position: relative;
+    width: 100%;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.hero .carousel,
+.hero .carousel-inner,
+.hero .carousel-item,
+.hero-slide {
+    width: 100%;
+    height: 100vh;
+}
+
+.hero-slide {
+    position: relative;
+}
+
+.hero-slide img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Dark Overlay */
+.hero-slide::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+   /* background: rgba(0, 0, 0, 0.55);*/
+    z-index: 1;
+}
+
+/* Content */
+.hero-content {
+    position: absolute;
+    bottom: 100px;
+    left: 70px;
+    z-index: 2;
+    color: #fff;
+    max-width: 700px;
+}
+
+.hero-line {
+     width: 4px;
+    height: 75px;
+    background: #d4af37;
+    margin-bottom: -88px;
+}
+
+.hero-content h1 {
+    font-size: 4rem;
+    font-weight: 700;
+    line-height: 1.15;
+    margin-bottom: 25px;
+    color: #fff;
+    /* margin-left: 16px; */
+}
+
+.hero-btn {
+    display: inline-block;
+    padding: 14px 32px;
+    color: #fff;
+    border: 2px solid #fff;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s ease;
+    margin-left: 16px;
+}
+
+.hero-content {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    align-items: flex-start;
+
+    padding: 0 60px 80px;
+    z-index: 2;
+/* 
+    background: linear-gradient(
+        to top,
+        rgba(0, 0, 0, 0.95) 0%,
+        rgba(0, 0, 0, 0.75) 25%,
+        rgba(0, 0, 0, 0.35) 50%,
+        rgba(0, 0, 0, 0.05) 75%,
+        transparent 100%
+    ); */
+}
+
+.hero,
+.hero-slide,
+.carousel-item {
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+.hero-btn:hover {
+    background: #fff;
+    color: #000;
+}
+
+/* Arrows */
+.carousel-control-prev,
+.carousel-control-next {
+    width: 55px;
+    height: 55px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255,255,255,0.15);
+    border-radius: 50%;
+    opacity: 1;
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        padding: 0 30px 70px;
+    }
+}
+
+.carousel-control-prev {
+    left: 30px;
+}
+
+.carousel-control-next {
+    right: 30px;
+}
+
+.carousel-control-prev:hover,
+.carousel-control-next:hover {
+    background: rgba(255,255,255,0.3);
+}
+
+/* Navbar on top */
+header {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    background: transparent !important;
+    border: none !important;
+}
+
+.nav-links a,
+.logo {
+    color: #fff !important;
+}
+
+/* Responsive */
+@media(max-width:768px){
+
+    .hero-content{
+        left:30px;
+        right:30px;
+        bottom:70px;
+    }
+
+    .hero-content h1{
+        font-size:2.3rem;
+    }
+
+    .hero-line{
+        height:40px;
+    }
+
+    .carousel-control-prev{
+        left:15px;
+    }
+
+    .carousel-control-next{
+        right:15px;
+    }
+}
+
+/* Hero Section Layout */
+.hero-section {
+    background-color: #0b0b0b;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-slide {
+    height: 100vh;
+    min-height: 700px;
+    background-size: cover;
+    background-position: center right;
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.hero-container {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    position: relative;
+    padding-top: 80px; /* Accounts for fixed navbar space */
+}
+
+/* Typography & Content styling */
+.hero-content {
+    max-width: 580px;
+    z-index: 2;
+    margin-bottom: auto;
+    margin-top: auto;
+}
+
+.hero-subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: #c5a880;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.hero-subtitle::before {
+    content: '';
+    display: inline-block;
+    width: 25px;
+    height: 1px;
+    background-color: #c5a880;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+
+.hero-subtitle-1::before {
+    content: '';
+    display: inline-block;
+    width: 23px;
+    height: 1px;
+    background-color: #c5a880;
+    vertical-align: middle;
+    margin-right: 10px;
+}
+.hero-subtitle-1::after {
+    content: '';
+    display: inline-block;
+    width: 23px;
+    height: 1px;
+    background-color: #c5a880;
+    vertical-align: middle;
+    margin-left: 10px;
+}
+
+.hero-subtitle-1 {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: #c5a880;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 1.5rem;
+    position: relative;
+}
+
+.hero-title {
+    font-size: 4rem;
+    font-weight: 700;
+    color: #ffffff;
+    line-height: 1.1;
+    margin-bottom: 1.5rem;
+}
+
+.text-gold {
+    color: #a16b14;
+    background: linear-gradient(135deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.hero-description {
+    color: #b0b0b0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 2.5rem;
+}
+
+/* Action Buttons */
+.hero-actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.btn-gold {
+    background: linear-gradient(135deg, #a16b14 30%,#e6ca9f  100%);
+    color: #000000 !important;
+    font-weight: 600;
+    padding: 0.75rem 2rem;
+    border-radius: 6px;
+    border: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.9rem;
+}
+
+.btn-gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(212, 175, 55, 0.3);
+}
+
+.video-btn {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    color: #ffffff !important;
+    padding: 0.3rem 1rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    backdrop-filter: blur(5px);
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+ transition: transform 0.2s ease, box-shadow 0.2s ease;
+    duration:300;
+}
+
+.video-btn:hover {
+ background: linear-gradient(135deg, #a16b14 30%,#e6ca9f  100%);
+ color:black;
+   transform: translateY(-2px);
+   border:none;
+}
+
+/* Metrics Cards at Bottom */
+.hero-metrics {
+    display: flex;
+    gap: 2rem;
+    z-index: 2;
+    margin-bottom: 2rem;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 1.5rem 2rem;
+    border-radius: 12px;
+    backdrop-filter: blur(10px);
+    max-width: max-content;
+}
+
+.metric-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.metric-icon {
+    font-size: 1.5rem;
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.1);
+    width: 45px;
+    height: 45px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    border: 1px solid rgba(212, 175, 55, 0.2);
+}
+
+.metric-text h3 {
+    color: #ffffff;
+    font-size: 1.35rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.metric-text p {
+    color: #8c8c8c;
+    font-size: 0.75rem;
+    margin: 0;
+    line-height: 1.3;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+/* Scroll Down Component */
+.scroll-down {
+    position: absolute;
+    bottom: 2rem;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    color: #8c8c8c;
+    font-size: 0.7rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    z-index: 2;
+}
+
+.mouse-icon {
+    width: 20px;
+    height: 32px;
+    border: 2px solid rgba(255, 255, 255, 0.3);
+    border-radius: 10px;
+    position: relative;
+}
+
+.mouse-icon::before {
+    content: '';
+    width: 4px;
+    height: 8px;
+    background-color: #d4af37;
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+    top: 6px;
+    border-radius: 2px;
+    animation: scrollMouse 1.5s infinite;
+}
+
+@keyframes scrollMouse {
+    0% { opacity: 1; top: 6px; }
+    100% { opacity: 0; top: 16px; }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-title { font-size: 2.5rem; }
+    .hero-metrics { 
+        flex-direction: column; 
+        gap: 1.5rem; 
+        width: 100%;
+        max-width: 100%;
+    }
+    .hero-actions { flex-direction: column; align-items: stretch; }
+    .scroll-down { display: none; }
+}
+
+/* Container to keep static elements like 'Scroll Down' from sliding away */
+.global-hero-overlays {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    height: 100%;
+    width: 100%;
+    pointer-events: none; /* Allows interacting with buttons beneath it */
+    z-index: 3;
+}
+
+.global-hero-overlays .scroll-down {
+    pointer-events: auto;
+}
+
+/* Customized Carousel Arrow Buttons */
+.hero-section .carousel-control-prev,
+.hero-section .carousel-control-next {
+    width: 4%;
+    height:4%;
+    opacity: 0.3;
+    transition: opacity 0.2s;
+    z-index: 4;
+}
+
+.hero-section .carousel-control-prev:hover,
+.hero-section .carousel-control-next:hover {
+    opacity: 0.9;
+}
+
+.hero-section .carousel-control-prev-icon,
+.hero-section .carousel-control-next-icon {
+    width: 2rem;
+    height: 2rem;
+    background-size: 50%;
+    /* background-color: rgba(212, 175, 55, 0.1);
+    border: 1px solid rgba(212, 175, 55, 0.3); */
+    border-radius: 50%;
+    padding: 1.5rem;
+}
+
+/* Custom Bottom Dash Indicators */
+.hero-section .carousel-indicators {
+    bottom: 3rem;
+    justify-content: flex-start;
+    left: calc((100vw - 1140px) / 2); /* Matches standard Bootstrap container alignment */
+    margin-left: 15px;
+    z-index: 4;
+}
+
+@media (max-width: 1200px) {
+    .hero-section .carousel-indicators {
+        left: 10%;
+    }
+}
+
+.hero-section .carousel-indicators [data-bs-target] {
+    width: 30px;
+    height: 3px;
+    background-color: #ffffff;
+    opacity: 0.2;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.hero-section .carousel-indicators .active {
+    opacity: 1;
+    background: linear-gradient(135deg, #d4af37 0%, #aa7c11 100%);
+    width: 50px;
+}
+
+/* Container & Section Styles */
+.ventures-section {
+    background: linear-gradient(300deg, #000000 40%, #a16a13 100%, #a16a13 100%);
+    /* background-color:black; */
+    padding: 50px 0 80px 0;
+    font-family: 'Poppins', sans-serif;
+    overflow: hidden;
+      padding:130px 5%;
+}
+
+
+.ventures-header .subtitle {
+    font-size: 0.75rem;
+    letter-spacing: 3px;
+    color: #ffffff;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.ventures-header .title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #ffffff;
+}
+
+/* Full-Height Accordion Core Layout */
+.funky-accordion-container {
+    display: flex;
+    width: 100%;
+    height: 75vh;
+    min-height: 550px;
+    background-color: #000;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.accordion-panel {
+    position: relative;
+    flex: 1;
+    height: 100%;
+    background-image: var(--bg-image);
+    background-size: cover;
+    background-position: center;
+    cursor: pointer;
+    overflow: hidden;
+    transition: flex 0.6s cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+/* Linear dark mask on image background */
+.panel-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.95) 10%, rgba(0, 0, 0, 0.2) 50%);
+    transition: background 0.4s ease;
+    z-index: 1;
+}
+
+.accordion-panel:hover .panel-overlay {
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9) 10%, rgba(0, 0, 0, 0.2) 40%);
+}
+
+/* Expanded State Behavior */
+.accordion-panel.active {
+    flex: 4;
+    cursor: default;
+}
+
+.panel-content {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    z-index: 2;
+}
+
+/* Collapsed Title Rotated Vertical Text */
+.panel-collapsed-title {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) rotate(-90deg);
+    white-space: nowrap;
+    opacity: 1;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+}
+
+.panel-collapsed-title h3 {
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    margin: 0;
+    text-transform: uppercase;
+    transition: color 0.3s ease;
+}
+
+.accordion-panel:hover .panel-collapsed-title h3 {
+    color: #ffffff;
+}
+
+.accordion-panel.active .panel-collapsed-title {
+    opacity: 0;
+}
+
+/* Expanded Content Area Layout */
+.panel-expanded-content {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 40px;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.4s ease, transform 0.4s ease;
+    max-width: 650px;
+}
+
+.accordion-panel.active .panel-expanded-content {
+    opacity: 1;
+    transform: translateY(0);
+    transition-delay: 0.2s;
+}
+
+/* Inner Elements Text Styling */
+.venture-tag {
+    font-size: 0.7rem;
+    letter-spacing: 2px;
+    color: #d4af37;
+    text-transform: uppercase;
+    font-weight: 600;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.panel-expanded-content h2 {
+    color: #ffffff;
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 15px;
+}
+
+.venture-desc {
+    color: #b0b0b0;
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 25px;
+}
+
+/* Glassmorphism Offer Badge Card */
+.offer-badge {
+    background: rgba(212, 175, 55, 0.06);
+    border: 1px solid rgba(212, 175, 55, 0.2);
+    border-radius: 8px;
+    padding: 15px 20px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    backdrop-filter: blur(10px);
+}
+
+.offer-badge i {
+    font-size: 1.5rem;
+    color: #d4af37;
+    background: rgba(212, 175, 55, 0.1);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.offer-badge span {
+    color: #e0e0e0;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.offer-badge strong {
+    color: #ffffff;
+    font-weight: 600;
+    background: linear-gradient(135deg, #ffe0a3 0%, #d4af37 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* Responsiveness: Switch to vertical stack accordion layout on smaller screens */
+@media (max-width: 991px) {
+    .funky-accordion-container {
+        flex-direction: column;
+        height: auto;
+    }
+    
+    .accordion-panel {
+        width: 100%;
+        height: 120px;
+        transition: height 0.5s cubic-bezier(0.25, 1, 0.5, 1);
+    }
+    
+    .accordion-panel.active {
+        height: 420px;
+        flex: none;
+    }
+    
+    .panel-collapsed-title {
+        transform: translate(-50%, -50%) rotate(0deg);
+        top: 50%;
+        left: 50%;
+    }
+    
+    .panel-expanded-content {
+        padding: 20px;
+    }
+    
+    .panel-expanded-content h2 {
+        font-size: 1.6rem;
+    }
+}
+
+/* Container hides the horizontal scrollbar */
+.smooth-slider-container {
+    overflow: hidden;
+    width: 100%;
+    position: relative;
+    padding: 10px 0;
+}
+
+/* The track where images line up horizontally */
+.smooth-slider-track {
+    display: flex;
+    width: max-content;
+    gap:15px;
+    /* Adjust '40s' to make it faster (lower number) or slower (higher number) */
+    animation: scrollContinuous 110s linear infinite; 
+}
+
+/* Individual slide item spacing and sizing */
+.smooth-slider-item {
+    width: 350px; /* Forces a consistent width for gallery items */
+    flex-shrink: 0;
+}
+
+/* Pause the slider animation on hover so users can look closer */
+.smooth-slider-container:hover .smooth-slider-track {
+    animation-play-state: paused;
+}
+
+/* Keyframe for seamless infinite scrolling */
+@keyframes scrollContinuous {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        /* Translates exactly halfway because we duplicated the image array */
+        transform: translateX(-50%); 
+    }
+}
+.bento-grid{
+    display:grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+    grid-template-rows: 220px 220px;
+    gap:15px;
+}
+
+.card-1{
+    grid-column:1;
+    grid-row:1 / span 2;
+}
+
+.card-2{
+    grid-column:2 / span 3;
+    grid-row:1;
+}
+
+.card-3{
+    grid-column:2;
+    grid-row:2;
+}
+
+.card-4{
+    grid-column:3;
+    grid-row:2;
+}
+
+.card-5{
+    grid-column:4;
+    grid-row:2;
+}
+
+.bento-card{
+    position:relative;
+    overflow:hidden;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.bento-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:.5s;
+}
+
+.bento-card:hover img{
+    transform:scale(1.1);
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:flex-end;
+    padding:20px;
+    background:linear-gradient(
+        to top,
+        rgba(0,0,0,.8),
+        rgba(0,0,0,.2),
+        transparent
+    );
+}
+
+.overlay h3{
+    color:#fff;
+    margin:0;
+    font-size:1.3rem;
+}
+
+@media(max-width:768px){
+
+    .bento-grid{
+        grid-template-columns:1fr;
+        grid-template-rows:auto;
+    }
+
+    .card-1,
+    .card-2,
+    .card-3,
+    .card-4,
+    .card-5{
+        grid-column:auto;
+        grid-row:auto;
+        min-height:250px;
+    }
+
+}
+
+
+
+.ventures-layout{
+    display:grid;
+    grid-template-columns: 70% 30%;
+    gap:60px;
+    align-items:center;
+}
+
+/* Left Side */
+
+.ventures-content{
+    color:#fff;
+}
+
+.subtitle{
+    color:#c8a24d;
+    font-size:14px;
+    letter-spacing:3px;
+}
+
+.title{
+    font-size:4rem;
+    margin:15px 0;
+    line-height:1.1;
+}
+
+.text-gold{
+    color:#c8a24d;
+    font-weight:600;
+}
+
+.explore{
+       font-size:4rem;
+    font-weight:600;
+}
+
+.about-title{
+    font-size:4rem;
+    font-weight:500;
+}
+
+.venture-text{
+    color:rgba(255,255,255,.75);
+    line-height:1.8;
+    margin:25px 0;
+}
+
+.venture-btn{
+    display:inline-block;
+    padding:14px 32px;
+    border:1px solid #c8a24d;
+    color:#c8a24d;
+    text-decoration:none;
+    border-radius:50px;
+    transition:.3s;
+}
+
+.venture-btn:hover{
+    background:#c8a24d;
+    color:#000;
+}
+
+/* Right Side Bento Grid */
+
+.bento-grid{
+    display:grid;
+    grid-template-columns:2fr 1fr 1fr 1fr;
+    grid-template-rows:220px 220px;
+    gap:15px;
+}
+
+.card-1{
+    grid-column:1;
+    grid-row:1 / span 2;
+}
+
+.card-2{
+    grid-column:2 / span 3;
+    grid-row:1;
+}
+
+.card-3{
+    grid-column:2;
+    grid-row:2;
+}
+
+.card-4{
+    grid-column:3;
+    grid-row:2;
+}
+
+.card-5{
+    grid-column:4;
+    grid-row:2;
+}
+
+.bento-card{
+    position:relative;
+    overflow:hidden;
+    border-radius:24px;
+}
+
+.bento-card img{
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    transition:.5s;
+}
+
+.bento-card:hover img{
+    transform:scale(1.1);
+}
+
+.overlay{
+    position:absolute;
+    inset:0;
+    display:flex;
+    align-items:flex-end;
+    padding:20px;
+    background:linear-gradient(
+        to top,
+        rgba(0,0,0,.85),
+        rgba(0,0,0,.2),
+        transparent
+    );
+}
+
+.overlay h3{
+    color:#fff;
+    margin:0;
+    font-size:1.2rem;
+}
+
+/* Mobile */
+
+@media(max-width:992px){
+
+    .ventures-layout{
+        grid-template-columns:1fr;
+    }
+
+    .title{
+        font-size:3rem;
+    }
+
+    .bento-grid{
+        grid-template-columns:1fr;
+        grid-template-rows:auto;
+    }
+
+    .card-1,
+    .card-2,
+    .card-3,
+    .card-4,
+    .card-5{
+        grid-column:auto;
+        grid-row:auto;
+        min-height:250px;
+    }
+}
+
+
+.border{
+    margin-top:-50px;
+    /* margin-bottom:33px; */
+    z-index:99999;
+    border-top-right-radius:50px;
+    border-top-left-radius:50px;
+     /* border-bottom-right-radius:50px;
+    border-bottom-left-radius:50px; */
+}
+
+
+.text-gold-1{
+    color: #a16b14;
+    /* font-weight:800; */
+    background:linear-gradient(135deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
+      -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    font-weight:800;
+}
+.gold-text {
+  background: linear-gradient(135deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  display: inline-block; /* Ensures the gradient bounds apply correctly to the symbol */
+}
+/* 
+.cta{
+    background:linear-gradient(135deg, #f59c15 0%, #675333 50%, #ff9d00 100%);
+}
+
+  .cta-card{
+            position:relative;
+            overflow:hidden;
+            background:linear-gradient(90deg, #5c3b0b 0%, #c98211 30%, #ffffff 100%);
+     
+            min-height:340px;
+            padding:80px 70px;
+ 
+            box-shadow:0 20px 50px rgba(0,0,0,.12);
+        }
+
+        .content{
+            position:relative;
+            z-index:2;
+            max-width:550px;
+        }
+
+        .content h2{
+            color:#000;
+            font-size:56px;
+            font-weight:700;
+            margin-bottom:15px;
+        }
+
+        .content p{
+            color:rgba(255,255,255,.9);
+            line-height:1.7;
+            max-width:400px;
+            margin-bottom:35px;
+        }
+
+        .buttons{
+            display:flex;
+            gap:15px;
+            flex-wrap:wrap;
+        }
+
+        .btn{
+            display:flex;
+            align-items:center;
+            gap:20px;
+            background:#000;
+            color:#fff;
+            text-decoration:none;
+            padding:14px 25px;
+            border-radius:50px;
+            transition:.3s;
+        }
+
+        .btn:hover{
+            transform:translateY(-3px);
+        }
+
+        .btn span{
+            width:16px;
+            height:16px;
+            background:#fff;
+            border-radius:50%;
+        }
+
+
+        @media(max-width:768px){
+
+            .cta-card{
+                padding:50px 30px;
+            }
+
+            .content h2{
+                font-size:40px;
+            }
+
+            .circles{
+                right:-300px;
+            }
+        } */
+
+        .cta-card{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(0deg, #dfb270 0%, #f9bf68 10%, #000000 100%);
+    /* border-radius:30px; */
+    padding:80px;
+}
+
+.cta-wrapper{
+    position:relative;
+    z-index:2;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:80px;
+}
+
+.content{
+    flex:1;
+    max-width:550px;
+}
+
+.footer-logo {
+    width: 104px;
+    height: 100px;
+    margin: 0 0 0 -20px;
+
+    filter: brightness(0) invert(1);
+}
+
+.logo-grid{
+    flex:1;
+    display:grid;
+    grid-template-columns:repeat(3,1fr);
+    gap:13px;
+    max-width:500px;
+}
+.logo-grid img{
+    width:76%;
+    height:100%;
+    object-fit:contain;
+    background:#fff;
+    padding:10px;
+    border-radius:96px;
+    border:1px solid rgba(161,106,19,.15);
+    transition:.4s;
+}
+
+.logo-grid img:hover{
+    transform:translateY(-5px);
+    border-color:#a16a13;
+    box-shadow:0 15px 35px rgba(161,106,19,.15);
+}
+
+@keyframes float{
+    0%,100%{
+        transform:translateY(0);
+    }
+    50%{
+        transform:translateY(-10px);
+    }
+}
+.content h2{
+    font-size:50px;
+    font-weight: 800;
+    line-height: 1.1;
+    color: #ffffff;
+    margin-bottom: 25px;
+    letter-spacing: -1px;
+    position: relative;
+}
+
+.content h2::after{
+    content: "";
+    width: 90px;
+    height: 4px;
+    background: linear-gradient(
+        90deg,
+        #f59c15,
+        #a16a13
+    );
+    display: block;
+    margin-top: 18px;
+    border-radius: 20px;
+}
+
+.content p{
+    font-size: 1.1rem;
+    line-height: 1.9;
+    color: #ffffff;
+    max-width: 540px;
+    margin-bottom: 40px;
+}
+
+.buttons{
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.text-gold-2{
+        background: linear-gradient(0deg, #e6ca9f 0%, #a16b14 60%, #a16b14 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+}
+
+.btn{
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 16px 34px;
+    border-radius: 60px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    overflow: hidden;
+    transition: all .4s ease;
+}
+.btn:first-child{
+    background: linear-gradient(
+        135deg,
+        #f59c15 0%,
+        #a16a13 100%
+    );
+    color: #fff;
+    box-shadow: 0 15px 35px rgba(161,106,19,.25);
+}
+
+.btn:first-child:hover{
+    transform: translateY(-4px);
+    box-shadow: 0 20px 45px rgba(161,106,19,.35);
+}
+
+.btn:last-child{
+    background: white;
+    color: #a16a13;
+    border: 2px solid #a16a13;
+}
+
+.btn:last-child:hover{
+    background: #a16a13;
+    color: #fff;
+    transform: translateY(-4px);
+}
+
+.btn{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+}
+
+.btn i{
+    font-size:16px;
+    transition:transform .3s ease;
+}
+
+.btn:hover i{
+    transform:translateX(3px);
+}
+
+.logo-img-1{
+        height: 85px;
+    width: auto;
+    filter: drop-shadow(0px 2px 4px rgba(0, 0, 0, 0.05));
+    transition: var(--transition-smooth);
+}
+
+</style>
 </head>
 
 <body>
     <!-- Header -->
-    <header>
-        <div class="container">
-            <nav class="navbar">
-                <div class="nav-left">
-                    <a href="#" class="logo">
-                        <img src="./landing_assets/images/gdLogo.png" alt="Golden Dream Logo" style="height:32px;"> Golden Dream
-                    </a>
-                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <div class="nav-links">
-                        <a href="./">Home</a>
-                        <a href="./about.php">About Us</a>
-                        <!-- <a href="./Gallery">Gallery</a>
-                        <a href="./Certificates">Certificates</a>
-                        <a href="./SavingsPlan">Savings Plan</a>
-                        <a href="./Blog">Blog</a>
-                        <a href="./ContactUs">Contact Us</a> -->
-                    </div>
-                </div>
-                <div class="nav-right">
-                    <div class="country-flag">
-                        <img src="./landing_assets/images/india.png" alt="India Flag">
-                        <span>India</span>
-                    </div>
-                    <div class="login-dropdown">
-                        <button class="login-btn" onclick="openLoginModal()">
-                            <i class="fas fa-user"></i>
-                            Login
-                        </button>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
+
+
+<?php include '../components/navbar.php'; ?>
 
     <!-- Login Modal -->
     <div class="modal-overlay" id="loginModal">
@@ -989,193 +2292,225 @@
         </div>
     </div>
 
-    <section id="hero" class="hero">
-        <!-- Background Carousel -->
-        <div id="heroBgCarousel" class="carousel slide hero-bg-carousel" data-bs-ride="carousel" data-bs-interval="5000" data-bs-wrap="true" style="position:absolute;top:0;left:0;width:100%;height:100%;z-index:0;overflow:hidden;">
-            <div class="carousel-inner" style="width:100%;height:100%;">
-                <div class="carousel-item active" style="width:100%;height:100%;">
-                    <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=1200&q=80" class="d-block w-100 h-100 hero-bg-img" alt="Pro Gee Dee Ventures background" style="object-fit:cover;filter:blur(16px) brightness(0.7);height:100%;">
-                </div>
-                <div class="carousel-item" style="width:100%;height:100%;">
-                    <img src="./assets/black-gold-glitter-background.jpg" class="d-block w-100 h-100 hero-bg-img" alt="Goldendream background" style="object-fit:cover;filter:blur(16px) brightness(0.7);height:100%;">
-                </div>
-                <div class="carousel-item" style="width:100%;height:100%;">
-                    <img src="./assets/colleagues-working-desk.jpg" class="d-block w-100 h-100 hero-bg-img" alt="The Brand Weave background" style="object-fit:cover;filter:blur(16px) brightness(0.7);height:100%;">
-                </div>
-                <div class="carousel-item" style="width:100%;height:100%;">
-                    <img src="./assets/view-brilliant-cartoon-diamond.jpg" class="d-block w-100 h-100 hero-bg-img" alt="Liyas Gold and Diamonds background" style="object-fit:cover;filter:blur(16px) brightness(0.7);height:100%;">
-                </div>
-                <div class="carousel-item" style="width:100%;height:100%;">
-                    <img src="./assets/construction-silhouette.jpg" class="d-block w-100 h-100 hero-bg-img" alt="Liyas Construction background" style="object-fit:cover;filter:blur(16px) brightness(0.7);height:100%;">
-                </div>
-                <div class="carousel-item" style="width:100%;height:100%;">
-                    <img src="./assets/delicious-products-arrangement-bakery.jpg" class="d-block w-100 h-100 hero-bg-img" alt="Liyas Bakes and Cafe background" style="object-fit:cover;filter:blur(16px) brightness(0.7);height:100%;">
-                </div>
-            </div>
+<section class="hero-section">
+    <div id="heroCarousel" class="carousel slide carousel-fade" data-bs-ride="carousel" data-bs-interval="3000">
+        
+        <div class="carousel-indicators">
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="3" aria-label="Slide 4"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="4" aria-label="Slide 5"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="5" aria-label="Slide 6"></button>
+            <button type="button" data-bs-target="#heroCarousel" data-bs-slide-to="6" aria-label="Slide 7"></button>
         </div>
-        <!-- End Background Carousel -->
-        <div class="container">
-            <div class="row align-items-center min-vh-100">
-                <div class="col-12">
-                    <div id="heroCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000" data-bs-wrap="true">
-                        <div class="carousel-inner">
-                            <!-- Slide 1: Pro Gee Dee Ventures -->
-                            <div class="carousel-item active">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-6 order-lg-1 order-2">
-                                        <div class="hero-content">
-                                            <h1 class="hero-title">Pro Gee Dee Ventures</h1>
-                                            <p class="hero-subtitle">
-                                                Strategic investments across technology, gold, diamonds, and digital innovation. Partnering with ambitious companies to drive sustainable growth and shape tomorrow's market leaders.
-                                            </p>
 
-                                            <div class="hero-cta mt-4">
-                                                <a href="#" class="btn btn-primary btn-lg me-3">
-                                                    <i class="fas fa-arrow-right me-2"></i>
-                                                    Learn More
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 order-lg-2 order-1 text-center mb-4 mb-lg-0">
-                                        <img src="https://images.unsplash.com/photo-1504384308090-c894fdcc538d?auto=format&fit=crop&w=600&q=80" alt="Pro Gee Dee Ventures" class="img-fluid rounded-4 shadow-lg hero-img">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Slide 2: Goldendream -->
-                            <div class="carousel-item">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-6 order-lg-1 order-2">
-                                        <div class="hero-content">
-                                            <h1 class="hero-title">Goldendream</h1>
-                                            <p class="hero-subtitle">
-                                                Premium gold, diamond, and gemstone jewelry with investment plans and customization options. Trusted by 10,000+ clients for quality and ethical sourcing.
-                                            </p>
-
-                                            <div class="hero-cta mt-4">
-                                                <a href="https://la.goldendream.in/" target="_blank" class="btn btn-primary btn-lg me-3">
-                                                    <i class="fas fa-external-link-alt me-2"></i>
-                                                    Visit Website
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 order-lg-2 order-1 text-center mb-4 mb-lg-0">
-                                        <img src="./assets/black-gold-glitter-background.jpg" alt="Goldendream" class="img-fluid rounded-4 shadow-lg hero-img">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Slide 3: The Brand Weave -->
-                            <div class="carousel-item">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-6 order-lg-1 order-2">
-                                        <div class="hero-content">
-                                            <h1 class="hero-title">The Brand Weave</h1>
-                                            <p class="hero-subtitle">
-                                                Digital agency specializing in creative solutions, digital marketing, branding, and design. Empowering businesses to grow online with data-driven strategies.
-                                            </p>
-
-                                            <div class="hero-cta mt-4">
-                                                <a href="https://thebrandweave.com/" target="_blank" class="btn btn-primary btn-lg me-3">
-                                                    <i class="fas fa-external-link-alt me-2"></i>
-                                                    Visit Website
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 order-lg-2 order-1 text-center mb-4 mb-lg-0">
-                                        <img src="./assets/colleagues-working-desk.jpg" alt="The Brand Weave" class="img-fluid rounded-4 shadow-lg hero-img">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Slide 4: Liyas Gold and Diamonds -->
-                            <div class="carousel-item">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-6 order-lg-1 order-2">
-                                        <div class="hero-content">
-                                            <h1 class="hero-title">Liyas Gold and Diamonds</h1>
-                                            <p class="hero-subtitle">
-                                                Trusted, high-quality gold and diamond jewelry with ethical sourcing and customization. Helping secure your financial future with confidence and award-winning service.
-                                            </p>
-
-                                            <div class="hero-cta mt-4">
-                                                <a href="https://liyasgoldanddiamonds.com/" target="_blank" class="btn btn-primary btn-lg me-3">
-                                                    <i class="fas fa-external-link-alt me-2"></i>
-                                                    Visit Website
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 order-lg-2 order-1 text-center mb-4 mb-lg-0">
-                                        <img src="./assets/view-brilliant-cartoon-diamond.jpg" alt="Liyas Gold and Diamonds" class="img-fluid rounded-4 shadow-lg hero-img">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Slide 5: Liyas Construction -->
-                            <div class="carousel-item">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-6 order-lg-1 order-2">
-                                        <div class="hero-content">
-                                            <h1 class="hero-title">Liyas Construction</h1>
-                                            <p class="hero-subtitle">
-                                                Comprehensive construction services including residential, commercial, and industrial projects. Specializing in modern architecture, sustainable building practices, and turnkey solutions with quality craftsmanship.
-                                            </p>
-
-                                            <div class="hero-cta mt-4">
-                                                <button class="btn btn-secondary btn-lg me-3" disabled>
-                                                    <i class="fas fa-clock me-2"></i>
-                                                    Coming Soon
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 order-lg-2 order-1 text-center mb-4 mb-lg-0">
-                                        <img src="./assets/construction-silhouette.jpg" alt="Liyas Construction" class="img-fluid rounded-4 shadow-lg hero-img">
-                                    </div>
-                                </div>
-                            </div>
-                            <!-- Slide 6: Liyas Bakes and Cafe -->
-                            <div class="carousel-item">
-                                <div class="row align-items-center">
-                                    <div class="col-lg-6 order-lg-1 order-2">
-                                        <div class="hero-content">
-                                            <h1 class="hero-title">Liyas Bakes and Cafe</h1>
-                                            <p class="hero-subtitle">
-                                                Premium bakery and cafe serving fresh pastries, cakes, breads, and specialty coffee. Offering custom cakes for celebrations, corporate events, and daily fresh baked goods with exceptional taste and presentation.
-                                            </p>
-
-                                            <div class="hero-cta mt-4">
-                                                <button class="btn btn-secondary btn-lg me-3" disabled>
-                                                    <i class="fas fa-clock me-2"></i>
-                                                    Coming Soon
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div class="col-lg-6 order-lg-2 order-1 text-center mb-4 mb-lg-0">
-                                        <img src="./assets/delicious-products-arrangement-bakery.jpg" alt="Liyas Bakes and Cafe" class="img-fluid rounded-4 shadow-lg hero-img">
-                                    </div>
-                                </div>
+        <div class="carousel-inner">
+            
+            <div class="carousel-item active">
+                <div class="hero-slide" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.3) 100%), url('./assets/new1.jpeg');">
+                    <div class="container hero-container">
+                        <div class="hero-content">
+                            <span class="hero-subtitle">INVESTING TODAY, IMPACTING TOMORROW</span>
+                            <h1 class="hero-title">
+                                Pro Gee Dee <br>
+                                <span class="text-gold">Ventures</span>
+                            </h1>
+                            <p class="hero-description">
+                                Strategic investments across technology, gold, diamonds, and digital innovation. 
+                                Partnering with ambitious companies to drive sustainable growth and shape tomorrow's market leaders.
+                            </p>
+                            <div class="hero-actions">
+                                <a href="/opportunities.php" class="btn btn-gold">
+                                    Explore Opportunities 
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
+                                    </svg>
+                                </a>
+                                <!-- <a href="/about.php" class="btn btn-outline-light video-btn">
+                                    <span style="color:black;">Learn More</span> <i class="bi bi-play-circle"></i>
+                                </a> -->
                             </div>
                         </div>
-                        <!-- Carousel controls - Only Next button visible -->
-                        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev" style="display: none;">
-                            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Previous</span>
-                        </button>
-                        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
-                            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                            <span class="visually-hidden">Next</span>
-                        </button>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="carousel-item">
+                <div class="hero-slide" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.3) 70%), url('./assets/gd.jpeg');">
+                    <div class="container hero-container">
+                        <div class="hero-content">
+                           <span class="hero-subtitle">INVESTING TODAY, IMPACTING TOMORROW</span>
+                            <h1 class="hero-title">
+                                Golden 
+                                <span class="text-gold">Dream </span>
+                            </h1>
+                            <p class="hero-description">
+                                   Premium gold, diamond, and gemstone jewelry with investment plans and customization options. Trusted by 10,000+ clients for quality and ethical sourcing.
+                            </p>
+                            <div class="hero-actions">
+                                <a href="/commodities.php" class="btn btn-gold">
+                                    View Asset Portfolio
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="carousel-item">
+                <div class="hero-slide" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.3) 100%), url('./assets/brand.jpeg');">
+                    <div class="container hero-container">
+                        <div class="hero-content">
+                          <span class="hero-subtitle">INVESTING TODAY, IMPACTING TOMORROW</span>
+                            <h1 class="hero-title">
+                                The Brand  
+                                <span class="text-gold">Weave</span>
+                            </h1>
+                            <p class="hero-description">
+                              Digital agency specializing in creative solutions, digital marketing, branding, and design. Empowering businesses to grow online with data-driven strategies
+                            </p>
+                            <div class="hero-actions">
+                                <a href="/contact.php" class="btn btn-gold">
+                                    Partner With Us
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+               <div class="carousel-item">
+                <div class="hero-slide" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.3) 100%), url('./assets/gold.jpeg');">
+                    <div class="container hero-container">
+                        <div class="hero-content">
+                          <span class="hero-subtitle">INVESTING TODAY, IMPACTING TOMORROW</span>
+                            <h1 class="hero-title">
+                                Liyas Gold &  
+                                <span class="text-gold">Diamonds</span>
+                            </h1>
+                            <p class="hero-description">
+                       Trusted, high-quality gold and diamond jewelry with ethical sourcing and customization. Helping secure your financial future with confidence and award-winning service.
+                            </p>
+                            <div class="hero-actions">
+                                <a href="/contact.php" class="btn btn-gold">
+                                    Partner With Us
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+               <div class="carousel-item">
+                <div class="hero-slide" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 40%, rgba(0, 0, 0, 0.3) 100%), url('./assets/construction.jpeg');">
+                    <div class="container hero-container">
+                        <div class="hero-content">
+                          <span class="hero-subtitle">INVESTING TODAY, IMPACTING TOMORROW</span>
+                            <h1 class="hero-title">
+                                Liyas 
+                                <span class="text-gold">Construction</span>
+                            </h1>
+                            <p class="hero-description">
+                        Comprehensive construction services including residential, commercial, and industrial projects. Specializing in modern architecture, sustainable building practices, and turnkey solutions with quality craftsmanship
+                            </p>
+                            <div class="hero-actions">
+                                <a href="/contact.php" class="btn btn-gold">
+                                    Partner With Us
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+
+               <div class="carousel-item">
+                <div class="hero-slide" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.3) 100%), url('./assets/bakes.jpeg');">
+                    <div class="container hero-container">
+                        <div class="hero-content">
+                          <span class="hero-subtitle">INVESTING TODAY, IMPACTING TOMORROW</span>
+                            <h1 class="hero-title">
+                                Liyas Bakes & 
+                                <span class="text-gold">Cafe</span>
+                            </h1>
+                            <p class="hero-description">
+                       Premium bakery and cafe serving fresh pastries, cakes, breads, and specialty coffee. Offering custom cakes for celebrations, corporate events, and daily fresh baked goods with exceptional taste and presentation.
+                            </p>
+                            <div class="hero-actions">
+                                <a href="/contact.php" class="btn btn-gold">
+                                    Partner With Us
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+               <div class="carousel-item">
+                <div class="hero-slide" style="background-image: linear-gradient(to right, rgba(0, 0, 0, 0.15) 0%, rgba(0, 0, 0, 0.3) 100%), url('./assets/gdedutech.jpeg');">
+                    <div class="container hero-container">
+                        <div class="hero-content">
+                          <span class="hero-subtitle">INVESTING TODAY, IMPACTING TOMORROW</span>
+                            <h1 class="hero-title">
+                                Gd Edu
+                                <span class="text-gold">Tech</span>
+                            </h1>
+                            <p class="hero-description">
+                   Empowering minds through quality education and innovative learning solutions. Join us in shaping the future of education.
+                            </p>
+                            <div class="hero-actions">
+                                <a href="/contact.php" class="btn btn-gold">
+                                    Book Your Slot Now
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
+                                        <path fill-rule="evenodd" d="1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
+
+        <div class="container global-hero-overlays">
+            <div class="scroll-down">
+                <div class="mouse-icon"></div>
+                <span>Scroll Down</span>
+            </div>
+        </div>
+
+        <button class="carousel-control-prev" type="button" data-bs-target="#heroCarousel" data-bs-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#heroCarousel" data-bs-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="visually-hidden">Next</span>
+        </button>
+    </div>
+</section>
 
 
 
-    <main>
+    <!-- <main>
         <section id="ventures" class="section bg-light">
             <div class="container">
                 <h2 style="text-align: center;">Our Ventures</h2>
@@ -1183,54 +2518,125 @@
                     <img src="./assets/BROCHUR_page-00012.jpg" alt="Investment Portfolio Brochure" class="img-fluid" style="max-width: 100%; height: auto;">
                 </div>
             </div>
-        </section>
+        </section>  -->
+   <section class="ventures-section">
 
-        <!-- Gallery Section -->
-        <section id="gallery" class="section bg-white">
-            <div class="container">
-                <h2 class="section-title text-center mb-4">Our Gallery</h2>
-                <div id="galleryCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="3000" data-bs-wrap="true" data-bs-pause="false" data-bs-touch="true" data-bs-keyboard="false">
-                    <div class="carousel-inner">
-                        <?php
-                        $galleryDir = __DIR__ . '/assets/gallery/';
-                        $galleryUrl = './assets/gallery/';
-                        $images = array_values(array_filter(scandir($galleryDir), function ($file) use ($galleryDir) {
-                            return !is_dir($galleryDir . $file) && preg_match('/\\.(jpg|jpeg|png|gif)$/i', $file);
-                        }));
-                        $chunked = array_chunk($images, 3);
-                        foreach ($chunked as $i => $row) {
-                        ?>
-                            <div class="carousel-item<?php if ($i == 0) echo ' active'; ?>">
-                                <div class="row g-4 justify-content-center">
-                                    <?php foreach ($row as $img): ?>
-                                        <div class="col-md-4">
-                                            <div class="card h-100 shadow-sm">
-                                                <img src="<?php echo $galleryUrl . $img; ?>" class="card-img-top img-fluid" alt="Gallery Image" style="object-fit:cover; width:100%; height:320px;" loading="lazy">
-                                            </div>
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                            </div>
-                        <?php } ?>
-                    </div>
-                    <button class="carousel-control-prev" type="button" data-bs-target="#galleryCarousel" data-bs-slide="prev">
-                        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Previous</span>
-                    </button>
-                    <button class="carousel-control-next" type="button" data-bs-target="#galleryCarousel" data-bs-slide="next">
-                        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                        <span class="visually-hidden">Next</span>
-                    </button>
+    <div class="ventures-layout">
+
+    
+
+        <!-- left Side Bento Grid -->
+        <div class="bento-grid">
+
+            <div class="bento-card card-1">
+                <img src="./assets/colleagues-working-desk.jpg" alt="">
+                <div class="overlay">
+                    <h3>Liyas Gold & Diamonds</h3>
                 </div>
-        </section>
+            </div>
+
+            <div class="bento-card card-2">
+                <img src="./assets/delicious-products-arrangement-bakery.jpg" alt="">
+                <div class="overlay">
+                    <h3>Liyas Bakes & Cafe</h3>
+                </div>
+            </div>
+
+            <div class="bento-card card-3">
+                <img src="./assets/new2.webp" alt="">
+                <div class="overlay">
+                    <h3>GD Edu Tech</h3>
+                </div>
+            </div>
+
+            <div class="bento-card card-4">
+                <img src="./assets/colleagues-working-desk.jpg" alt="">
+                <div class="overlay">
+                    <h3>Liyas Protein</h3>
+                </div>
+            </div>
+
+            <div class="bento-card card-5">
+                <img src="./assets/construction-silhouette.jpg" alt="">
+                <div class="overlay">
+                    <h3>Liyas Construction</h3>
+                </div>
+            </div>
+
+        </div>
+            <!-- Right Side -->
+        <div class="ventures-content">
+            <!-- <span class="subtitle">OUR PORTFOLIO</span> -->
+
+            <h2 class="about-title" >
+                <span class="explore">Explore</span> <br> <span class="text-gold">Our Ventures</span>
+            </h2>
+              <span class="hero-subtitle-1">WHERE GREAT VENTURES BEGIN</span>
+
+            <!-- <p class="venture-text">
+                Explore our diverse portfolio of businesses spanning luxury,
+                hospitality, education, health, and infrastructure. Each
+                venture is built with a commitment to excellence, innovation,
+                and long-term value creation.
+            </p> -->
+
+            <!-- <a href="#" class="venture-btn">
+                Explore Ventures
+            </a> -->
+        </div>
+
+    </div>
+
+</section>
+
+<div class="scene">
+    <div class="a3d" id="gallery"></div>
+</div>
+
+   <!-- Gallery Section -->
+<section id="gallery" class="section-2 bg-white overflow-hidden border">
+    <div class="container-fluid px-0">
+        <h2 class="section-title text-center mb-5" style="color:black;">Our <span class="text-gold" style="font-weight:bold;">Gallery</span></h2>
+        
+        <div class="smooth-slider-container">
+            <div class="smooth-slider-track">
+                <?php
+                $galleryDir = __DIR__ . '/assets/gallery/';
+                $galleryUrl = './assets/gallery/';
+                
+                // Fetch images cleanly
+                $images = array_values(array_filter(scandir($galleryDir), function ($file) use ($galleryDir) {
+                    return !is_dir($galleryDir . $file) && preg_match('/\\.(jpg|jpeg|png|gif)$/i', $file);
+                }));
+
+                // If we have images, print them twice to ensure a seamless infinite loop
+                if (!empty($images)):
+                    // Merge array with itself to handle the loop overlap
+                    $loopImages = array_merge($images, $images); 
+                    foreach ($loopImages as $img): 
+                ?>
+                        <div class="smooth-slider-item">
+                            <div class="card h-100  border-0 mx-2">
+                                <img src="<?php echo $galleryUrl . $img; ?>" class="card-img-top" alt="Gallery Image" style="object-fit:cover; width:100%; height:420px; border-radius:30px;" loading="lazy">
+                            </div>
+                        </div>
+                <?php 
+                    endforeach;
+                endif; 
+                ?>
+            </div>
+        </div>
+    </div>
+</section>
 
         <!-- YouTube Video Section -->
-        <section id="youtube-video" class="section">
+        <section id="youtube-video" class="section-1">
             <div class="container">
                 <div class="row justify-content-center">
                     <div class="col-lg-10 text-center fade-in-up">
-                        <h2 class="section-title mb-4">Watch Our Latest Videos</h2>
-                        <p class="section-subtitle mb-5">Discover our vision and mission through our latest presentations</p>
+                        <h2 class="section-title mb-4"><span class="text-gold-1">Watch Our</span> Latest Videos</h2>
+                        <!-- <p class="section-subtitle mb-5">Discover our vision and mission through our latest presentations</p> -->
+                                  <span class="hero-subtitle-1">DISCOVER OUR VISION AND MISSION THROUGH OUR LATEST PRESENTATIONS</span> <BR></BR>
 
                         <div class="row g-4">
                             <!-- Video 1 -->
@@ -1242,7 +2648,7 @@
                                             class="img-fluid w-100 h-100"
                                             style="transition: transform 0.3s ease; object-fit: cover;">
                                         <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
-                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                            style="background: #a16b14; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1263,7 +2669,7 @@
                                             style="transition: transform 0.3s ease; object-fit: cover;"
                                             onerror="this.src='https://img.youtube.com/vi/LfKhSRvn-Es/mqdefault.jpg'">
                                         <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
-                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                            style="background: #a16b14; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1283,7 +2689,7 @@
                                             class="img-fluid w-100 h-100"
                                             style="transition: transform 0.3s ease; object-fit: cover;">
                                         <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
-                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                            style="background: #a16b14; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1303,7 +2709,7 @@
                                             class="img-fluid w-100 h-100"
                                             style="transition: transform 0.3s ease; object-fit: cover;">
                                         <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
-                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                            style="background: #a16b14; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1322,7 +2728,7 @@
                                             class="img-fluid w-100 h-100"
                                             style="transition: transform 0.3s ease; object-fit: cover;">
                                         <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
-                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                            style="background: #a16b14; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1341,7 +2747,7 @@
                                             class="img-fluid w-100 h-100"
                                             style="transition: transform 0.3s ease; object-fit: cover;">
                                         <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
-                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                            style="background: #a16b14; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1360,7 +2766,7 @@
                                             class="img-fluid w-100 h-100"
                                             style="transition: transform 0.3s ease; object-fit: cover;">
                                         <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
-                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                            style="background: #a16b14; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1379,7 +2785,7 @@
                                             class="img-fluid w-100 h-100"
                                             style="transition: transform 0.3s ease; object-fit: cover;">
                                         <div class="play-button-overlay position-absolute top-50 start-50 translate-middle"
-                                            style="background: rgba(255,0,0,0.9); width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
+                                            style="background: #a16b14; width: 60px; height: 60px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: all 0.3s ease;">
                                             <i class="fas fa-play text-white" style="font-size: 18px; margin-left: 3px;"></i>
                                         </div>
                                     </div>
@@ -1420,31 +2826,49 @@
             </div>
         </div>
 
-        <!-- Call to Action Section - The Brand Weave -->
-        <section class="section" style="background: linear-gradient(135deg, var(--c-primary) 0%, #1e293b 100%);">
-            <div class="container text-center">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8 fade-in-up">
-                        <h2 class="section-title text-white mb-4">Ready to Partner With The Brand Weave?</h2>
-                        <p class="section-subtitle text-white-50 mb-5">
-                            The Brand Weave is a premier digital agency specializing in creative solutions, digital marketing, branding, and design.
-                            We empower businesses to grow online with data-driven strategies and innovative design solutions.
-                            From brand identity to comprehensive digital marketing campaigns, we deliver measurable results that drive your business forward.
-                        </p>
-                        <div class="d-flex flex-column flex-sm-row gap-3 justify-content-center">
-                            <a href="https://thebrandweave.com/" target="_blank" class="btn btn-danger btn-lg px-5" style="background: linear-gradient(135deg, #dc3545 0%, #8b0000 100%); border: none; box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);">
-                                <i class="fas fa-external-link-alt me-2"></i>
-                                Partner With Us
-                            </a>
-                            <a href="https://thebrandweave.com/" target="_blank" class="btn btn-outline-light btn-lg px-5">
-                                <i class="fas fa-globe me-2"></i>
-                                Visit Website
-                            </a>
-                        </div>
-                    </div>
-                </div>
+       <div class="cta-card">
+
+    <div class="circles"></div>
+
+    <div class="cta-wrapper">
+
+        <!-- Left Content -->
+        <div class="content">
+            <h2>Let's Get  <br><span class="text-gold-2" style="font-weight:800;">In Touch.</span></h2>
+
+            <p>
+                Your laboratory instruments should serve you,
+                not the other way around. We're happy to help you.
+            </p>
+
+            <div class="buttons">
+                <a href="contact.php" class="btn">
+    <i class="fa-solid fa-handshake"></i>
+    Partner With Us
+    <span></span>
+</a>
+
+<a href="https://yourwebsite.com" class="btn">
+    <i class="fa-solid fa-arrow-up-right-from-square"></i>
+    Visit Website
+    <span></span>
+</a>
             </div>
-        </section>
+        </div>
+
+        <!-- Right Logos -->
+        <div class="logo-grid">
+         <a href="https://thebrandweave.com/" target="__blank">   <img class="logo-img-1" src="landing_assets/images/gdlogo5.png" alt="Logo"></a>
+           <a href="https://liyasgoldanddiamonds.com/" target="__blank"> <img class="logo-img-1" src="landing_assets/images/gdlogo6.png" alt="Logo"></a>
+         <a href="https://gdedutech.com/" target="__blank">   <img class="logo-img-1" src="landing_assets/images/gdlogo2.png" alt="Logo"></a>
+       <a href="https://liyasinternational.com/" target="__blank">     <img class="logo-img-1" src="landing_assets/images/gdlogo3.webp" alt="Logo"></a>
+          <a href="https://shop.goldendream.in/" target="__blank">  <img class="logo-img-1" src="landing_assets/images/gdlogo1.png" alt="Logo"></a>
+            <a href="" target="__blank"><img class="logo-img-1" src="landing_assets/images/gdlogo4.png" alt="Logo"></a>
+        </div>
+
+    </div>
+
+</div>
     </main>
 
     <!-- Back to Top Button -->
@@ -1775,7 +3199,7 @@
                     thumbnail.addEventListener('mouseleave', function() {
                         this.querySelector('img').style.transform = 'scale(1)';
                         playButton.style.transform = 'translate(-50%, -50%) scale(1)';
-                        playButton.style.background = 'rgba(255,0,0,0.9)';
+                        playButton.style.background = '#a16b14';
                     });
                 }
             });
@@ -1846,7 +3270,7 @@
     <footer id="contact">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>About Golden Dream</h3>
+                <img src="./landing_assets/images/1gdLogo.png" alt="logo" class="footer-logo">
                 <p>Empowering your financial future with secure investment opportunities and expert guidance. Join us in building a prosperous tomorrow.</p>
                 <div class="social-links">
                     <a href="https://www.instagram.com/pro_gd_ventures_pvt/"><i class="fab fa-instagram"></i></a>
@@ -1899,13 +3323,108 @@
             <!-- <div class="developer-credit">
                 <span>Developed by <a style="text-decoration: none;color:teal;" href="https://intelexsolutions.in/"> <img src="../landing_assets/images/intelex.png" style="height: 20px;margin-bottom:-5px;" alt=""> Intelex Solutions</a></span>
             </div> -->
-            <p>&copy; 2025 Golden Dream. All rights reserved.</p>
+           <p>
+  <span class="gold-text">&copy;</span> 2026 Golden Dream. All rights reserved.
+</p>
             <!-- <div class="last-updated">
                 <i class="fas fa-clock"></i>
                 <span>Last updated: <?php echo date('F d, Y'); ?></span>
             </div> -->
         </div>
     </footer>
+       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+     document.addEventListener('DOMContentLoaded', function() {
+    // 1. Safe Carousel Setup (Removing the problematic double sync loop)
+    const heroCarouselEl = document.getElementById('heroCarousel');
+    if (heroCarouselEl) {
+        new bootstrap.Carousel(heroCarouselEl, {
+            interval: 3000,
+            wrap: true,
+            ride: 'carousel'
+        });
+    }
+
+    // 2. Safe Smooth Scrolling for Anchor Links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const target = document.querySelector(this.getAttribute('href'));
+            if (target) {
+                window.scrollTo({
+                    top: target.offsetTop - 80,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+
+    // 3. Performance Optimized Sticky Navbar (Uses passive scroll listener)
+    const header = document.querySelector('header');
+    if (header) {
+        window.addEventListener('scroll', function() {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        }, { passive: true });
+    }
+
+    // 4. Safe Ripple Effect without destructive innerHTML conflicts
+    document.querySelectorAll('.btn').forEach(button => {
+        button.addEventListener('click', function(e) {
+            // Stop ripple if button contains a loader to prevent crash
+            if (this.querySelector('.fa-spin')) return;
+
+            const ripple = document.createElement('span');
+            const rect = this.getBoundingClientRect();
+            const size = Math.max(rect.width, rect.height);
+            const x = e.clientX - rect.left - size / 2;
+            const y = e.clientY - rect.top - size / 2;
+
+            ripple.style.cssText = `
+                position: absolute;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.4);
+                transform: scale(0);
+                animation: ripple 0.6s linear;
+                width: ${size}px;
+                height: ${size}px;
+                left: ${x}px;
+                top: ${y}px;
+                pointer-events: none;
+            `;
+
+            this.style.position = 'relative';
+            this.style.overflow = 'hidden';
+            this.appendChild(ripple);
+
+            setTimeout(() => ripple.remove(), 600);
+        });
+    });
+});
+
+// YouTube Video Modal Function
+function openVideoModal(videoId, videoTitle) {
+    const iframe = document.getElementById('youtubeIframe');
+    const modalTitle = document.getElementById('videoModalLabel');
+    if(modalTitle) modalTitle.textContent = videoTitle;
+    if(iframe) iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
+    
+    const modal = new bootstrap.Modal(document.getElementById('videoModal'));
+    modal.show();
+
+    document.getElementById('videoModal').addEventListener('hidden.bs.modal', function() {
+        if(iframe) iframe.src = '';
+    }, { once: true });
+}
+
+    </script>
+ 
 </body>
 
 </html>

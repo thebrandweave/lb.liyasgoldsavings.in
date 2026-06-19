@@ -3,18 +3,18 @@
 class Database
 {
 //    private $host = "82.25.121.121";
-    private $host = "localhost";
-    private $db_name = "u232955123_LAGD_DB";
-    private $username = "u232955123_LAGD_USER";
-    private $password = "1UdVp67/";
+    // private $host = "localhost";
+    // private $db_name = "u232955123_LAGD_DB";
+    // private $username = "u232955123_LAGD_USER";
+    // private $password = "1UdVp67/";
+    // public $conn;
+
+
+    public $host = "localhost";
+    public $db_name = "la-main";
+    public $username = "root";
+    public $password = "";
     public $conn;
-
-
-    //public $host = "localhost";
-    //public $db_name = "u229215627_goldenDreamSQL";
-    //public $username = "root";
-    //public $password = "";
-    //public $conn;
 
     // Base URL configuration
     public static $baseUrl = "https://la.goldendream.in/";

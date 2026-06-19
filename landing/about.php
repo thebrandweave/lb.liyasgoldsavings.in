@@ -376,9 +376,10 @@ require_once("../config/config.php");
         }
 
         .hero-image img {
-            max-width: 100%;
+            width: 613px;
+            margin-top:100px;
             border-radius: 18px;
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
+          
         }
 
         /* Responsive */
@@ -1172,41 +1173,7 @@ require_once("../config/config.php");
 
 <body>
     <!-- Header -->
-    <header>
-        <div class="container">
-            <nav class="navbar">
-                <div class="nav-left">
-                    <a href="#" class="logo">
-                        <img src="./landing_assets/images/gdLogo.png" alt="Golden Dream Logo" style="height:32px;"> Golden Dream
-                    </a>
-                    <button class="mobile-menu-btn" onclick="toggleMobileMenu()">
-                        <i class="fas fa-bars"></i>
-                    </button>
-                    <div class="nav-links">
-                        <a href="./">Home</a>
-                        <a href="./about.php">About Us</a>
-                        <!-- <a href="./Gallery">Gallery</a>
-                        <a href="./Certificates">Certificates</a>
-                        <a href="./SavingsPlan">Savings Plan</a>
-                        <a href="./Blog">Blog</a>
-                        <a href="./ContactUs">Contact Us</a> -->
-                    </div>
-                </div>
-                <div class="nav-right">
-                    <div class="country-flag">
-                        <img src="./landing_assets/images/india.png" alt="India Flag">
-                        <span>India</span>
-                    </div>
-                    <div class="login-dropdown">
-                        <button class="login-btn" onclick="openLoginModal()">
-                            <i class="fas fa-user"></i>
-                            Login
-                        </button>
-                    </div>
-                </div>
-            </nav>
-        </div>
-    </header>
+<?php include '../components/navbar.php'; ?>
 
     <!-- Login Modal -->
     <div class="modal-overlay" id="loginModal">
