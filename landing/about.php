@@ -1471,7 +1471,7 @@ require_once("../config/config.php");
         </div>
     </section>
 
-    <!-- Footer -->
+      <!-- Footer -->
     <footer id="contact">
         <div class="footer-content">
             <div class="footer-section">
@@ -1524,10 +1524,7 @@ require_once("../config/config.php");
                 </div>
             </div>
         </div>
-        <div class="copyright">
-            <!-- <div class="developer-credit">
-                <span>Developed by <a style="text-decoration: none;color:teal;" href="https://intelexsolutions.in/"> <img src="../landing_assets/images/intelex.png" style="height: 20px;margin-bottom:-5px;" alt=""> Intelex Solutions</a></span>
-            </div> -->
+ 
            <p>
   <span class="gold-text">&copy;</span> 2026 Golden Dream. All rights reserved.
 </p>
