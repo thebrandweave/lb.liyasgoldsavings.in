@@ -3266,73 +3266,9 @@ header {
         });
     </script>
 
-    <!-- Footer -->
-    <footer id="contact">
-        <div class="footer-content">
-            <div class="footer-section">
-                <img src="./landing_assets/images/gdlogofooter.png" alt="logo" class="footer-logo">
-                <p>Empowering your financial future with secure investment opportunities and expert guidance. Join us in building a prosperous tomorrow.</p>
-                <div class="social-links">
-                    <a href="https://www.instagram.com/pro_gd_ventures_pvt/"><i class="fab fa-instagram"></i></a>
-                    <a href="https://www.youtube.com/@goldendream23"><i class="fab fa-youtube"></i></a>
-                </div>
-            </div>
-            <div class="footer-section">
-                <h3>Quick Links</h3>
-                <ul>
-                    <li><a href="#features"><i class="fas fa-chevron-right"></i> Features</a></li>
-                    <li><a href="#how-it-works"><i class="fas fa-chevron-right"></i> How It Works</a></li>
-                    <li><a onclick="openLoginModal()"><i class="fas fa-chevron-right"></i> Login</a></li>
-                    <!-- <li><a href="https://lb.liyasgoldsavings.in//refer?id=GDP0001&ref=NTAw"><i class="fas fa-chevron-right"></i> Register</a></li> -->
-                    <li><a href="#contact"><i class="fas fa-chevron-right"></i> Contact Us</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Investment Plans</h3>
-                <ul>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> Short Term Plans</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> Long Term Plans</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> High Return Plans</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> Fixed Deposit Plans</a></li>
-                    <li><a href="#"><i class="fas fa-chevron-right"></i> Custom Plans</a></li>
-                </ul>
-            </div>
-            <div class="footer-section">
-                <h3>Contact Info</h3>
-                <div class="contact-info">
-                    <div class="contact-item">
-                        <i class="fas fa-map-marker-alt"></i>
-                        <span>2-108/C-7, Ground Floor, Sri Mantame Complex, Near Soorya Infotech Park, Kurnadu Post, Mudipu Road, Bantwal- 574153</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-phone"></i>
-                        <span>+91 99951 94472</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-envelope"></i>
-                        <span>goldendream175@gmail.com</span>
-                    </div>
-                    <div class="contact-item">
-                        <i class="fas fa-clock"></i>
-                        <span>Mon - Sun: 9:30 AM - 6:00 PM</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <div class="copyright">
-            <!-- <div class="developer-credit">
-                <span>Developed by <a style="text-decoration: none;color:teal;" href="https://intelexsolutions.in/"> <img src="../landing_assets/images/intelex.png" style="height: 20px;margin-bottom:-5px;" alt=""> Intelex Solutions</a></span>
-            </div> -->
-           <p>
-  <span class="gold-text">&copy;</span> 2026 Golden Dream. All rights reserved.
-</p>
-            <!-- <div class="last-updated">
-                <i class="fas fa-clock"></i>
-                <span>Last updated: <?php echo date('F d, Y'); ?></span>
-            </div> -->
-        </div>
-    </footer>
-       <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<?php include '../components/footer.php'; ?>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
