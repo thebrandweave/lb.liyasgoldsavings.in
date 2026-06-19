@@ -285,6 +285,7 @@ $currentPage = basename($_SERVER['PHP_SELF']);
 
     <a href="./about.php" class="nav-link-item <?= ($currentPage == 'about.php') ? 'active' : '' ?>">About Us</a>
 
+    <a href="./career.php" class="nav-link-item <?= ($currentPage == 'career.php') ? 'active' : '' ?>">Career</a>
 
 </div>
 
