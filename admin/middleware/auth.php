@@ -3,10 +3,12 @@ require_once($menuPath . "../config/JWT.php");
 
 function verifyAuth()
 {
+    global $menuPath;
+    $loginRedirect = ($menuPath ?? "./") . "login.php";
+
     // Check for JWT token in cookie
     if (!isset($_COOKIE['admin_token'])) {
-        header("Location: https://lb.liyasgoldsavings.in/admin/login.php");
-        // header("Location:http://localhost/goldendream/admin/login.php");
+        header("Location: " . $loginRedirect);
         exit();
     }
 
@@ -16,8 +18,7 @@ function verifyAuth()
     if (!$decoded) {
         // Token is invalid or expired
         setcookie('admin_token', '', time() - 3600, '/');
-        header("Location: https://lb.liyasgoldsavings.in/admin/login.php");
-        // header("Location:http://localhost/goldendream/admin/login.php");
+        header("Location: " . $loginRedirect);
         exit();
     }
 

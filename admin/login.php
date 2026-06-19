@@ -11,6 +11,13 @@ if (isset($_COOKIE['admin_token'])) {
     $decoded = JWTManager::verifyToken($token);
 
     if ($decoded) {
+        // Restore session from token if expired
+        if (!isset($_SESSION['admin_role'])) {
+            $_SESSION['admin_id'] = $decoded->admin_id;
+            $_SESSION['admin_email'] = $decoded->email;
+            $_SESSION['admin_role'] = $decoded->role;
+        }
+
         // User is already authenticated, redirect based on role
         if ($_SESSION['admin_role'] === 'Verifier') {
             header("Location: promoter/");
