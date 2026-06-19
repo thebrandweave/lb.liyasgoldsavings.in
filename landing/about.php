@@ -1475,13 +1475,11 @@ require_once("../config/config.php");
     <footer id="contact">
         <div class="footer-content">
             <div class="footer-section">
-                <h3>About Golden Dream</h3>
+                <img src="./landing_assets/images/gdlogofooter.png" alt="logo" class="footer-logo">
                 <p>Empowering your financial future with secure investment opportunities and expert guidance. Join us in building a prosperous tomorrow.</p>
                 <div class="social-links">
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-twitter"></i></a>
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://www.instagram.com/pro_gd_ventures_pvt/"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.youtube.com/@goldendream23"><i class="fab fa-youtube"></i></a>
                 </div>
             </div>
             <div class="footer-section">
@@ -1527,18 +1525,18 @@ require_once("../config/config.php");
             </div>
         </div>
         <div class="copyright">
-            <div class="developer-credit">
-
-                <span>Developed by <a style="text-decoration: none;color:teal;" href="https://intelexsolutions.in/"> <img src="./landing_assets/images/intelex.png" style="height: 20px;margin-bottom:-5px;" alt=""> Intelex Solutions</a></span>
-            </div>
-            <p>&copy; 2025 Golden Dream. All rights reserved.</p>
-            <div class="last-updated">
+            <!-- <div class="developer-credit">
+                <span>Developed by <a style="text-decoration: none;color:teal;" href="https://intelexsolutions.in/"> <img src="../landing_assets/images/intelex.png" style="height: 20px;margin-bottom:-5px;" alt=""> Intelex Solutions</a></span>
+            </div> -->
+           <p>
+  <span class="gold-text">&copy;</span> 2026 Golden Dream. All rights reserved.
+</p>
+            <!-- <div class="last-updated">
                 <i class="fas fa-clock"></i>
                 <span>Last updated: <?php echo date('F d, Y'); ?></span>
-            </div>
+            </div> -->
         </div>
     </footer>
-
     <!-- Mobile Menu -->
     <div class="mobile-menu" id="mobileMenu">
         <button class="mobile-menu-close" onclick="toggleMobileMenu()">
