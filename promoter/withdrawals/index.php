@@ -25,6 +25,21 @@ try {
     $promoter = $stmt->fetch(PDO::FETCH_ASSOC);
     $promoterUniqueID = $promoter ? $promoter['PromoterUniqueID'] : null;
 
+    // --- ADDED: Fetch Top 10 Earners dataset safely for the popup component ---
+    $popupEarners = [];
+    if ($promoterUniqueID) {
+        $popupQuery = "
+            SELECT Name, PromoterUniqueID, TotalEarnings, ProfileImageURL 
+            FROM WeeklyTopEarners 
+            WHERE WeekStartDate = (SELECT MAX(WeekStartDate) FROM WeeklyTopEarners)
+            ORDER BY RankNo ASC 
+            LIMIT 10
+        ";
+        $popupStmt = $conn->prepare($popupQuery);
+        $popupStmt->execute();
+        $popupEarners = $popupStmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
     // Get promoter's wallet balance by PromoterUniqueID (same as dashboard - UserID can be NULL in some rows)
     $wallet = null;
     if ($promoterUniqueID) {
@@ -415,6 +430,154 @@ try {
             border: 1px solid rgba(231, 76, 60, 0.2);
         }
 
+        /* --- ADDED: Top 10 Earners Modal Box Design Tokens --- */
+        .earners-popup-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 23, 42, 0.6);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 99999;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .earners-popup-overlay.show {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .earners-popup-box {
+            background: #ffffff;
+            width: 90%;
+            max-width: 440px;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px -10px rgba(0,0,0,0.2);
+            padding: 24px;
+            transform: scale(0.9) translateY(20px);
+            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+            max-height: 80vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .earners-popup-overlay.show .earners-popup-box {
+            transform: scale(1) translateY(0);
+        }
+
+        .popup-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 14px;
+            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 16px;
+        }
+
+        .popup-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--secondary-color);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .popup-close-btn {
+            background: #f1f5f9;
+            border: none;
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            color: var(--text-secondary);
+            transition: all 0.2s ease;
+        }
+
+        .popup-close-btn:hover {
+            background: #e2e8f0;
+            color: var(--text-primary);
+        }
+
+        .popup-list-scroll {
+            overflow-y: auto;
+            flex: 1;
+            padding-right: 4px;
+        }
+
+        .popup-list-scroll::-webkit-scrollbar {
+            width: 5px;
+        }
+        .popup-list-scroll::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 10px;
+        }
+
+        .popup-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 7px 12px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            background: var(--bg-light);
+        }
+
+        .popup-row-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .popup-rank {
+            font-size: 13px;
+            font-weight: 700;
+            color: var(--text-secondary);
+            width: 22px;
+        }
+
+        .popup-row:nth-child(1) .popup-rank { color: #f59e0b; }
+        .popup-row:nth-child(2) .popup-rank { color: #94a3b8; }
+        .popup-row:nth-child(3) .popup-rank { color: #b45309; }
+
+        .popup-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid #fff;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .popup-meta h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .popup-meta p {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .popup-earnings {
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+
         @keyframes slideIn {
             from {
                 opacity: 0;
@@ -505,14 +668,47 @@ try {
     <?php include('../components/sidebar.php'); ?>
     <?php include('../components/topbar.php'); ?>
 
-    <!-- <div class="content-wrapper">
-        <div class="testing-notice">
-            <i class="fas fa-flask"></i>
-            <div class="notice-content">
-                <span class="notice-text">This feature is currently under testing. The amounts and logs shown are not final and may change upon verification.</span>
-                <span class="notice-text kannada">ಈ ವೈಶಿಷ್ಟ್ಯವು ಪ್ರಸ್ತುತ ಪರೀಕ್ಷೆಯಲ್ಲಿದೆ. ತೋರಿಸಲಾದ ಮೊತ್ತಗಳು ಮತ್ತು ಲಾಗ್‌ಗಳು ಅಂತಿಮವಾಗಿಲ್ಲ ಮತ್ತು ಪರಿಶೀಲನೆಯ ಮೇಲೆ ಬದಲಾಗಬಹುದು</span>
+    <div class="earners-popup-overlay" id="topEarnersPopup">
+        <div class="earners-popup-box">
+            <div class="popup-header">
+                <div class="popup-title">
+                    <i class="fas fa-trophy" style="color: #f59e0b;"></i>
+                    <span>Top Weekly Earners</span>
+                </div>
+                <button class="popup-close-btn" id="closePopupBtn">
+                    <i class="fas fa-times"></i>
+                </button>
             </div>
-        </div> -->
+            <div class="popup-list-scroll">
+                <?php 
+                if (!empty($popupEarners)):
+                    $rank = 1;
+                    foreach ($popupEarners as $earner): 
+                        $imgUrl = !empty($earner['ProfileImageURL']) ? $earner['ProfileImageURL'] : '../assets/images/default-user.png';
+                ?>
+                        <div class="popup-row">
+                            <div class="popup-row-left">
+                                <div class="popup-rank">#<?= sprintf("%02d", $rank) ?></div>
+                                <img src="<?= htmlspecialchars($imgUrl) ?>" class="popup-avatar" alt="User">
+                                <div class="popup-meta">
+                                    <h4><?= htmlspecialchars($earner['Name']) ?></h4>
+                                    <p>ID: <?= htmlspecialchars($earner['PromoterUniqueID']) ?></p>
+                                </div>
+                            </div>
+                            <div class="popup-earnings">₹<?= number_format($earner['TotalEarnings'], 2) ?></div>
+                        </div>
+                <?php 
+                        $rank++;
+                    endforeach; 
+                else:
+                ?>
+                    <p style="text-align: center; font-size: 13px; color: var(--text-secondary); padding: 20px;">No performance logs recorded for this frame.</p>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
+
+    <div class="content-wrapper">
     <div class="main-content">
         <?php if ($message): ?>
             <div class="alert alert-<?php echo $messageType; ?>">
@@ -638,9 +834,37 @@ try {
         </div>
     </div>
     </div>
+    </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            // --- ADDED: Auto-trigger pop-up logic engine ---
+            const popupOverlay = document.getElementById('topEarnersPopup');
+            const closePopupBtn = document.getElementById('closePopupBtn');
+
+            // Wait 300ms for clean entrance fade-in
+            setTimeout(() => {
+                if (popupOverlay) {
+                    popupOverlay.classList.add('show');
+                }
+            }, 300);
+
+            // Close listeners
+            if (closePopupBtn) {
+                closePopupBtn.addEventListener('click', () => {
+                    popupOverlay.classList.remove('show');
+                });
+            }
+
+            if (popupOverlay) {
+                popupOverlay.addEventListener('click', (e) => {
+                    if (e.target === popupOverlay) {
+                        popupOverlay.classList.remove('show');
+                    }
+                });
+            }
+
+            // Existing content wrapper spacing calculator logic
             const sidebar = document.getElementById('sidebar');
             const content = document.querySelector('.content-wrapper');
 

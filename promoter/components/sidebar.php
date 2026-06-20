@@ -351,6 +351,12 @@
                 <span class="link-text">My Promoters</span>
             </a>
         </li>
+          <li class="<?php echo ($currentPage == 'add-promoter') ? 'active' : ''; ?>">
+            <a href="<?php echo $menuPath; ?>topten/" data-title="Add Promoter">
+             <i class="fas fa-trophy"></i>
+                <span class="link-text">Top Earners</span>
+            </a>
+        </li>
 
         <div class="section-divider"><span>Schemes & Payments</span></div>
 

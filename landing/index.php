@@ -2349,7 +2349,7 @@ header {
                                    Premium gold, diamond, and gemstone jewelry with investment plans and customization options. Trusted by 10,000+ clients for quality and ethical sourcing.
                             </p>
                             <div class="hero-actions">
-                                <a href="/commodities.php" class="btn btn-gold">
+                                <a href="h" class="btn btn-gold">
                                     View Asset Portfolio
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd" d="1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
@@ -2400,7 +2400,7 @@ header {
                        Trusted, high-quality gold and diamond jewelry with ethical sourcing and customization. Helping secure your financial future with confidence and award-winning service.
                             </p>
                             <div class="hero-actions">
-                                <a href="/contact.php" class="btn btn-gold">
+                                <a href="https://liyasgoldanddiamonds.com/" class="btn btn-gold">
                                     Partner With Us
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-arrow-right" viewBox="0 0 16 16">
                                         <path fill-rule="evenodd" d="1 8a.5.5 0 0 1 .5-.5h11.793l-3.147-3.146a.5.5 0 0 1 .708-.708l4 4a.5.5 0 0 1 0 .708l4 4a.5.5 0 0 1-.708.708L1.5 8.5A.5.5 0 0 1 1 8"/>
@@ -2420,7 +2420,7 @@ header {
                           <span class="hero-subtitle">INVESTING TODAY, IMPACTING TOMORROW</span>
                             <h1 class="hero-title">
                                 Liyas 
-                                <span class="text-gold">Construction</span>
+                                <span class="text-gold">Builders</span>
                             </h1>
                             <p class="hero-description">
                         Comprehensive construction services including residential, commercial, and industrial projects. Specializing in modern architecture, sustainable building practices, and turnkey solutions with quality craftsmanship
