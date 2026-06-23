@@ -135,7 +135,7 @@
     <footer id="contact">
         <div class="footer-content">
             <div class="footer-section">
-                <img src="./landing_assets/images/gdlogofooter.png" alt="logo" class="footer-logo">
+                <img src="./landing_assets/images/1gdlogo.png" alt="logo" class="footer-logo">
                 <p>Empowering your financial future with secure investment opportunities and expert guidance. Join us in building a prosperous tomorrow.</p>
                 <div class="social-links">
                     <a href="https://www.instagram.com/pro_gd_ventures_pvt/"><i class="fab fa-instagram"></i></a>
