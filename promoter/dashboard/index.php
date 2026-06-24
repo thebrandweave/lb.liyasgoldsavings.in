@@ -855,7 +855,7 @@ $currentPage = 'dashboard';
 
         .quick-access-card i {
             font-size: 24px;
-            color: var(--primary-color);
+            color: #9b8012;
             transition: all 0.3s ease;
         }
 
