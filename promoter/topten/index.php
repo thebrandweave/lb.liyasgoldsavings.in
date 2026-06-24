@@ -546,7 +546,7 @@ $remainingEarners = array_slice($topEarners, 3);
                 particleCount: 30,
                 spread: 60,
                 origin: { x: xPosition, y: yPosition },
-                colors: ['#0d6a50', '#eab308']
+                colors: ['#000000', '#eab308']
             });
         }
 
