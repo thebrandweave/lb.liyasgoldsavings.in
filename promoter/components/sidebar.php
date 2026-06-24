@@ -25,7 +25,7 @@
         left: 0;
         height: 100vh;
         width: var(--sidebar-width);
-        background: linear-gradient(180deg, #ffbb50, #000000);
+        background: linear-gradient(180deg, #b58944, #000000);
         box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
         transition: all var(--transition-speed) ease;
         z-index: 1000;
