@@ -42,7 +42,7 @@
     transform-origin: center;
 }
 .circle:nth-child(1) { stroke:rgb(155, 128, 18); animation-delay: 0s; }
-.circle:nth-child(2) { stroke: #2F9B7F; animation-delay: 0.4s; }
+.circle:nth-child(2) { stroke: #030302; animation-delay: 0.4s; }
 .circle:nth-child(3) { stroke:rgb(155, 128, 18); animation-delay: 0.8s; }
 .circle:nth-child(4) { stroke:rgb(155, 128, 18); animation-delay: 1.2s; }
 
