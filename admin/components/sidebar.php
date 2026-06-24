@@ -258,7 +258,7 @@ verifyAuth();
         }
 
         .sidebar-menu li.active i {
-            color: var(--hover-color);
+            color: white;
             animation: pulse 2s infinite;
         }
 
