@@ -206,7 +206,7 @@ $currentPage = 'dashboard';
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <style>
         :root {
-            --primary-color: rgb(218, 197, 15);
+            --primary-color: #dac50f;
             --primary-light: rgba(13, 106, 80, 0.1);
             --secondary-color: #2c3e50;
             --success-color: #2ecc71;
@@ -954,7 +954,7 @@ $currentPage = 'dashboard';
         }
 
         .inspiration-card {
-            background: linear-gradient(135deg, var(--primary-color), #cc8d2d);
+            background: linear-gradient(135deg, #f1ad45, #e9b466);
             border-radius: 20px;
             padding: 30px;
             color: white;
