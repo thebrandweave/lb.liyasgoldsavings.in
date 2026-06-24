@@ -368,7 +368,7 @@
         </li>
         <li class="<?php echo ($currentPage == 'payments') ? 'active' : ''; ?>">
             <a href="<?php echo $menuPath; ?>payments" data-title="Payments">
-                <i class="fas fa-rupee-sign"></i>
+                <i class="far fa-rupee-sign"></i>
                 <span class="link-text">Payments</span>
             </a>
         </li>
