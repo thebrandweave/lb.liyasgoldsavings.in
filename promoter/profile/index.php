@@ -447,8 +447,8 @@ $currentPage = 'profile';
         }
 
         .kyc-pending {
-            background: rgba(241, 196, 15, 0.1);
-            color: #f1c40f;
+            background: var(--primary-light);
+            color: var(--primary-color);
         }
 
         .kyc-verified {
