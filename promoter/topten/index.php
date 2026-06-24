@@ -538,7 +538,17 @@ $remainingEarners = array_slice($topEarners, 3);
             }());
         });
 
+        function popConfetti(event) {
+            const xPosition = event.clientX / window.innerWidth;
+            const yPosition = event.clientY / window.innerHeight;
 
+            confetti({
+                particleCount: 30,
+                spread: 60,
+                origin: { x: xPosition, y: yPosition },
+                colors: ['#000000', '#eab308']
+            });
+        }
 
         // Structural Sidebar mutation listening adjustments
         const sidebar = document.getElementById('sidebar');
