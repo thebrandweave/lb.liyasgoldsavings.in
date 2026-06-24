@@ -195,7 +195,7 @@ try {
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Kannada:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: rgb(13, 106, 80);
+            --primary-color: rgb(155, 128, 18);
             --primary-light: rgba(13, 106, 80, 0.1);
             --secondary-color: #2c3e50;
             --success-color: #2ecc71;

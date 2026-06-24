@@ -78,7 +78,7 @@ $remainingEarners = array_slice($topEarners, 3);
 
     <style>
         :root {
-            --primary-emerald: rgb(13, 106, 80);
+            --primary-emerald: rgb(155, 128, 18);
             --primary-glow: rgba(13, 106, 80, 0.15);
             --bg-surface: #ffffff;
             --bg-body: #f8fafc;

@@ -12,7 +12,7 @@
     :root {
         --sidebar-width: 250px;
         --sidebar-collapsed-width: 70px;
-        --primary-color: rgb(13, 106, 80);
+        --primary-color: rgb(155, 128, 18);
         --secondary-color: #2c3e50;
         --text-color: #f0f0f0;
         --hover-color: rgb(255, 255, 255);

@@ -175,7 +175,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <style>
         /* Include the same CSS variables and common styles from index.php */
         :root {
-            --primary-color: rgb(13, 106, 80);
+            --primary-color: rgb(155, 128, 18);
             --primary-light: rgba(13, 106, 80, 0.1);
             --secondary-color: #2c3e50;
             --success-color: #2ecc71;

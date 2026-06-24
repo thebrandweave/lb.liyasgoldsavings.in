@@ -41,10 +41,10 @@
     filter: drop-shadow(0 0 15px currentColor);
     transform-origin: center;
 }
-.circle:nth-child(1) { stroke:rgb(13, 106, 80); animation-delay: 0s; }
+.circle:nth-child(1) { stroke:rgb(155, 128, 18); animation-delay: 0s; }
 .circle:nth-child(2) { stroke: rgb(29, 85, 69); animation-delay: 0.4s; }
 .circle:nth-child(3) { stroke:rgb(8, 82, 61); animation-delay: 0.8s; }
-.circle:nth-child(4) { stroke: rgb(13, 106, 80); animation-delay: 1.2s; }
+.circle:nth-child(4) { stroke: rgb(155, 128, 18); animation-delay: 1.2s; }
 
 @keyframes draw {
     0%   { stroke-dasharray: 0, 314; opacity: 0.2; transform: scale(0.8); }
