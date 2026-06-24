@@ -641,7 +641,7 @@ if (!empty($searchQuery) || !empty($filterStatus)) {
                         if (!empty($promoter['ProfileImageURL']) && $promoter['ProfileImageURL'] !== '-'): 
                             echo '../../' . htmlspecialchars($promoter['ProfileImageURL']);
                         else:
-                            echo '../../uploads/profile/default.png';
+                            echo '../../uploads/profile/image.png';
                         endif;
                     ?>" alt="Profile" class="profile-image">
                 </div>
