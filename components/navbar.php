@@ -282,7 +282,7 @@
                 <!-- Premium Country Selector Display -->
                 <div class="country-pill">
                     <img src="./landing_assets/images/india.png" alt="India Flag" class="flag-icon">
-                    <span class="country-name">India</span>
+                    <span class="country-name">Indiana</span>
                 </div>
                 
                 <!-- Premium Login Button -->
