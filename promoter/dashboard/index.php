@@ -1118,7 +1118,7 @@ $currentPage = 'dashboard';
                     <div class="inspiration-content">
                         <p class="inspiration-message" id="inspirationMessage"></p>
                         <div class="inspiration-author">
-                            <i class="fas fa-star"></i>
+                            <!-- <i class="fas fa-star"></i> -->
                       
                         </div>
                     </div>
