@@ -3,8 +3,8 @@
 <style>
     :root {
         --topbar-height: 70px;
-        --Topprimary-color: #3a7bd5;
-        --Topsecondary-color: #00d2ff;
+        --Topprimary-color: #000000;
+        --Topsecondary-color: #b58944;
         --Toptext-dark: #2c3e50;
         --Toptext-light: #7f8c8d;
         --topborder-color: #e5e9f2;
