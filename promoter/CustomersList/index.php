@@ -1432,7 +1432,7 @@ function buildPageUrl($pageNum) {
             </div>
 
             <div style="display: flex; justify-content: flex-end; margin-bottom: 15px;">
-                <a href="export_customers_payments.php<?php echo empty($_SERVER['QUERY_STRING']) ? '' : '?' . htmlspecialchars($_SERVER['QUERY_STRING']); ?>" class="btn-primary" style="background: #28a745; color: #fff; min-width: 120px; text-align: center;">
+                <a href="export_customers_payments.php<?php echo empty($_SERVER['QUERY_STRING']) ? '' : '?' . htmlspecialchars($_SERVER['QUERY_STRING']); ?>" class="btn-primary" style="background: #1b7530; color: #fff; min-width: 120px; text-align: center;">
                     <i class="fas fa-file-export"></i> Export
                 </a>
             </div>
