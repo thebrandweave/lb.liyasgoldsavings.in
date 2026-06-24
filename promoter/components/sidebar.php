@@ -296,10 +296,10 @@
         }
     }
 
-    .sidebar-menu li.active i {
+    /* .sidebar-menu li.active i {
         color: var(--hover-color);
         animation: pulse 2s infinite;
-    }
+    } */
 </style>
 
 <div class="sidebar" id="sidebar">

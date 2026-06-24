@@ -257,10 +257,10 @@ verifyAuth();
             }
         }
 
-        .sidebar-menu li.active i {
+        /* .sidebar-menu li.active i {
             color: white;
             animation: pulse 2s infinite;
-        }
+        } */
 
         .alert {
             padding: 15px;
