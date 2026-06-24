@@ -15,7 +15,7 @@
         --primary-color: rgb(13, 106, 80);
         --secondary-color: #2c3e50;
         --text-color: #f0f0f0;
-        --hover-color: rgb(175, 234, 161);
+        --hover-color: rgb(255, 255, 255);
         --transition-speed: 0.3s;
     }
 
