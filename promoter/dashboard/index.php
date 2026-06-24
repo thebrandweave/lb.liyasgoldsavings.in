@@ -1113,13 +1113,13 @@ $currentPage = 'dashboard';
             <div class="inspiration-section">
                 <div class="inspiration-card">
                     <div class="inspiration-icon">
-                        <i class="fas fa-quote-left"></i>
+                     <i class="fas fa-star"></i>
                     </div>
                     <div class="inspiration-content">
                         <p class="inspiration-message" id="inspirationMessage"></p>
                         <div class="inspiration-author">
                             <i class="fas fa-star"></i>
-                            <!-- <span>~ Mausooq</span> -->
+                      
                         </div>
                     </div>
                 </div>
