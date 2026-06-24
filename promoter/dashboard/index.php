@@ -954,7 +954,7 @@ $currentPage = 'dashboard';
         }
 
         .inspiration-card {
-            background: linear-gradient(135deg, #f1ad45, #e9b466);
+            background: linear-gradient(257deg, #ffbb50, #000000);
             border-radius: 20px;
             padding: 30px;
             color: white;
