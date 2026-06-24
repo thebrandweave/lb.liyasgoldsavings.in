@@ -1128,7 +1128,7 @@ $currentPage = 'dashboard';
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-header">
-                        <div class="stat-icon" style="background: var(--primary-light); color: var(--primary-color);">
+                        <div class="stat-icon" style="background: #faf5e1; color: #9b8012;">
                             <i class="fas fa-users"></i>
                         </div>
                     </div>
