@@ -850,7 +850,7 @@ $currentPage = 'dashboard';
         .quick-access-card:hover {
             transform: translateY(-5px);
             background: #fff0b5;
-            color: var(--primary-color);
+            color: #584f2a;
         }
 
         .quick-access-card i {
