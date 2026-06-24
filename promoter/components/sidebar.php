@@ -261,7 +261,7 @@
         margin-left: 10px;
     }
 
-    /* Tooltip for collapsed sidebar */
+    /* Tooltip for collapsed sidebar
     .sidebar.collapsed .sidebar-menu a {
         position: relative;
     }
@@ -279,7 +279,7 @@
         white-space: nowrap;
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
         z-index: 1000;
-    }
+    } */
 
     /* Animation for active link */
     @keyframes pulse {
