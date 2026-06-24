@@ -155,7 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .login-header {
-            background: linear-gradient(180deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            background: linear-gradient(360deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             color: var(--light-text);
             padding: 30px;
             text-align: center;
