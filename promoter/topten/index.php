@@ -522,7 +522,7 @@ $remainingEarners = array_slice($topEarners, 3);
                     angle: 60,
                     spread: 55,
                     origin: { x: 0, y: 0.85 },
-                    colors: ['#000000', '#eab308', '#ff0000']
+                    colors: ['#000000', '#eab308', '#8a8a8a']
                 });
                 confetti({
                     particleCount: 3,
