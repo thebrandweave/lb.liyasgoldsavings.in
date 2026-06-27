@@ -208,7 +208,7 @@ include("../components/topbar.php");
         }
 
         .delete-btn {
-            background: #e74c3c;
+            background: #ff1900;
         }
 
         .delete-btn:hover {

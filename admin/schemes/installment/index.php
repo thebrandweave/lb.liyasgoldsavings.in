@@ -345,7 +345,7 @@ include("../../components/topbar.php");
 
         .delete-btn {
             background: rgba(231, 76, 60, 0.1);
-            color: #c0392b;
+            color: #ff1c02;
         }
 
         .delete-btn:hover {
