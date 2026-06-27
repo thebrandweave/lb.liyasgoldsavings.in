@@ -442,7 +442,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <div class="password-field">
                         <input type="password" id="password" name="password" class="form-control"
                             autocomplete="current-password">
-                        <i class="password-toggle fas fa-eye" id="toggle-password"></i>
+                        <i class="password-toggle fas fa-eye-slash" id="toggle-password"></i>
                     </div>
                     <?php if (!empty($passwordErr)): ?>
                         <div class="error-text"><?php echo $passwordErr; ?></div>
