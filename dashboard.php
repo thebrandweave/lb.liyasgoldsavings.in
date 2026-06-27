@@ -88,7 +88,7 @@ include("./components/topbar.php");
     }
 
     .customers-icon {
-        background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+        background: linear-gradient(135deg, #000000, #878b8b);
     }
 
     .revenue-icon {
