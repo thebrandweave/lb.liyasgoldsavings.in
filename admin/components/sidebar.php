@@ -151,7 +151,7 @@ verifyAuth();
         }
 
         .sidebar-menu a:hover i {
-            color: var(--hover-color);
+            color: #ffb84a;
             transform: translateX(5px);
         }
 
