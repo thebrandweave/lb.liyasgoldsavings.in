@@ -416,7 +416,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <i class="fas fa-users"></i>
             </div>
             <h1>Promoter Login</h1>
-            <p>Golden Dreams Promoter Portal (LA)</p>
+            <p>Golden Dreams Promoter Portal (LB)</p>
         </div>
 
         <div class="login-form">
