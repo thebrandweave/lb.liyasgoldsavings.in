@@ -304,7 +304,7 @@ verifyAuth();
         <ul class="sidebar-menu">
             <?php if ($_SESSION['admin_role'] === 'SuperAdmin'): ?>
                 <li class="<?php echo ($currentPage == 'dashboard') ? 'active' : ''; ?>">
-                    <a href="<?php echo $menuPath; ?>dashboard" data-title="Dashboard">
+                    <a href="<?php echo $menuPath; ?>dashboard" >
                         <i class="fas fa-tachometer-alt"></i>
                         <span class="link-text">Dashboard</span>
                     </a>
