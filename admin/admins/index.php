@@ -420,7 +420,7 @@ include("../components/topbar.php");
 
         /* Add Admin Button Styles */
         .add-admin-btn {
-            background: linear-gradient(135deg, var(--ad_primary-color), var(--ad_secondary-color));
+            background: linear-gradient(135deg, #000000, #b5b7b7);
             color: white;
             border: none;
             padding: 10px 18px;
