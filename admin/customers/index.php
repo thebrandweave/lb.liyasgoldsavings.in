@@ -813,7 +813,7 @@ include("../components/topbar.php");
         }
 
         .delete-btn {
-            background-color: #ff0019;
+            background-color: #FF1900;
         }
 
         .delete-btn:hover {

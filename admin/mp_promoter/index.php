@@ -507,7 +507,7 @@ include("../components/topbar.php");
         }
 
         .promoter-actions .delete-btn {
-            background: #ff1800;
+            background: #ff1900;
         }
 
         .promoter-actions .delete-btn:hover {
