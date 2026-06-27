@@ -26,7 +26,7 @@ verifyAuth();
             left: 0;
             height: 100vh;
             width: var(--sidebar-width);
-            background: linear-gradient(180deg, var(--secondary-color) 0%, var(--primary-color) 100%);
+            background:linear-gradient(135deg, #000000, #b5b7b7);
             box-shadow: 4px 0 10px rgba(0, 0, 0, 0.1);
             transition: all var(--transition-speed) ease;
             z-index: 1000;
