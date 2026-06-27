@@ -363,7 +363,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .forgot-password {
-            color: var(--primary-color);
+            color: black;
             text-decoration: none;
             transition: color var(--transition-speed) ease;
         }
