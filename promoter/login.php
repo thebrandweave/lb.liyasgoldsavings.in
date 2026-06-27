@@ -155,7 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .login-header {
-            background: linear-gradient(257deg, #ffbb50, #000000)
+            background: linear-gradient(257deg, #ffbb50, #000000);
             color: var(--light-text);
             padding: 30px;
             text-align: center;
@@ -274,7 +274,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         .login-btn {
             width: 100%;
             padding: 12px 15px;
-            background: linear-gradient(257deg, #ffbb50, #000000)
+            background: linear-gradient(180deg, var(--secondary-color) 0%, var(--primary-color) 100%);
             color: var(--light-text);
             border: none;
             border-radius: var(--border-radius);
@@ -282,7 +282,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-weight: 500;
             cursor: pointer;
             transition: all var(--transition-speed) ease;
-            /* box-shadow: 0 4px 15px rgba(13, 106, 80, 0.3); */
+            box-shadow: 0 4px 15px rgba(13, 106, 80, 0.3);
             position: relative;
             overflow: hidden;
         }
