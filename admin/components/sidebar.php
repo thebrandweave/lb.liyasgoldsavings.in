@@ -111,7 +111,14 @@ verifyAuth();
             transition: all var(--transition-speed) ease;
         }
 
+        .sidebar-menu li:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
+        .sidebar-menu li.active {
+            background: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
 
         .sidebar-menu li.active::before {
             content: '';
@@ -220,21 +227,7 @@ verifyAuth();
             position: relative;
         }
 
-        .sidebar.collapsed .sidebar-menu a:hover::after {
-            content: attr(data-title);
-            position: absolute;
-            left: 70px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--secondary-color);
-            color: var(--text-color);
-            padding: 5px 10px;
-            border-radius: 5px;
-            white-space: nowrap;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-            z-index: 1000;
-        }
-
+       
         /* Animation for active link */
         @keyframes pulse {
             0% {
