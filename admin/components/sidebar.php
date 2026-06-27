@@ -111,14 +111,7 @@ verifyAuth();
             transition: all var(--transition-speed) ease;
         }
 
-        .sidebar-menu li:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
 
-        .sidebar-menu li.active {
-            background: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
-        }
 
         .sidebar-menu li.active::before {
             content: '';
