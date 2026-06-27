@@ -405,7 +405,7 @@ include("../components/topbar.php");
         }
 
         .admin-search-box button {
-            background: var(--ad_primary-color);
+            background: #000000;
             color: white;
             border: none;
             padding: 0 20px;
