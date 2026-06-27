@@ -71,7 +71,7 @@ verifyAuth();
         .sidebar-logo i {
             margin-right: 15px;
             font-size: 24px;
-            color: var(--hover-color);
+            color: #ffb84a;
         }
 
         .sidebar-logo span {
