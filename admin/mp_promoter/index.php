@@ -293,9 +293,9 @@ include("../components/topbar.php");
     <style>
         /* Promoter Management Styles with pr_ prefix variables */
         :root {
-            --pr_primary: #3a7bd5;
+            --pr_primary: #000000;
             --pr_primary-hover: #2c60a9;
-            --pr_secondary: #00d2ff;
+            --pr_secondary: #878b8b;
             --pr_success: #2ecc71;
             --pr_success-hover: #27ae60;
             --pr_warning: #f39c12;
