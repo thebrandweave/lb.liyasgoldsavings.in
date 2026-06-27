@@ -149,7 +149,7 @@
         border-radius: 8px;
         overflow: hidden;
         margin-right: 12px;
-        background: linear-gradient(135deg, var(--Topprimary-color), var(--Topsecondary-color));
+        background:linear-gradient(135deg, #000000, #b5b7b7);
         display: flex;
         align-items: center;
         justify-content: center;
