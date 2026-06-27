@@ -353,7 +353,7 @@ include("../components/topbar.php");
         }
 
         .admin-actions .delete-btn {
-            background: var(--danger-color);
+            background: #FF1900;
         }
 
         .admin-actions .delete-btn:hover {
