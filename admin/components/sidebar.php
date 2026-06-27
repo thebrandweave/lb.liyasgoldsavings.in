@@ -16,7 +16,7 @@ verifyAuth();
             --primary-color: #000000;
             --secondary-color: #b5b7b7;
             --text-color: #f0f0f0;
-            --hover-color: #00d2ff;
+            --hover-color: #ffb84a;
             --transition-speed: 0.3s;
         }
 
