@@ -27,13 +27,13 @@
     width: 40px;
     height: 40px;
     border: 4px solid #f3f3f3;
-    border-top: 4px solid #3a7bd5;
+    border-top: 4px solid #000000;
     border-radius: 50%;
     animation: spin 1s linear infinite;
     margin-bottom: 15px;
 }
 .loading-text {
-    color: #3a7bd5;
+    color: #000000;
     font-family: 'Poppins', sans-serif;
     font-size: 14px;
     font-weight: 500;

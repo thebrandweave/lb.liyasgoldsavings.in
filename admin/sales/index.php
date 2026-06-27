@@ -231,7 +231,7 @@ include("../components/topbar.php");
                 <div class="date-display" style="display: flex; align-items: center; gap: 15px;">
                     <i class="fas fa-calendar-alt"></i>
                     <?php echo date('F d, Y'); ?>
-                    <a href="../teamSales/" class="btn btn-primary" style="margin-left: 20px; padding: 8px 18px; background: #3a7bd5; color: #fff; border-radius: 6px; font-weight: 500; text-decoration: none; transition: background 0.2s;">
+                    <a href="../teamSales/" class="btn btn-primary" style="margin-left: 20px; padding: 8px 18px; background: #000000; color: #fff; border-radius: 6px; font-weight: 500; text-decoration: none; transition: background 0.2s;">
                         <i class="fas fa-users"></i> View Team Sales
                     </a>
                 </div>

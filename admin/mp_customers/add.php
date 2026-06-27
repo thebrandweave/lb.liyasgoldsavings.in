@@ -210,7 +210,7 @@ include("../components/topbar.php");
         }
 
         .form-control:focus {
-            border-color: #3a7bd5;
+            border-color: #000000;
             outline: none;
         }
 
@@ -227,7 +227,7 @@ include("../components/topbar.php");
         }
 
         .btn-submit {
-            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            background: linear-gradient(135deg, #000000, #878b8b);
             color: white;
             border: none;
             padding: 12px 25px;

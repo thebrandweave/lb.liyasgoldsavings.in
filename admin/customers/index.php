@@ -443,9 +443,9 @@ include("../components/topbar.php");
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <style>
         :root {
-            --ad_primary-color: #3a7bd5;
+            --ad_primary-color: #000000;
             --ad_primary-hover: #2c60a9;
-            --ad_secondary-color: #00d2ff;
+            --ad_secondary-color: #878b8b;
             --ad_success-color: #2ecc71;
             --ad_success-hover: #27ae60;
             --warning-color: #f39c12;
@@ -488,7 +488,7 @@ include("../components/topbar.php");
         }
 
         .customer-actions .edit-btn {
-            background: #3a7bd5;
+            background: #000000;
         }
 
         .customer-actions .edit-btn:hover {
@@ -537,7 +537,7 @@ include("../components/topbar.php");
         }
 
         .add-customer-btn {
-            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            background: linear-gradient(135deg, #000000, #878b8b);
             color: white;
             border: none;
             padding: 8px 15px;
@@ -585,7 +585,7 @@ include("../components/topbar.php");
         }
 
         .filter-select:focus {
-            border-color: #3a7bd5;
+            border-color: #000000;
             outline: none;
         }
 
@@ -622,7 +622,7 @@ include("../components/topbar.php");
         }
 
         .customer-search-box button {
-            background: #3a7bd5;
+            background: #000000;
             color: white;
             border: none;
             padding: 0 15px;

@@ -113,9 +113,9 @@ include("../components/topbar.php");
     <style>
         /* Customer View Page Styles */
         :root {
-            --cs_primary: #3a7bd5;
+            --cs_primary: #000000;
             --cs_primary-hover: #2c60a9;
-            --cs_secondary: #00d2ff;
+            --cs_secondary: #878b8b;
             --cs_success: #2ecc71;
             --cs_success-hover: #27ae60;
             --cs_warning: #f39c12;

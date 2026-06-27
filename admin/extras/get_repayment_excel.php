@@ -202,7 +202,7 @@ include($menuPath . "components/topbar.php");
         .download-btn {
             margin-top: 20px;
             display: inline-block;
-            background: #3a7bd5;
+            background: #000000;
             color: #fff;
             padding: 10px 24px;
             border-radius: 8px;
@@ -212,7 +212,7 @@ include($menuPath . "components/topbar.php");
         }
 
         .download-btn:hover {
-            background: #00d2ff;
+            background: #878b8b;
         }
 
         /* Searchable Dropdown Styles */

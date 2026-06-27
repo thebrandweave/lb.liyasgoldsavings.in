@@ -517,7 +517,7 @@ include("../components/topbar.php");
     }
     
     .add-notification-btn {
-        background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+        background: linear-gradient(135deg, #000000, #878b8b);
         color: white;
         padding: 12px 24px;
         border-radius: 8px;

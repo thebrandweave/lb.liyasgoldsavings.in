@@ -39,7 +39,7 @@ function initRevenueChart(labels, values) {
     stroke: {
       curve: "smooth",
       width: 3,
-      colors: ["#3a7bd5"],
+      colors: ["#000000"],
     },
     xaxis: {
       categories: labels,
@@ -86,12 +86,12 @@ function initRevenueChart(labels, values) {
         colorStops: [
           {
             offset: 0,
-            color: "#3a7bd5",
+            color: "#000000",
             opacity: 0.4,
           },
           {
             offset: 100,
-            color: "#3a7bd5",
+            color: "#000000",
             opacity: 0.1,
           },
         ],
@@ -106,7 +106,7 @@ function initRevenueChart(labels, values) {
     },
     markers: {
       size: 4,
-      colors: ["#3a7bd5"],
+      colors: ["#000000"],
       strokeColors: "#fff",
       strokeWidth: 2,
       hover: {
@@ -199,7 +199,7 @@ function initCustomersChart(labels, newCustomers, returningCustomers) {
         stops: [50, 100],
       },
     },
-    colors: ["#3a7bd5", "#00d2ff"],
+    colors: ["#000000", "#878b8b"],
     tooltip: {
       y: {
         formatter: function (val) {

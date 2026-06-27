@@ -232,8 +232,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary-color: #3a7bd5;
-            --secondary-color: #00d2ff;
+            --primary-color: #000000;
+            --secondary-color: #878b8b;
             --dark-color: #2c3e50;
             --light-color: #f5f7fa;
             --success-color: #2ecc71;

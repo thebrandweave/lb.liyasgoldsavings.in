@@ -217,7 +217,7 @@ include("../components/topbar.php");
         }
 
         .form-control:focus {
-            border-color: #3a7bd5;
+            border-color: #000000;
             outline: none;
             box-shadow: 0 0 0 2px rgba(58, 123, 213, 0.1);
         }
@@ -233,7 +233,7 @@ include("../components/topbar.php");
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            background: linear-gradient(135deg, #000000, #878b8b);
             color: white;
         }
 
@@ -282,7 +282,7 @@ include("../components/topbar.php");
 
         .customer-search button {
             padding: 10px 15px;
-            background: #3a7bd5;
+            background: #000000;
             color: white;
             border: none;
             border-radius: 5px;

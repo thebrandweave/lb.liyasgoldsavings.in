@@ -148,9 +148,9 @@ include("../../components/topbar.php");
     <link rel="stylesheet" href="../../assets/css/admin.css">
     <style>
                 :root {
-            --ad_primary-color: #3a7bd5;
+            --ad_primary-color: #000000;
             --ad_primary-hover: #2c60a9;
-            --ad_secondary-color: #00d2ff;
+            --ad_secondary-color: #878b8b;
             --ad_success-color: #2ecc71;
             --ad_success-hover: #27ae60;
             --warning-color: #f39c12;

@@ -46,12 +46,12 @@
     }
 
     .circle:nth-child(1) {
-        stroke: #3a7bd5;
+        stroke: #000000;
         animation-delay: 0s;
     }
 
     .circle:nth-child(2) {
-        stroke: #00d2ff;
+        stroke: #878b8b;
         animation-delay: 0.4s;
     }
 
@@ -61,7 +61,7 @@
     }
 
     .circle:nth-child(4) {
-        stroke: #00d2ff;
+        stroke: #878b8b;
         animation-delay: 1.2s;
     }
 

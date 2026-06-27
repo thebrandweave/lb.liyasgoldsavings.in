@@ -115,8 +115,8 @@ include($menuPath . "components/topbar.php");
         .commission-table th, .commission-table td { padding: 14px 16px; text-align: left; border-bottom: 1px solid #e0e0e0; font-size: 14px; }
         .commission-table th { background: #f4f8fb; color: #34495e; font-weight: 600; }
         .commission-table td .badge { display: inline-block; padding: 4px 14px; border-radius: 8px; font-size: 13px; font-weight: 600; color: #fff; }
-        .badge-blue { background: #3a7bd5; }
-        .badge-cyan { background: #00d2ff; }
+        .badge-blue { background: #000000; }
+        .badge-cyan { background: #878b8b; }
         .badge-green { background: #2ecc71; }
         .edit-btn { background: #ffc107; color: #222; border: none; border-radius: 8px; padding: 7px 18px; font-weight: 500; cursor: pointer; transition: background 0.2s; }
         .edit-btn:hover { background: #e0a800; }
@@ -127,20 +127,20 @@ include($menuPath . "components/topbar.php");
         .filter-group { display: flex; align-items: center; gap: 8px; }
         .filter-group label { font-weight: 500; font-size: 14px; color: #34495e; }
         .filter-select { padding: 10px 15px; border: 1px solid #e0e0e0; border-radius: 6px; font-size: 14px; min-width: 170px; background-color: #fff; transition: all 0.2s; }
-        .filter-select:focus { border-color: #3a7bd5; box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.1); outline: none; }
-        .filter-btn { padding: 10px 15px; background: #3a7bd5; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
+        .filter-select:focus { border-color: #000000; box-shadow: 0 0 0 3px rgba(58, 123, 213, 0.1); outline: none; }
+        .filter-btn { padding: 10px 15px; background: #000000; color: white; border: none; border-radius: 6px; font-size: 14px; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; }
         .filter-btn:hover { background: #2c60a9; transform: translateY(-1px); }
         .reset-btn { padding: 10px 15px; background: #fff; border: 1px solid #e74c3c; border-radius: 6px; font-size: 14px; color: #e74c3c; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px; text-decoration: none; }
         .reset-btn:hover { background: rgba(231, 76, 60, 0.05); color: #c0392b; }
         .pagination { display: flex; list-style: none; padding: 0; margin: 25px 0; justify-content: center; gap: 6px; }
         .pagination li { margin: 0; }
         .pagination a, .pagination span { display: flex; align-items: center; justify-content: center; min-width: 36px; height: 36px; padding: 0 8px; border-radius: 6px; text-decoration: none; color: #34495e; background: white; border: 1px solid #e0e0e0; transition: all 0.2s; font-size: 14px; }
-        .pagination a:hover { background: #f4f8fb; border-color: #3a7bd5; color: #3a7bd5; }
-        .pagination .active a { background: #3a7bd5; color: white; border-color: #3a7bd5; box-shadow: 0 2px 5px rgba(58, 123, 213, 0.3); }
+        .pagination a:hover { background: #f4f8fb; border-color: #000000; color: #000000; }
+        .pagination .active a { background: #000000; color: white; border-color: #000000; box-shadow: 0 2px 5px rgba(58, 123, 213, 0.3); }
         .no-data { padding: 50px 20px; text-align: center; color: #7f8c8d; }
         .no-data p { margin-bottom: 20px; font-size: 16px; }
         .btn { display: inline-block; padding: 10px 20px; border-radius: 8px; text-decoration: none; transition: all 0.2s; font-weight: 500; }
-        .btn-primary { background: #3a7bd5; color: white; }
+        .btn-primary { background: #000000; color: white; }
         .btn-primary:hover { background: #2c60a9; transform: translateY(-2px); }
         /* Modal styles */
         .modal { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; overflow: auto; background: rgba(0,0,0,0.3); }
@@ -154,7 +154,7 @@ include($menuPath . "components/topbar.php");
         .modal-form-actions { display: flex; justify-content: flex-end; gap: 10px; }
         .modal-form-actions button { padding: 10px 18px; border-radius: 6px; border: none; font-weight: 500; cursor: pointer; }
         .modal-form-actions .btn-cancel { background: #eee; color: #333; }
-        .modal-form-actions .btn-save { background: #3a7bd5; color: #fff; }
+        .modal-form-actions .btn-save { background: #000000; color: #fff; }
         .modal-form-actions .btn-save:hover { background: #2360a5; }
     </style>
 </head>

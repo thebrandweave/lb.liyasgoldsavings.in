@@ -80,7 +80,7 @@ include("../../components/topbar.php");
         .switch-sub { font-size: 12px; color: #7f8c8d; margin-top: 4px; }
         .btn-group { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
         .btn { padding: 10px 18px; border-radius: 6px; border: none; cursor: pointer; }
-        .btn-primary { background: #3a7bd5; color: #fff; }
+        .btn-primary { background: #000000; color: #fff; }
         .btn-secondary { background: #fff; color: #2c3e50; border: 1px solid #e0e0e0; text-decoration: none; }
     </style>
 </head>

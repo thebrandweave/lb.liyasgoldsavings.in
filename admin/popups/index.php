@@ -154,19 +154,19 @@ include("../components/topbar.php");
         }
 
         .file-upload-display:hover {
-            border-color: #3a7bd5;
+            border-color: #000000;
             background: #f0f4ff;
         }
 
         .file-upload-display.has-image {
-            border: 2px solid #3a7bd5;
+            border: 2px solid #000000;
             background: white;
             padding: 20px;
         }
 
         .file-upload-display i {
             font-size: 48px;
-            color: #3a7bd5;
+            color: #000000;
             margin-bottom: 15px;
         }
 
@@ -177,7 +177,7 @@ include("../components/topbar.php");
         }
 
         .file-upload-display .file-name {
-            color: #3a7bd5;
+            color: #000000;
             font-weight: 500;
             margin-top: 10px;
         }
@@ -205,7 +205,7 @@ include("../components/topbar.php");
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            background: linear-gradient(135deg, #000000, #878b8b);
             color: white;
         }
 

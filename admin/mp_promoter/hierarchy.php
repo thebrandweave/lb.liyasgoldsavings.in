@@ -191,7 +191,7 @@ include("../components/topbar.php");
 
         .promoter-node {
             background: linear-gradient(135deg, #f8f9fa, #ffffff);
-            border: 2px solid #3a7bd5;
+            border: 2px solid #000000;
         }
 
         .customer-node {

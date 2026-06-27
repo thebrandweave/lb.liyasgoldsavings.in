@@ -369,8 +369,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </noscript>
     <style>
         :root {
-            --primary-color: #3a7bd5;
-            --secondary-color: #00d2ff;
+            --primary-color: #000000;
+            --secondary-color: #878b8b;
             --text-color: #333;
             --light-bg: #f8f9fa;
             --border-color: #ddd;

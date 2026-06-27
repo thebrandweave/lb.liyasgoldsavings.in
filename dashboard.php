@@ -701,7 +701,7 @@ include("./components/topbar.php");
             <h3 class="quick-access-title">Quick Actions</h3>
             <div class="actions-grid">
                 <a href="<?php echo $menuPath; ?>addCustomer.php" class="action-card">
-                    <div class="action-icon" style="background: linear-gradient(135deg, #3a7bd5, #00d2ff)">
+                    <div class="action-icon" style="background: linear-gradient(135deg, #000000, #878b8b)">
                         <i class="fas fa-user-plus"></i>
                     </div>
                     <div class="action-name">Add Customer</div>
@@ -743,7 +743,7 @@ include("./components/topbar.php");
             <h3 class="activity-title">Recent Activity</h3>
             <div class="activity-list">
                 <div class="activity-item">
-                    <div class="activity-icon" style="background: #3a7bd5">
+                    <div class="activity-icon" style="background: #000000">
                         <i class="fas fa-user-plus"></i>
                     </div>
                     <div class="activity-content">
@@ -899,7 +899,7 @@ include("./components/topbar.php");
             stroke: {
                 curve: 'smooth',
                 width: 3,
-                colors: ['#3a7bd5']
+                colors: ['#000000']
             },
             xaxis: {
                 categories: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
@@ -939,12 +939,12 @@ include("./components/topbar.php");
                     stops: [0, 90, 100],
                     colorStops: [{
                             offset: 0,
-                            color: '#3a7bd5',
+                            color: '#000000',
                             opacity: 0.4
                         },
                         {
                             offset: 100,
-                            color: '#3a7bd5',
+                            color: '#000000',
                             opacity: 0.1
                         }
                     ]
@@ -959,7 +959,7 @@ include("./components/topbar.php");
             },
             markers: {
                 size: 4,
-                colors: ['#3a7bd5'],
+                colors: ['#000000'],
                 strokeColors: '#fff',
                 strokeWidth: 2,
                 hover: {
@@ -1073,7 +1073,7 @@ include("./components/topbar.php");
                     stops: [50, 100]
                 },
             },
-            colors: ['#3a7bd5', '#00d2ff'],
+            colors: ['#000000', '#878b8b'],
             tooltip: {
                 y: {
                     formatter: function(val) {

@@ -98,7 +98,7 @@ function initCustomerChart(labels, newCustomers, returningCustomers) {
           stops: [50, 100],
         },
       },
-      colors: ["#3a7bd5", "#00d2ff"],
+      colors: ["#000000", "#878b8b"],
       tooltip: {
         y: {
           formatter: function (val) {
