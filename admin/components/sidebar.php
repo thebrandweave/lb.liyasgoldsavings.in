@@ -127,7 +127,7 @@ verifyAuth();
             top: 0;
             height: 100%;
             width: 5px;
-            background: var(--hover-color);
+            background: #ffb84a;
             border-radius: 0 5px 5px 0;
         }
 
