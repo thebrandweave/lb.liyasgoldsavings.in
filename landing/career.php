@@ -1,6 +1,7 @@
 <?php 
 include("../admin/components/loader.php");
 require_once("../config/config.php");
+require_once("../config/email.php");
 
 $successMessage = "";
 $errorMessage = "";
@@ -71,6 +72,31 @@ try {
         // Insert into db
         $insertStmt = $conn->prepare("INSERT INTO CareerApplications (OpeningID, FullName, Email, Phone, Position, CoverLetter, ResumeURL) VALUES (?, ?, ?, ?, ?, ?, ?)");
         $insertStmt->execute([$openingID, $fullName, $email, $phone, $targetPosition, $coverLetter, $resumeURL]);
+        
+        // Send Confirmation Email
+        $emailSubject = "Application Received - " . $targetPosition;
+        $emailBody = "
+            <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
+                <div style='text-align: center; margin-bottom: 20px;'>
+                    <h2 style='color: #a36d16; margin: 0;'>Golden Dream</h2>
+                    <p style='color: #666; font-size: 14px; margin: 5px 0 0 0;'>Careers & Opportunities</p>
+                </div>
+                <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
+                <p>Dear <strong>" . htmlspecialchars($fullName) . "</strong>,</p>
+                <p>Thank you for submitting your application for the <strong>" . htmlspecialchars($targetPosition) . "</strong> position at Golden Dream.</p>
+                <p>We have successfully received your details and uploaded resume. Our Human Resources team will review your qualifications and contact you if your profile aligns with our current requirements.</p>
+                <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Golden Dream</p>
+                <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
+                <p style='font-size: 11px; color: #999; text-align: center;'>This is an automated email notification. Please do not reply directly to this message.</p>
+            </div>
+        ";
+        
+        try {
+            sendSMTPMail($email, $emailSubject, $emailBody);
+        } catch (Exception $mailEx) {
+            // Log mail failure but do not halt candidate success flow
+            error_log("Failed to send career application email to $email: " . $mailEx->getMessage());
+        }
         
         $successMessage = "Thank you for your interest! Your application has been successfully submitted. Our HR team will reach out to you shortly.";
         
