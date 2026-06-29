@@ -305,6 +305,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         .alert-custom { border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; }
         .alert-danger-custom { background: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.3); color: #dc3545; }
         small.text-muted { color: var(--text-secondary) !important; }
+        @media (max-width: 576px) {
+            .add-payment-container {
+                padding: 12px;
+                margin-top: 80px;
+            }
+            .add-payment-card {
+                padding: 16px;
+            }
+        }
     </style>
 </head>
 <body>

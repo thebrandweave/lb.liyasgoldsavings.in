@@ -274,6 +274,47 @@ verifyAuth();
             color: #856404;
             border: 1px solid #ffeeba;
         }
+
+        @media (max-width: 992px) {
+            .sidebar {
+                left: -260px !important;
+                width: var(--sidebar-width) !important;
+            }
+            .sidebar.open {
+                left: 0 !important;
+            }
+            .content-wrapper {
+                margin-left: 0 !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                padding: 15px !important;
+                position: relative !important;
+            }
+            body.sidebar-collapsed .content-wrapper {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            .sidebar.collapsed:hover~.content-wrapper,
+            .sidebar.collapsed:hover+.content-wrapper {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            .topbar {
+                left: 0 !important;
+            }
+            .toggle-btn {
+                display: none !important;
+            }
+            
+            /* Responsive table scroll helper */
+            .admin-table, .commission-table, .customer-table, .promoter-table, .data-table, .table-clean, .payments-table, .backup-table, .extras-table {
+                display: block !important;
+                width: 100% !important;
+                overflow-x: auto !important;
+                -webkit-overflow-scrolling: touch;
+                white-space: nowrap;
+            }
+        }
     </style>
 
     <div class="sidebar" id="sidebar">
@@ -401,6 +442,20 @@ verifyAuth();
                 </a>
             </li>
 
+            <li class="<?php echo ($currentPage == 'careers') ? 'active' : ''; ?>">
+                <a href="<?php echo $menuPath; ?>careers" data-title="Job Openings">
+                    <i class="fas fa-briefcase"></i>
+                    <span class="link-text">Job Openings</span>
+                </a>
+            </li>
+
+            <li class="<?php echo ($currentPage == 'careers_applications') ? 'active' : ''; ?>">
+                <a href="<?php echo $menuPath; ?>careers/applications.php" data-title="Job Applications">
+                    <i class="fas fa-file-alt"></i>
+                    <span class="link-text">Job Applications</span>
+                </a>
+            </li>
+
             <li class="<?php echo ($currentPage == 'notifications') ? 'active' : ''; ?>">
                 <a href="<?php echo $menuPath; ?>notifications" data-title="Notifications">
                     <i class="fas fa-bell"></i>
@@ -451,18 +506,20 @@ verifyAuth();
             // Save initial collapsed state
             localStorage.setItem('sidebarState', 'collapsed');
 
-            toggleBtn.addEventListener('click', function() {
-                sidebar.classList.toggle('collapsed');
-                document.body.classList.toggle('sidebar-collapsed');
+            if (toggleBtn) {
+                toggleBtn.addEventListener('click', function() {
+                    sidebar.classList.toggle('collapsed');
+                    document.body.classList.toggle('sidebar-collapsed');
 
-                // Save sidebar state to localStorage
-                if (sidebar.classList.contains('collapsed')) {
-                    localStorage.setItem('sidebarState', 'collapsed');
-                } else {
-                    localStorage.setItem('sidebarState', 'expanded');
-                    document.body.classList.remove('sidebar-collapsed');
-                }
-            });
+                    // Save sidebar state to localStorage
+                    if (sidebar.classList.contains('collapsed')) {
+                        localStorage.setItem('sidebarState', 'collapsed');
+                    } else {
+                        localStorage.setItem('sidebarState', 'expanded');
+                        document.body.classList.remove('sidebar-collapsed');
+                    }
+                });
+            }
 
             // Set active menu item based on current page
             const currentLocation = window.location.href;
@@ -473,5 +530,43 @@ verifyAuth();
                     item.parentElement.classList.add('active');
                 }
             });
+
+            // Mobile sidebar toggle logic
+            const mobileToggle = document.getElementById('adminMobileSidebarToggle');
+            
+            // Create overlay
+            let overlay = document.getElementById('adminSidebarOverlay');
+            if (!overlay) {
+                overlay = document.createElement('div');
+                overlay.id = 'adminSidebarOverlay';
+                overlay.style.cssText = 'display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.5); z-index:998;';
+                document.body.appendChild(overlay);
+            }
+
+            if (mobileToggle && sidebar) {
+                mobileToggle.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    sidebar.classList.toggle('open');
+                    if (sidebar.classList.contains('open')) {
+                        overlay.style.display = 'block';
+                    } else {
+                        overlay.style.display = 'none';
+                    }
+                });
+
+                overlay.addEventListener('click', function() {
+                    sidebar.classList.remove('open');
+                    overlay.style.display = 'none';
+                });
+                
+                // Close sidebar on link clicks on mobile
+                const sidebarLinks = sidebar.querySelectorAll('.sidebar-menu a');
+                sidebarLinks.forEach(link => {
+                    link.addEventListener('click', function() {
+                        sidebar.classList.remove('open');
+                        overlay.style.display = 'none';
+                    });
+                });
+            }
         });
     </script>

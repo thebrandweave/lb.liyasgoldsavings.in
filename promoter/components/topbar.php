@@ -309,10 +309,32 @@
             text-overflow: ellipsis;
         }
     }
+
+    .promoter-mobile-toggle-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: var(--Toptext-dark);
+        font-size: 20px;
+        cursor: pointer;
+        padding: 8px;
+        margin-right: 10px;
+        align-items: center;
+        justify-content: center;
+    }
+
+    @media (max-width: 992px) {
+        .promoter-mobile-toggle-btn {
+            display: flex;
+        }
+    }
 </style>
 
 <div class="topbar" id="topbar">
     <div class="topbar-left">
+        <button id="promoterMobileSidebarToggle" class="promoter-mobile-toggle-btn" aria-label="Toggle Sidebar">
+            <i class="fas fa-bars"></i>
+        </button>
         <div class="page-title-container">
             <h1 class="page-title"><?php echo ucfirst(str_replace('-', ' ', $currentPage)); ?></h1>
             <ul class="breadcrumb">

@@ -109,7 +109,7 @@
 
         /* Navbar Styles */
         .container {
-            max-width: 100vw !important;
+            max-width: 100% !important;
             margin: 0 auto;
             padding: 0 24px;
             overflow-x: hidden;
@@ -122,7 +122,7 @@
             top: 0;
             z-index: 1000;
             /* backdrop-filter: blur(10px); */
-            max-width: 100vw !important;
+            max-width: 100% !important;
             /* overflow-x: hidden; */
             transition: all 0.3s ease;
         }
@@ -2147,6 +2147,7 @@ header {
     );
     display: block;
     margin-top: 18px;
+ 
     border-radius: 20px;
 }
 
@@ -2236,6 +2237,121 @@ header {
     transition: var(--transition-smooth);
 }
 
+.video-thumbnail img {
+    transition: transform 0.3s ease;
+}
+.video-thumbnail:hover img {
+    transform: scale(1.05);
+}
+.video-thumbnail .play-button-overlay {
+    transition: transform 0.3s ease, background 0.3s ease;
+}
+.video-thumbnail:hover .play-button-overlay {
+    transform: translate(-50%, -50%) scale(1.1) !important;
+    background: rgba(255,0,0,1) !important;
+}
+
+/* --- RESPONSIVE MEDIA QUERIES --- */
+
+    /* Tablet breakpoint */
+    @media (max-width: 992px) {
+        .cta-wrapper {
+            gap: 2rem;
+        }
+        .content h2 {
+            font-size: 2rem;
+        }
+        .logo-grid {
+            grid-template-columns: repeat(3, 2fr);
+                 gap: 10px;
+            margin-top: 1rem;
+        }
+        .logo-grid img{
+                width:56%;
+    height:100%;
+    object-fit:contain;
+    background:#fff;
+    padding:10px;
+    border-radius:96px;
+    border:1px solid rgba(161,106,19,.15);
+    transition:.4s;
+        }
+    }
+
+    /* Mobile breakpoint */
+    @media (max-width: 768px) {
+        .cta-card {
+            padding: 2rem 1.5rem;
+        }
+        
+        /* Stack the layout */
+        .cta-wrapper {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .content {
+            max-width: 100%;
+        }
+
+        /* Center the buttons on mobile */
+        .buttons {
+            justify-content: center;
+        }
+
+        .logo-grid {
+            width: 100%;
+            grid-template-columns: repeat(3, 2fr);
+            gap: 10px;
+            margin-top: 1rem;
+        }
+        .content h2::after{
+            margin-inline:auto;
+        }
+         .logo-grid img{
+                width:56%;
+    height:100%;
+    object-fit:contain;
+    background:#fff;
+    padding:10px;
+    border-radius:96px;
+    border:1px solid rgba(161,106,19,.15);
+    transition:.4s;
+        }
+    }
+
+    /* Small Mobile breakpoint */
+    @media (max-width: 480px) {
+        .buttons {
+            flex-direction: column;
+            width: 100%;
+        }
+        
+        .btn {
+            justify-content: center;
+            width: 100%;
+        }
+
+        .logo-grid {
+            grid-template-columns: repeat(3, 1fr); /* Keeps 2 columns, change to 1fr for single column */
+               gap: 1rem;
+            margin-top: 1rem;
+
+        }
+         .logo-grid img{
+                width:66%;
+    height:100%;
+    object-fit:contain;
+    background:#fff;
+    padding:10px;
+    border-radius:96px;
+    border:1px solid rgba(161,106,19,.15);
+    transition:.4s;
+        }
+          .content h2::after{
+            margin-inline:auto;
+        }
+    }
 </style>
 </head>
 
@@ -2529,35 +2645,35 @@ header {
         <div class="bento-grid">
 
             <div class="bento-card card-1">
-                <img src="./assets/colleagues-working-desk.jpg" alt="">
+                <img src="./assets/colleagues-working-desk.jpg" alt="" loading="lazy">
                 <div class="overlay">
                     <h3>Liyas Gold & Diamonds</h3>
                 </div>
             </div>
 
             <div class="bento-card card-2">
-                <img src="./assets/delicious-products-arrangement-bakery.jpg" alt="">
+                <img src="./assets/delicious-products-arrangement-bakery.jpg" alt="" loading="lazy">
                 <div class="overlay">
                     <h3>Liyas Bakes & Cafe</h3>
                 </div>
             </div>
 
             <div class="bento-card card-3">
-                <img src="./assets/new2.webp" alt="">
+                <img src="./assets/new2.webp" alt="" loading="lazy">
                 <div class="overlay">
                     <h3>GD Edu Tech</h3>
                 </div>
             </div>
 
             <div class="bento-card card-4">
-                <img src="./assets/colleagues-working-desk.jpg" alt="">
+                <img src="./assets/colleagues-working-desk.jpg" alt="" loading="lazy">
                 <div class="overlay">
                     <h3>Liyas Protein</h3>
                 </div>
             </div>
 
             <div class="bento-card card-5">
-                <img src="./assets/construction-silhouette.jpg" alt="">
+                <img src="./assets/construction-silhouette.jpg" alt="" loading="lazy">
                 <div class="overlay">
                     <h3>Liyas Construction</h3>
                 </div>
@@ -2877,334 +2993,7 @@ header {
         <i class="fas fa-arrow-up"></i>
     </a> -->
 
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-    <script>
-        // Smooth scrolling for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                const target = document.querySelector(this.getAttribute('href'));
-                if (target) {
-                    const offsetTop = target.offsetTop - 80;
-                    window.scrollTo({
-                        top: offsetTop,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-
-        // Show/hide back to top button
-        window.addEventListener('scroll', function() {
-            const backToTopBtn = document.querySelector('.back-to-top');
-            if (backToTopBtn) {
-                if (window.scrollY > 300) {
-                    backToTopBtn.style.display = 'flex';
-                    backToTopBtn.style.alignItems = 'center';
-                    backToTopBtn.style.justifyContent = 'center';
-                } else {
-                    backToTopBtn.style.display = 'none';
-                }
-            }
-        });
-
-        // Newsletter form handling
-        function handleNewsletter(event) {
-            event.preventDefault();
-            const form = event.target;
-            const button = form.querySelector('button');
-            const input = form.querySelector('input[type="email"]');
-
-            // Simple email validation
-            const email = input.value.trim();
-            if (!email || !email.includes('@') || !email.includes('.')) {
-                input.style.borderColor = '#ff6b6b';
-                input.focus();
-                setTimeout(() => {
-                    input.style.borderColor = '';
-                }, 2000);
-                return false;
-            }
-
-            // Show success state
-            const originalText = button.innerHTML;
-            button.innerHTML = '<i class="fas fa-check"></i>';
-            button.disabled = true;
-            button.classList.add('btn-success');
-            button.classList.remove('btn-outline-light');
-
-            // Reset form after 3 seconds
-            setTimeout(() => {
-                button.innerHTML = originalText;
-                button.disabled = false;
-                button.classList.remove('btn-success');
-                button.classList.add('btn-outline-light');
-                form.reset();
-            }, 3000);
-
-            return false;
-        }
-
-        // Add animation classes when elements come into view
-        const observerOptions = {
-            threshold: 0.1,
-            rootMargin: '0px 0px -50px 0px'
-        };
-
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.style.opacity = '1';
-                    entry.target.style.transform = 'translateY(0) translateX(0)';
-                }
-            });
-        }, observerOptions);
-
-        // Observe all animated elements
-        document.querySelectorAll('.fade-in, .fade-in-up, .fade-in-left, .fade-in-right').forEach(el => {
-            observer.observe(el);
-        });
-
-        // Enhanced hover effects for cards
-        document.querySelectorAll('.venture-card, .blog-card').forEach(card => {
-            card.addEventListener('mouseenter', function() {
-                this.style.transform = this.classList.contains('venture-card') ?
-                    'translateY(-12px) scale(1.02)' : 'translateY(-8px) scale(1.02)';
-            });
-
-            card.addEventListener('mouseleave', function() {
-                this.style.transform = 'translateY(0) scale(1)';
-            });
-        });
-
-        // Add loading state to buttons
-        document.querySelectorAll('a[href="#"]').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                const originalText = this.innerHTML;
-                this.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Loading...';
-
-                setTimeout(() => {
-                    this.innerHTML = originalText;
-                }, 2000);
-            });
-        });
-
-        // Performance optimization for scroll events
-        let ticking = false;
-
-        function handleScroll() {
-            if (!ticking) {
-                requestAnimationFrame(() => {
-                    ticking = false;
-                });
-                ticking = true;
-            }
-        }
-
-        window.addEventListener('scroll', handleScroll);
-
-        // Add ripple effect to buttons
-        document.querySelectorAll('.btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                const ripple = document.createElement('span');
-                const rect = this.getBoundingClientRect();
-                const size = Math.max(rect.width, rect.height);
-                const x = e.clientX - rect.left - size / 2;
-                const y = e.clientY - rect.top - size / 2;
-
-                ripple.style.cssText = `
-                    position: absolute;
-                    border-radius: 50%;
-                    background: rgba(255, 255, 255, 0.6);
-                    transform: scale(0);
-                    animation: ripple 0.6s linear;
-                    width: ${size}px;
-                    height: ${size}px;
-                    left: ${x}px;
-                    top: ${y}px;
-                    pointer-events: none;
-                `;
-
-                this.style.position = 'relative';
-                this.style.overflow = 'hidden';
-                this.appendChild(ripple);
-
-                setTimeout(() => {
-                    ripple.remove();
-                }, 600);
-            });
-        });
-
-        // Add ripple animation
-        const rippleStyle = document.createElement('style');
-        rippleStyle.textContent = `
-            @keyframes ripple {
-                to {
-                    transform: scale(4);
-                    opacity: 0;
-                }
-            }
-        `;
-        document.head.appendChild(rippleStyle);
-
-        console.log('Gee Dee Ventures website loaded successfully - PHP Version');
-
-        // Performance monitoring
-        window.addEventListener('load', function() {
-            const loadTime = performance.now();
-            console.log(`Page loaded in ${loadTime.toFixed(2)}ms`);
-        });
-
-        // Enhanced error handling
-        window.addEventListener('error', function(e) {
-            console.error('JavaScript error:', e.error);
-        });
-
-        // Add loading states for better UX
-        document.addEventListener('DOMContentLoaded', function() {
-            document.body.classList.add('loaded');
-        });
-
-        // Initialize and sync hero carousels with smooth slide transitions
-        document.addEventListener('DOMContentLoaded', function() {
-            const heroCarousel = document.getElementById('heroCarousel');
-            const heroBgCarousel = document.getElementById('heroBgCarousel');
-
-            if (heroCarousel && heroBgCarousel) {
-                // Initialize carousels with smooth slide transitions
-                const mainCarousel = new bootstrap.Carousel(heroCarousel, {
-                    interval: 5000,
-                    wrap: true,
-                    ride: 'carousel',
-                    touch: true
-                });
-
-                const bgCarousel = new bootstrap.Carousel(heroBgCarousel, {
-                    interval: 5000,
-                    wrap: true,
-                    ride: 'carousel',
-                    touch: true
-                });
-
-                // Sync carousels with smooth slide transitions
-                heroCarousel.addEventListener('slide.bs.carousel', function(event) {
-                    // Smooth transition for background carousel
-                    bgCarousel.to(event.to);
-                });
-
-                // Add manual navigation sync with smooth transitions
-                document.querySelectorAll('[data-bs-target="#heroCarousel"]').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const direction = this.getAttribute('data-bs-slide');
-                        if (direction === 'prev') {
-                            bgCarousel.prev();
-                        } else if (direction === 'next') {
-                            bgCarousel.next();
-                        }
-                    });
-                });
-
-                // Pause carousels on hover for better UX
-                heroCarousel.addEventListener('mouseenter', function() {
-                    mainCarousel.pause();
-                    bgCarousel.pause();
-                });
-
-                heroCarousel.addEventListener('mouseleave', function() {
-                    mainCarousel.cycle();
-                    bgCarousel.cycle();
-                });
-
-                // Handle carousel errors gracefully
-                heroCarousel.addEventListener('error', function(e) {
-                    console.warn('Carousel error:', e);
-                });
-
-                // Ensure carousels are properly initialized with smooth slide transitions
-                setTimeout(() => {
-                    if (mainCarousel && bgCarousel) {
-                        mainCarousel.cycle();
-                        bgCarousel.cycle();
-
-                        // Verify carousel synchronization
-                        console.log('Carousels initialized with wrap enabled and smooth slide transitions');
-                        console.log('Main carousel wrap:', mainCarousel._config.wrap);
-                        console.log('Background carousel wrap:', bgCarousel._config.wrap);
-                    }
-                }, 100);
-
-                // Additional sync check for perfect synchronization
-                heroCarousel.addEventListener('slid.bs.carousel', function(event) {
-                    // Ensure background carousel is on the same slide
-                    const activeBgSlide = bgCarousel._element.querySelector('.carousel-item.active');
-                    const activeMainSlide = event.relatedTarget;
-
-                    if (activeBgSlide && activeMainSlide) {
-                        const bgIndex = Array.from(bgCarousel._element.querySelectorAll('.carousel-item')).indexOf(activeBgSlide);
-                        const mainIndex = event.to;
-
-                        if (bgIndex !== mainIndex) {
-                            bgCarousel.to(mainIndex);
-                        }
-                    }
-
-                    // Ensure content is fully visible after transition
-                    const currentSlide = event.relatedTarget;
-                    if (currentSlide) {
-                        currentSlide.querySelector('.hero-content').style.opacity = '1';
-                        currentSlide.querySelector('.hero-img').style.transform = 'scale(1)';
-                    }
-                });
-            }
-        });
-
-        // YouTube Video Modal Function
-        function openVideoModal(videoId, videoTitle) {
-            const modal = new bootstrap.Modal(document.getElementById('videoModal'));
-            const iframe = document.getElementById('youtubeIframe');
-            const modalTitle = document.getElementById('videoModalLabel');
-
-            // Set the modal title
-            modalTitle.textContent = videoTitle;
-
-            // Set the YouTube embed URL with autoplay
-            iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&modestbranding=1`;
-
-            // Show the modal
-            modal.show();
-
-            // Clear iframe src when modal is hidden to stop video
-            document.getElementById('videoModal').addEventListener('hidden.bs.modal', function() {
-                iframe.src = '';
-            });
-        }
-
-        // Add hover effects for video thumbnails
-        document.addEventListener('DOMContentLoaded', function() {
-            const videoThumbnails = document.querySelectorAll('.video-thumbnail');
-
-            videoThumbnails.forEach(function(thumbnail) {
-                const playButton = thumbnail.querySelector('.play-button-overlay');
-
-                if (playButton) {
-                    thumbnail.addEventListener('mouseenter', function() {
-                        this.querySelector('img').style.transform = 'scale(1.05)';
-                        playButton.style.transform = 'translate(-50%, -50%) scale(1.1)';
-                        playButton.style.background = 'rgba(255,0,0,1)';
-                    });
-
-                    thumbnail.addEventListener('mouseleave', function() {
-                        this.querySelector('img').style.transform = 'scale(1)';
-                        playButton.style.transform = 'translate(-50%, -50%) scale(1)';
-                        playButton.style.background = '#a16b14';
-                    });
-                }
-            });
-        });
-    </script>
+    <!-- Scripts moved to bottom -->
 
     <script>
         // Navbar Functions
@@ -3267,10 +3056,6 @@ header {
     </script>
 
 <?php include '../components/footer.php'; ?>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollToPlugin.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script>
      document.addEventListener('DOMContentLoaded', function() {

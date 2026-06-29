@@ -220,6 +220,18 @@
     transition: var(--transition-smooth);
 }
 
+.premium-mobile-toggle.active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+}
+
+.premium-mobile-toggle.active .bar:nth-child(2) {
+    opacity: 0;
+}
+
+.premium-mobile-toggle.active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+}
+
 @media (max-width: 991px) {
     .nav-links-wrapper {
         position: absolute;
@@ -268,11 +280,12 @@
             </div>
 
             <!-- Center: Navigation Links -->
+            <?php $activePage = basename($_SERVER['PHP_SELF']); ?>
             <div class="nav-links-wrapper" id="navLinksMenu">
-                <a href="./" class="nav-link-item active">Home</a>
-                <a href="./about.php" class="nav-link-item">About Us</a>
+                <a href="./" class="nav-link-item <?php echo ($activePage == 'index.php' || $activePage == 'index' || $activePage == '') ? 'active' : ''; ?>">Home</a>
+                <a href="./about.php" class="nav-link-item <?php echo ($activePage == 'about.php') ? 'active' : ''; ?>">About Us</a>
                 <!-- <a href="./gallery.php" class="nav-link-item">Gallery</a> -->
-                <a href="./career.php" class="nav-link-item">Career</a>
+                <a href="./career.php" class="nav-link-item <?php echo ($activePage == 'career.php') ? 'active' : ''; ?>">Career</a>
                 <!-- <a href="./savings-plan.php" class="nav-link-item">Savings Plan</a> -->
                 <!-- <a href="./contact.php" class="nav-link-item">Contact Us</a> -->
             </div>
@@ -304,5 +317,24 @@
         </nav>
     </div>
 </header>
+
+<script>
+    function toggleMobileMenu() {
+        const toggleBtn = document.querySelector('.premium-mobile-toggle');
+        if (toggleBtn) {
+            toggleBtn.classList.toggle('active');
+        }
+        
+        const mobileMenu = document.getElementById('mobileMenu');
+        if (mobileMenu) {
+            mobileMenu.classList.toggle('active');
+        } else {
+            const navLinks = document.getElementById('navLinksMenu');
+            if (navLinks) {
+                navLinks.classList.toggle('open');
+            }
+        }
+    }
+</script>
  </body>
  </html>

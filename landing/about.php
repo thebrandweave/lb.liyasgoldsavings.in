@@ -31,12 +31,12 @@ require_once("../config/config.php");
             color: var(--text-color);
             margin: 0;
             padding: 0;
-            max-width: 100vw !important;
+            max-width: 100% !important;
             overflow-x: hidden;
         }
 
         .container {
-            max-width: 100vw !important;
+            max-width: 100% !important;
             margin: 0 auto;
             padding: 0 24px;
             overflow-x: hidden;
@@ -50,7 +50,7 @@ require_once("../config/config.php");
             z-index: 100;
             background: transparent;
             backdrop-filter: blur(10px);
-            max-width: 100vw !important;
+            max-width: 100% !important;
             overflow-x: hidden;
         }
 
@@ -1222,7 +1222,7 @@ require_once("../config/config.php");
                 <!-- <a href="https://lb.liyasgoldsavings.in//refer?id=GDP0001&ref=NTAw" class="btn">Start Your Journey</a> -->
             </div>
             <div class="hero-image">
-                <img src="./landing_assets/images/hero.gif" alt="Golden Dream Platform">
+                <img src="./landing_assets/images/hero.gif" alt="Golden Dream Platform" loading="lazy">
             </div>
         </div>
     </section>
@@ -1290,7 +1290,7 @@ require_once("../config/config.php");
             </div>
             <div style="flex:1;display:flex;align-items:center;justify-content:center;">
                 <div style="background:#fff;border-radius:24px;padding:32px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;min-width:320px;min-height:320px;">
-                    <img src="./landing_assets/images/register.png" alt="Register with Golden Dream" style="max-width:260px;border-radius:16px;">
+                    <img src="./landing_assets/images/register.png" alt="Register with Golden Dream" style="max-width:260px;border-radius:16px;" loading="lazy">
                 </div>
             </div>
         </div>
@@ -1302,7 +1302,7 @@ require_once("../config/config.php");
             <div style="flex:1;position:relative;min-width:320px;max-width:400px;">
                 <div style="position:relative;z-index:2;">
                     <a href="https://www.linkedin.com/in/sameer-akbar-27966033b/" target="_blank" style="display: block; cursor: pointer;">
-                        <img src="./landing_assets/images/sameer.png" alt="Sameer Akbar, MD" style="width:80%;border-radius:18px;filter:grayscale(1);transition: filter 0.3s ease;" onmouseover="this.style.filter='grayscale(0)'" onmouseout="this.style.filter='grayscale(1)'">
+                        <img src="./landing_assets/images/sameer.png" alt="Sameer Akbar, MD" style="width:80%;border-radius:18px;filter:grayscale(1);transition: filter 0.3s ease;" onmouseover="this.style.filter='grayscale(0)'" onmouseout="this.style.filter='grayscale(1)'" loading="lazy">
                     </a>
                 </div>
                 <!-- Geometric overlays -->
@@ -1350,14 +1350,14 @@ require_once("../config/config.php");
                 <!-- Chat UI -->
                 <div style="position:relative;z-index:2;">
                     <div style="display:flex;align-items:center;gap:16px;margin-bottom:18px;">
-                        <img src="https://cdn.dribbble.com/userupload/41685542/file/original-4b859c8a666e90fc4624a44648c1f886.gif" alt="Support Agent" style="width:56px;height:56px;border-radius:50%;border:4px solid #a36d16;object-fit:cover;">
+                        <img src="https://cdn.dribbble.com/userupload/41685542/file/original-4b859c8a666e90fc4624a44648c1f886.gif" alt="Support Agent" style="width:56px;height:56px;border-radius:50%;border:4px solid #a36d16;object-fit:cover;" loading="lazy">
                         <div style="background:#f7f7fa;padding:16px 22px;border-radius:14px;font-size:1.08rem;color:#222;box-shadow:0 2px 8px rgba(0,0,0,0.04);max-width:260px;">Hey, can you tell me how to start investing?</div>
                     </div>
                     <div style="display:flex;align-items:center;gap:16px;">
                         <div style="background:#111;padding:16px 22px;border-radius:14px;font-size:1.08rem;color:#fff;box-shadow:0 2px 8px rgba(0,0,0,0.08);max-width:260px;">
                             Absolutely! Our team will guide you through every step. If you need help, just ask anytime.
                         </div>
-                        <img src="https://cdn.dribbble.com/userupload/41685542/file/original-4b859c8a666e90fc4624a44648c1f886.gif" alt="Customer" style="width:56px;height:56px;border-radius:50%;border:4px solid #a36d16;object-fit:cover;">
+                        <img src="https://cdn.dribbble.com/userupload/41685542/file/original-4b859c8a666e90fc4624a44648c1f886.gif" alt="Customer" style="width:56px;height:56px;border-radius:50%;border:4px solid #a36d16;object-fit:cover;" loading="lazy">
                     </div>
                 </div>
                 <!-- Decorative squares -->
