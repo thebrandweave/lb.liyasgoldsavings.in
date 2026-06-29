@@ -27,8 +27,77 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
             throw new Exception("Invalid status selection.");
         }
         
+        // Fetch application details first
+        $stmt = $conn->prepare("SELECT ca.FullName, ca.Email, ca.Position, ca.Status as PreviousStatus, co.Title as OpeningTitle 
+                                FROM CareerApplications ca 
+                                LEFT JOIN CareerOpenings co ON ca.OpeningID = co.OpeningID 
+                                WHERE ca.ApplicationID = ? LIMIT 1");
+        $stmt->execute([$appId]);
+        $appDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+        
+        if (!$appDetails) {
+            throw new Exception("Application not found.");
+        }
+        
         $updateStmt = $conn->prepare("UPDATE CareerApplications SET Status = ? WHERE ApplicationID = ?");
         $updateStmt->execute([$newStatus, $appId]);
+        
+        // Send email status update if it has changed to Accepted or Rejected
+        if ($newStatus !== $appDetails['PreviousStatus']) {
+            $positionName = $appDetails['OpeningTitle'] ? $appDetails['OpeningTitle'] : $appDetails['Position'];
+            
+            if ($newStatus === 'Accepted') {
+                $emailSubject = "Application Status Update - Accepted";
+                $emailBody = "
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
+                        <div style='text-align: center; margin-bottom: 20px;'>
+                            <h2 style='color: #a36d16; margin: 0;'>Golden Dream</h2>
+                            <p style='color: #666; font-size: 14px; margin: 5px 0 0 0;'>Careers & Opportunities</p>
+                        </div>
+                        <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
+                        <p>Dear <strong>" . htmlspecialchars($appDetails['FullName']) . "</strong>,</p>
+                        <p>We are pleased to inform you that your application for the <strong>" . htmlspecialchars($positionName) . "</strong> position at Golden Dream has been <strong>Accepted</strong>.</p>
+                        <p>Our Human Resources team will contact you shortly to discuss the next steps in our hiring process and schedule an onboarding session.</p>
+                        <p>Congratulations, and we look forward to working with you!</p>
+                        <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Golden Dream</p>
+                        <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
+                        <p style='font-size: 11px; color: #999; text-align: center;'>This is an automated email notification. Please do not reply directly to this message.</p>
+                    </div>
+                ";
+                
+                try {
+                    require_once("../../config/email.php");
+                    sendSMTPMail($appDetails['Email'], $emailSubject, $emailBody);
+                } catch (Exception $mailEx) {
+                    error_log("Failed to send acceptance email to " . $appDetails['Email'] . ": " . $mailEx->getMessage());
+                }
+            } elseif ($newStatus === 'Rejected') {
+                $emailSubject = "Application Status Update - Golden Dream";
+                $emailBody = "
+                    <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
+                        <div style='text-align: center; margin-bottom: 20px;'>
+                            <h2 style='color: #a36d16; margin: 0;'>Golden Dream</h2>
+                            <p style='color: #666; font-size: 14px; margin: 5px 0 0 0;'>Careers & Opportunities</p>
+                        </div>
+                        <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
+                        <p>Dear <strong>" . htmlspecialchars($appDetails['FullName']) . "</strong>,</p>
+                        <p>Thank you for your interest in the <strong>" . htmlspecialchars($positionName) . "</strong> position at Golden Dream and for taking the time to apply.</p>
+                        <p>After careful review of all applications, we regret to inform you that we have decided to move forward with other candidates whose qualifications closely align with our current requirements.</p>
+                        <p>We appreciate your interest in Golden Dream and wish you the best of luck in your job search and future professional endeavors.</p>
+                        <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Golden Dream</p>
+                        <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
+                        <p style='font-size: 11px; color: #999; text-align: center;'>This is an automated email notification. Please do not reply directly to this message.</p>
+                    </div>
+                ";
+                
+                try {
+                    require_once("../../config/email.php");
+                    sendSMTPMail($appDetails['Email'], $emailSubject, $emailBody);
+                } catch (Exception $mailEx) {
+                    error_log("Failed to send rejection email to " . $appDetails['Email'] . ": " . $mailEx->getMessage());
+                }
+            }
+        }
         
         // Log activity
         $logStmt = $conn->prepare("INSERT INTO ActivityLogs (UserID, UserType, Action, IPAddress) VALUES (?, 'Admin', ?, ?)");
