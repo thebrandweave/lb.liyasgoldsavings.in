@@ -57,9 +57,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                         <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                         <p>Dear <strong>" . htmlspecialchars($appDetails['FullName']) . "</strong>,</p>
                         <p>We are pleased to inform you that your application for the <strong>" . htmlspecialchars($positionName) . "</strong> position at Liyas Gold Savings has been <strong>Accepted</strong>.</p>
-                        <p>Our Human Resources team will contact you shortly to discuss the next steps in our hiring process and schedule an onboarding session.</p>
+                        <p>Our HR team will contact you shortly to discuss the next steps in our hiring process and schedule an onboarding session.</p>
                         <p>Congratulations, and we look forward to working with you!</p>
-                        <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Liyas Gold Savings</p>
+                        <p style='margin-top: 25px;'>Best regards,<br><strong>HR Team</strong><br>Liyas Gold Savings</p>
                         <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                         <p style='font-size: 11px; color: #999; text-align: center;'>This is an automated email notification. Please do not reply directly to this message.</p>
                     </div>
@@ -84,7 +84,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                         <p>Thank you for your interest in the <strong>" . htmlspecialchars($positionName) . "</strong> position at Liyas Gold Savings and for taking the time to apply.</p>
                         <p>After careful review of all applications, we regret to inform you that we have decided to move forward with other candidates whose qualifications closely align with our current requirements.</p>
                         <p>We appreciate your interest in Liyas Gold Savings and wish you the best of luck in your job search and future professional endeavors.</p>
-                        <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Liyas Gold Savings</p>
+                        <p style='margin-top: 25px;'>Best regards,<br><strong>HR Team</strong><br>Liyas Gold Savings</p>
                         <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                         <p style='font-size: 11px; color: #999; text-align: center;'>This is an automated email notification. Please do not reply directly to this message.</p>
                     </div>
