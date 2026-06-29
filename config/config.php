@@ -50,8 +50,8 @@ class Database
 class EmailConfig {
     public static $smtpHost = "smtp.hostinger.com";
     public static $smtpPort = 465;
-    public static $smtpUser = "careers@la.goldendream.in"; // Set Hostinger SMTP username
-    public static $smtpPass = "";                         // Set Hostinger SMTP password
-    public static $fromEmail = "careers@la.goldendream.in";
+    public static $smtpUser = "info@liyasgoldsavings.in"; // Set Hostinger SMTP username
+    public static $smtpPass = "vwd4-qpbx-ibti-mkph";                         // Set Hostinger SMTP password
+    public static $fromEmail = "info@liyasgoldsavings.in";
     public static $fromName = "Golden Dream Careers";
 }
