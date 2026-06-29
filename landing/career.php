@@ -78,14 +78,14 @@ try {
         $emailBody = "
             <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
                 <div style='text-align: center; margin-bottom: 20px;'>
-                    <h2 style='color: #a36d16; margin: 0;'>Golden Dream</h2>
+                    <h2 style='color: #a36d16; margin: 0;'>Liyas Gold Savings</h2>
                     <p style='color: #666; font-size: 14px; margin: 5px 0 0 0;'>Careers & Opportunities</p>
                 </div>
                 <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                 <p>Dear <strong>" . htmlspecialchars($fullName) . "</strong>,</p>
-                <p>Thank you for submitting your application for the <strong>" . htmlspecialchars($targetPosition) . "</strong> position at Golden Dream.</p>
+                <p>Thank you for submitting your application for the <strong>" . htmlspecialchars($targetPosition) . "</strong> position at Liyas Gold Savings.</p>
                 <p>We have successfully received your details and uploaded resume. Our Human Resources team will review your qualifications and contact you if your profile aligns with our current requirements.</p>
-                <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Golden Dream</p>
+                <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Liyas Gold Savings</p>
                 <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                 <p style='font-size: 11px; color: #999; text-align: center;'>This is an automated email notification. Please do not reply directly to this message.</p>
             </div>
@@ -110,7 +110,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Dream - Careers</title>
+    <title>Liyas Gold Savings - Careers</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -636,7 +636,7 @@ try {
     <!-- Hero Section -->
     <section class="career-hero">
         <div class="container hero-content">
-            <h1>Build Your Future with Golden Dream</h1>
+            <h1>Build Your Future with Liyas Gold Savings</h1>
             <p>Join a fast-growing team of visionaries and innovators dedicated to shaping the future of high-yield strategic investments.</p>
         </div>
     </section>
@@ -708,7 +708,7 @@ try {
         <div class="container">
             <div class="section-header">
                 <h2>Submit Your Application</h2>
-                <p>Take the first step towards a rewarding career with Golden Dream.</p>
+                <p>Take the first step towards a rewarding career with Liyas Gold Savings.</p>
             </div>
 
             <div class="apply-form-container">
