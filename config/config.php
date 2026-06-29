@@ -53,5 +53,5 @@ class EmailConfig {
     public static $smtpUser = "info@liyasgoldsavings.in"; // Set Hostinger SMTP username
     public static $smtpPass = "vwd4-qpbx-ibti-mkph";                         // Set Hostinger SMTP password
     public static $fromEmail = "info@liyasgoldsavings.in";
-    public static $fromName = "Liyas Gold and Diamonds Careers";
+    public static $fromName = "Liyas Gold Savings Careers";
 }
