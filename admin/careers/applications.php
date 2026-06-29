@@ -51,15 +51,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                 $emailBody = "
                     <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
                         <div style='text-align: center; margin-bottom: 20px;'>
-                            <h2 style='color: #a36d16; margin: 0;'>Golden Dream</h2>
+                            <h2 style='color: #a36d16; margin: 0;'>Liyas Gold Savings</h2>
                             <p style='color: #666; font-size: 14px; margin: 5px 0 0 0;'>Careers & Opportunities</p>
                         </div>
                         <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                         <p>Dear <strong>" . htmlspecialchars($appDetails['FullName']) . "</strong>,</p>
-                        <p>We are pleased to inform you that your application for the <strong>" . htmlspecialchars($positionName) . "</strong> position at Golden Dream has been <strong>Accepted</strong>.</p>
+                        <p>We are pleased to inform you that your application for the <strong>" . htmlspecialchars($positionName) . "</strong> position at Liyas Gold Savings has been <strong>Accepted</strong>.</p>
                         <p>Our Human Resources team will contact you shortly to discuss the next steps in our hiring process and schedule an onboarding session.</p>
                         <p>Congratulations, and we look forward to working with you!</p>
-                        <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Golden Dream</p>
+                        <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Liyas Gold Savings</p>
                         <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                         <p style='font-size: 11px; color: #999; text-align: center;'>This is an automated email notification. Please do not reply directly to this message.</p>
                     </div>
@@ -72,19 +72,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['update_status'])) {
                     error_log("Failed to send acceptance email to " . $appDetails['Email'] . ": " . $mailEx->getMessage());
                 }
             } elseif ($newStatus === 'Rejected') {
-                $emailSubject = "Application Status Update - Golden Dream";
+                $emailSubject = "Application Status Update - Liyas Gold Savings";
                 $emailBody = "
                     <div style='font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e0e0e0; border-radius: 8px;'>
                         <div style='text-align: center; margin-bottom: 20px;'>
-                            <h2 style='color: #a36d16; margin: 0;'>Golden Dream</h2>
+                            <h2 style='color: #a36d16; margin: 0;'>Liyas Gold Savings</h2>
                             <p style='color: #666; font-size: 14px; margin: 5px 0 0 0;'>Careers & Opportunities</p>
                         </div>
                         <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                         <p>Dear <strong>" . htmlspecialchars($appDetails['FullName']) . "</strong>,</p>
-                        <p>Thank you for your interest in the <strong>" . htmlspecialchars($positionName) . "</strong> position at Golden Dream and for taking the time to apply.</p>
+                        <p>Thank you for your interest in the <strong>" . htmlspecialchars($positionName) . "</strong> position at Liyas Gold Savings and for taking the time to apply.</p>
                         <p>After careful review of all applications, we regret to inform you that we have decided to move forward with other candidates whose qualifications closely align with our current requirements.</p>
-                        <p>We appreciate your interest in Golden Dream and wish you the best of luck in your job search and future professional endeavors.</p>
-                        <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Golden Dream</p>
+                        <p>We appreciate your interest in Liyas Gold Savings and wish you the best of luck in your job search and future professional endeavors.</p>
+                        <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Liyas Gold Savings</p>
                         <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                         <p style='font-size: 11px; color: #999; text-align: center;'>This is an automated email notification. Please do not reply directly to this message.</p>
                     </div>
