@@ -73,7 +73,7 @@
     <style>
         :root {
             --c-primary: #0a0a0a;
-            --c-secondary: #dc3545;
+            --c-secondary: #a36d16;
             --c-accent: #00d4aa;
             --c-text: #1a1a1a;
             --c-text-muted: #6b7280;
@@ -85,13 +85,13 @@
             --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
             --primary-color: #0a0a0a;
             --secondary-color: #ffffff;
-            --accent-color: #dc3545;
+            --accent-color: #a36d16;
             --text-color: #ffffff;
             --subtext-color: #e5e7eb;
             --border-color: rgba(255, 255, 255, 0.1);
-            --btn-bg: #dc3545;
+            --btn-bg: #a36d16;
             --btn-text: #ffffff;
-            --btn-hover-bg: #c82333;
+            --btn-hover-bg: #a36d16;
             --success: #00d4aa;
         }
 
@@ -2400,6 +2400,8 @@ header {
         <div class="mobile-nav-links">
             <a href="./"><i class="fas fa-home"></i> Home</a>
             <a href="./about.php"><i class="fas fa-info-circle"></i> About Us</a>
+<a href="./career.php"><i class="fas fa-briefcase"></i> Careers</a>
+            <!-- <a href="./career.php"><i class="fas fa-suitcase"></i> Career</a> -->
             <!-- <a href="./Gallery"><i class="fas fa-images"></i> Gallery</a>
             <a href="./Certificates"><i class="fas fa-certificate"></i> Certificates</a>
             <a href="./SavingsPlan"><i class="fas fa-piggy-bank"></i> Savings Plan</a>

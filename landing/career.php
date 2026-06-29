@@ -629,7 +629,8 @@ try {
         <div class="mobile-nav-links">
             <a href="./"><i class="fas fa-home"></i> Home</a>
             <a href="./about.php"><i class="fas fa-info-circle"></i> About Us</a>
-            <a href="./career.php"><i class="fas fa-briefcase"></i> Careers</a>
+<a href="./career.php"><i class="fas fa-briefcase"></i> Careers</a>
+            <!-- <a href="./career.php"><i class="fas fa-briefcase"></i> Careers</a> -->
         </div>
     </div>
 

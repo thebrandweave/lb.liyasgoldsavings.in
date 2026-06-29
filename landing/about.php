@@ -1480,6 +1480,7 @@ require_once("../config/config.php");
         <div class="mobile-nav-links">
             <a href="./"><i class="fas fa-home"></i> Home</a>
             <a href="./about.php"><i class="fas fa-info-circle"></i> About Us</a>
+<a href="./career.php"><i class="fas fa-briefcase"></i> Careers</a>
             <!-- <a href="./Gallery"><i class="fas fa-images"></i> Gallery</a>
             <a href="./Certificates"><i class="fas fa-certificate"></i> Certificates</a>
             <a href="./SavingsPlan"><i class="fas fa-piggy-bank"></i> Savings Plan</a>
