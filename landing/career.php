@@ -84,8 +84,8 @@ try {
                 <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                 <p>Dear <strong>" . htmlspecialchars($fullName) . "</strong>,</p>
                 <p>Thank you for submitting your application for the <strong>" . htmlspecialchars($targetPosition) . "</strong> position at Liyas Gold Savings.</p>
-                <p>We have successfully received your details and uploaded resume. Our Human Resources team will review your qualifications and contact you if your profile aligns with our current requirements.</p>
-                <p style='margin-top: 25px;'>Best regards,<br><strong>Human Resources Team</strong><br>Liyas Gold Savings</p>
+                <p>We have successfully received your details and uploaded resume. Our HR team will review your qualifications and contact you if your profile aligns with our current requirements.</p>
+                <p style='margin-top: 25px;'>Best regards,<br><strong>HR Team</strong><br>Liyas Gold Savings</p>
                 <hr style='border: 0; border-top: 1px solid #f1f1f1; margin: 20px 0;'>
                 <p style='font-size: 11px; color: #999; text-align: center;'>This is an automated email notification. Please do not reply directly to this message.</p>
             </div>
