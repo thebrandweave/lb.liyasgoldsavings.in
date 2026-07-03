@@ -148,7 +148,8 @@ include("../components/topbar.php");
         }
         .scheme-image img{
           
-            height: 300px;            object-fit: cover;
+            height: 300px;  
+                      object-fit: cover;
         }
 
         .scheme-actions {
