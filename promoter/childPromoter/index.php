@@ -766,6 +766,25 @@ $currentPromoter = $promoterStmt->fetch(PDO::FETCH_ASSOC);
                 justify-content: center;
             }
         }
+
+        /* Accordion & Expandable Row Styles */
+        .customer-toggle-btn {
+            transition: opacity 0.2s;
+        }
+        .customer-toggle-btn:hover {
+            opacity: 0.85;
+        }
+        .customer-toggle-btn.expanded .toggle-icon {
+            transform: rotate(180deg);
+        }
+        .customer-details-row {
+            transition: all 0.3s ease;
+        }
+        .inner-customers-table th {
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
     </style>
 </head>
 <body>
@@ -934,8 +953,14 @@ $currentPromoter = $promoterStmt->fetch(PDO::FETCH_ASSOC);
                                     </span>
                                 </td>
                                 <td>
-                                    <div class="stat-value"><?php echo $promoter['CustomerCount']; ?></div>
-                                    <div class="stat-label">Active Customers</div>
+                                    <div class="customer-toggle-btn" data-id="<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>" style="cursor: pointer; display: inline-block; text-align: center;">
+                                        <div class="stat-value" style="color: var(--primary-color); display: flex; align-items: center; gap: 6px; justify-content: center;">
+                                            <i class="fas fa-user-friends" style="font-size: 13px;"></i>
+                                            <span><?php echo $promoter['CustomerCount']; ?></span>
+                                            <i class="fas fa-chevron-down toggle-icon" style="font-size: 10px; transition: transform 0.3s; margin-left: 2px;"></i>
+                                        </div>
+                                        <div class="stat-label" style="text-decoration: underline; text-underline-offset: 3px;">Active Customers</div>
+                                    </div>
                                 </td>
                                 <td>
                                     <div class="promoter-actions">
@@ -948,6 +973,18 @@ $currentPromoter = $promoterStmt->fetch(PDO::FETCH_ASSOC);
                                         <a href="delete.php?id=<?php echo $promoter['PromoterID']; ?>" class="action-btn" title="Delete Promoter" onclick="return confirm('Are you sure you want to delete this promoter? This action cannot be undone.');">
                                             <i class="fas fa-trash"></i>
                                         </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr class="customer-details-row" id="details-row-<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>" style="display: none; background-color: #fafbfd;">
+                                <td colspan="6" style="padding: 15px 25px; border-bottom: 1px solid var(--border-color);">
+                                    <div class="expanded-container" style="background: #fdfdfd; border-radius: 8px; padding: 15px; border-left: 4px solid var(--primary-color); box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);">
+                                        <div class="loading-spinner" style="text-align: center; padding: 15px; color: var(--text-secondary);">
+                                            <i class="fas fa-spinner fa-spin" style="margin-right: 6px; color: var(--primary-color);"></i> Loading customer details...
+                                        </div>
+                                        <div class="customers-content" style="display: none;">
+                                            <!-- Loaded via AJAX -->
+                                        </div>
                                     </div>
                                 </td>
                             </tr>
@@ -1023,7 +1060,7 @@ $currentPromoter = $promoterStmt->fetch(PDO::FETCH_ASSOC);
     </div>
 
     <script>
-        // Ensure proper topbar integration
+        // Ensure proper topbar integration and accordion toggle
         document.addEventListener('DOMContentLoaded', function() {
             const sidebar = document.getElementById('sidebar');
             const content = document.querySelector('.content-wrapper');
@@ -1042,6 +1079,67 @@ $currentPromoter = $promoterStmt->fetch(PDO::FETCH_ASSOC);
             // Watch for sidebar changes
             const observer = new MutationObserver(adjustContent);
             observer.observe(sidebar, { attributes: true });
+
+            // Accordion Toggle for Customer Details
+            const toggleButtons = document.querySelectorAll('.customer-toggle-btn');
+            
+            toggleButtons.forEach(btn => {
+                btn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const promoterUniqueID = this.getAttribute('data-id');
+                    const detailsRow = document.getElementById('details-row-' + promoterUniqueID);
+                    const spinner = detailsRow.querySelector('.loading-spinner');
+                    const contentDiv = detailsRow.querySelector('.customers-content');
+                    
+                    const isExpanded = this.classList.contains('expanded');
+                    
+                    // Collapse all other expanded rows first for accordian feel
+                    document.querySelectorAll('.customer-toggle-btn.expanded').forEach(otherBtn => {
+                        if (otherBtn !== this) {
+                            otherBtn.classList.remove('expanded');
+                            const otherID = otherBtn.getAttribute('data-id');
+                            const otherRow = document.getElementById('details-row-' + otherID);
+                            if (otherRow) {
+                                otherRow.style.display = 'none';
+                            }
+                        }
+                    });
+
+                    if (isExpanded) {
+                        // Collapse
+                        this.classList.remove('expanded');
+                        detailsRow.style.display = 'none';
+                    } else {
+                        // Expand
+                        this.classList.add('expanded');
+                        detailsRow.style.display = 'table-row';
+                        
+                        // Load data via AJAX if not loaded already
+                        if (!detailsRow.classList.contains('loaded')) {
+                            spinner.style.display = 'block';
+                            contentDiv.style.display = 'none';
+                            
+                            fetch('get_child_customers.php?id=' + encodeURIComponent(promoterUniqueID))
+                                .then(response => {
+                                    if (!response.ok) throw new Error('Network response error');
+                                    return response.text();
+                                })
+                                .then(html => {
+                                    contentDiv.innerHTML = html;
+                                    spinner.style.display = 'none';
+                                    contentDiv.style.display = 'block';
+                                    detailsRow.classList.add('loaded');
+                                })
+                                .catch(err => {
+                                    console.error(err);
+                                    contentDiv.innerHTML = '<div style="color:var(--error-color); text-align:center; padding:15px;"><i class="fas fa-exclamation-triangle"></i> Failed to load customer details. Please try again.</div>';
+                                    spinner.style.display = 'none';
+                                    contentDiv.style.display = 'block';
+                                });
+                        }
+                    }
+                });
+            });
         });
     </script>
 </body>

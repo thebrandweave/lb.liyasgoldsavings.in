@@ -124,6 +124,13 @@ include($menuPath . "components/topbar.php");
                     <div class="extra-desc">Download monthly payments data in Excel format for reconciliation and reporting.</div>
                     <a href="./get_repayment_excel.php" class="extra-action">Open</a>
                 </div>
+                <!-- Promoter Commission Excel Download -->
+                <div class="extra-card">
+                    <div class="extra-icon"><i class="fas fa-coins"></i></div>
+                    <div class="extra-title">Get monthly commissions Excel</div>
+                    <div class="extra-desc">Download monthly promoter commissions data in Excel format for reconciliation and reporting.</div>
+                    <a href="./get_promoter_commission_excel.php" class="extra-action">Open</a>
+                </div>
                 <!-- Upload Repayment Commission -->
                 <div class="extra-card">
                     <div class="extra-icon"><i class="fas fa-upload"></i></div>
