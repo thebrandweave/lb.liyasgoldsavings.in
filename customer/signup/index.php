@@ -11,7 +11,7 @@
         :root {
             --dark-bg: #1A1D21;
             --card-bg: #222529;
-            --accent-green: #2F9B7F;
+            --accent-green: #ffbb50;
             --text-primary: rgba(255, 255, 255, 0.9);
             --text-secondary: rgba(255, 255, 255, 0.7);
             --border-color: rgba(255, 255, 255, 0.05);
@@ -55,7 +55,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--accent-green), #1e6e59);
+            background:linear-gradient(14deg, #ffbb50, #000000);
         }
 
         .info-item {
@@ -122,7 +122,7 @@
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--accent-green), #1e6e59);
+            background:linear-gradient(14deg, #ffbb50, #000000);
         }
 
         .signup-container h2 {
@@ -169,7 +169,7 @@
         }
 
         .btn-signup {
-            background: linear-gradient(135deg, var(--accent-green) 0%, #1e6e59 100%);
+            background:linear-gradient(14deg, #ffbb50, #000000);
             border: none;
             border-radius: 8px;
             padding: 0.75rem;

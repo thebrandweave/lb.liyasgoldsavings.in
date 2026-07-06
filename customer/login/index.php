@@ -56,7 +56,7 @@ if (isLoggedIn()) {
             left: 0;
             right: 0;
             height: 4px;
-            background: linear-gradient(90deg, var(--accent-green), #1e6e59);
+            background:linear-gradient(14deg, #ffbb50, #000000);
         }
 
         .logo {
@@ -65,7 +65,7 @@ if (isLoggedIn()) {
         }
 
         .logo h1 {
-            color: var(--accent-green);
+            color: #ffbb50;
             font-weight: 700;
             margin-bottom: 10px;
             font-size: 28px;
@@ -103,7 +103,7 @@ if (isLoggedIn()) {
         }
 
         .btn-login {
-            background: linear-gradient(135deg, var(--accent-green) 0%, #1e6e59 100%);
+            background:linear-gradient(14deg, #ffbb50, #000000);
             border: none;
             border-radius: 8px;
             padding: 12px;
@@ -114,8 +114,8 @@ if (isLoggedIn()) {
 
         .btn-login:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(47, 155, 127, 0.3);
-            background: linear-gradient(135deg, #248c6f 0%, #1e6e59 100%);
+            box-shadow: 0 5px 15px rgba(185, 124, 9, 0.3);
+            background:linear-gradient(14deg, #ffbb50, #000000);
         }
 
         .remember-me {
@@ -164,12 +164,12 @@ if (isLoggedIn()) {
         }
 
         .position-relative i {
-            color: var(--text-secondary);
+            color: #000000;
             transition: all 0.3s ease;
         }
 
         .position-relative i:hover {
-            color: var(--accent-green);
+            color: #ffbb50;
         }
 
         @media (max-width: 480px) {
