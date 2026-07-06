@@ -756,7 +756,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="success-details">
                     <p><strong>Name:</strong> <?php echo htmlspecialchars($registeredName); ?></p>
-                    <p><strong>Contact:</strong> <?php echo htmlspecialchars($registeredContact); ?></p>
+            
                     <p><strong>ID:</strong> <?php echo htmlspecialchars($registeredUniqueID); ?></p>
                     <p><strong>Type:</strong> <?php echo ucfirst($registeredType); ?></p>
                     <?php if ($registeredType === 'customer'): ?>
