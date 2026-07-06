@@ -267,14 +267,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             border: 1px solid var(--border-color);
         }
         /* New styles for the installment info box */
-.installment-info-box {
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    padding: 12px 16px;
-    margin-top: 12px;
-    font-size: 14px;
-}
+        .installment-info-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 12px 16px;
+            margin-top: 12px;
+            font-size: 14px;
+        }
         .form-label { color: var(--text-primary); font-weight: 500; margin-bottom: 8px; }
         .form-control, .form-select {
             background: rgba(255, 255, 255, 0.05);
@@ -366,11 +366,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <select name="installment_id" id="installment_id" class="form-select form-control" required>
                                 <option value="">Select scheme first</option>
                             </select>
-<!-- Information Box added here -->
-<div class="installment-info-box" id="installmentInfo" style="display: none;">
-    <p class="mb-1 text-secondary"><strong>Amount:</strong> <span class="text-white" id="installmentAmount"></span></p>
-    <p class="mb-0 text-secondary"><strong>Draw Date:</strong> <span class="text-white" id="installmentDrawDate"></span></p>
-</div>
+                            
+                            <div class="installment-info-box" id="installmentInfo" style="display: none;">
+                                <p class="mb-1 text-secondary"><strong>Amount:</strong> <span class="text-white" id="installmentAmount"></span></p>
+                                <p class="mb-0 text-secondary"><strong>Draw Date:</strong> <span class="text-white" id="installmentDrawDate"></span></p>
+                            </div>
 
                         </div>
                         <div class="mb-3">
@@ -411,10 +411,28 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const schemeSelect = document.getElementById('scheme_id');
         const installmentSelect = document.getElementById('installment_id');
         const amountInput = document.getElementById('amount');
+        
         // Grab elements for Info Box
-const installmentInfoBox = document.getElementById('installmentInfo');
-const displayAmountSpan = document.getElementById('installmentAmount');
-const displayDrawDateSpan = document.getElementById('installmentDrawDate');
+        const installmentInfoBox = document.getElementById('installmentInfo');
+        const displayAmountSpan = document.getElementById('installmentAmount');
+        const displayDrawDateSpan = document.getElementById('installmentDrawDate');
+
+        // Helper function to update the info box UI (Moved to top so it's ready to use)
+        function updateInstallmentDetails(opt) {
+            if (opt && opt.value !== "") {
+                const amt = parseFloat(opt.dataset.amount).toFixed(2);
+                const drawDate = opt.dataset.drawdate ? opt.dataset.drawdate : "Not Available";
+                
+                displayAmountSpan.textContent = "₹" + amt;
+                displayDrawDateSpan.textContent = drawDate;
+                
+                installmentInfoBox.style.display = 'block';
+                amountInput.value = amt;
+            } else {
+                installmentInfoBox.style.display = 'none';
+                amountInput.value = '';
+            }
+        }
 
         function getInstallments(schemeId) {
             const scheme = schemesData.find(s => s.SchemeID == schemeId);
@@ -433,6 +451,10 @@ const displayDrawDateSpan = document.getElementById('installmentDrawDate');
                 opt.value = inst.InstallmentID;
                 opt.textContent = 'Installment ' + inst.InstallmentNumber + ' — ₹' + parseFloat(inst.Amount).toFixed(2);
                 opt.dataset.amount = inst.Amount;
+                
+                // FIXED: This line was missing! It attaches the DrawDate to the option
+                opt.dataset.drawdate = inst.DrawDate; 
+                
                 installmentSelect.appendChild(opt);
             });
 
@@ -445,35 +467,20 @@ const displayDrawDateSpan = document.getElementById('installmentDrawDate');
                     }
                 }
                 installmentSelect.value = selectedInstallment.InstallmentID;
-                amountInput.value = selectedInstallment.Amount;
+                
+                // FIXED: This line was missing! It forces the box to show up on page load
+                updateInstallmentDetails(installmentSelect.options[installmentSelect.selectedIndex]);
             }
         });
 
         installmentSelect.addEventListener('change', function() {
             const opt = this.options[this.selectedIndex];
-        updateInstallmentDetails(opt);
+            updateInstallmentDetails(opt);
         });
 
         if (schemeSelect.value) {
             schemeSelect.dispatchEvent(new Event('change'));
         }
-
-        // Helper function to update the info box UI
-function updateInstallmentDetails(opt) {
-    if (opt && opt.value !== "") {
-        const amt = parseFloat(opt.dataset.amount).toFixed(2);
-        const drawDate = opt.dataset.drawdate ? opt.dataset.drawdate : "Not Available";
-        
-        displayAmountSpan.textContent = "₹" + amt;
-        displayDrawDateSpan.textContent = drawDate;
-        
-        installmentInfoBox.style.display = 'block';
-        amountInput.value = amt;
-    } else {
-        installmentInfoBox.style.display = 'none';
-        amountInput.value = '';
-    }
-}   
     </script>
 </body>
 </html>
