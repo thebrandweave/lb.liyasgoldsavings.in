@@ -53,7 +53,7 @@ if (empty($profileImageUrl)) {
             color: var(--text-primary);
             min-height: 100vh;
             margin: 0;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Inter', sans-serif;
         }
 
         .profile-container {
