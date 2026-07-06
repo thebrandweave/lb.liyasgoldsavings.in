@@ -284,7 +284,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .table thead th {
-            background-color: #684e26;
+            background-color: #ab8241;
             color: var(--text-primary);
             font-weight: 500;
             border-bottom: none;
