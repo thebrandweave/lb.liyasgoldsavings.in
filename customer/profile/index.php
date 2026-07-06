@@ -182,7 +182,7 @@ if (empty($profileImageUrl)) {
         }
 
         .btn-edit:hover {
-            background: #248c6f;
+            background: #ffbb50;
             transform: translateY(-1px);
         }
 
