@@ -20,16 +20,25 @@ $stmt = $db->prepare("
 $stmt->execute();
 $schemes = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// Get installments per scheme (all active installments)
+// Get installments per scheme (ONLY unpaid active installments)
 $schemesWithInstallments = [];
 foreach ($schemes as $scheme) {
+    // FIXED: Added NOT EXISTS to filter out installments this customer already paid/submitted
     $stmt = $db->prepare("
-        SELECT InstallmentID, InstallmentNumber, Amount, DrawDate
-        FROM Installments
-        WHERE SchemeID = ? AND Status = 'Active'
-        ORDER BY InstallmentNumber ASC
+        SELECT i.InstallmentID, i.InstallmentNumber, i.Amount, i.DrawDate
+        FROM Installments i
+        WHERE i.SchemeID = ? AND i.Status = 'Active'
+          AND NOT EXISTS (
+              SELECT 1 
+              FROM Payments p
+              WHERE p.CustomerID = ?
+                AND p.SchemeID = i.SchemeID
+                AND p.InstallmentID = i.InstallmentID
+                AND p.Status IN ('Pending', 'Verified')
+          )
+        ORDER BY i.InstallmentNumber ASC
     ");
-    $stmt->execute([$scheme['SchemeID']]);
+    $stmt->execute([$scheme['SchemeID'], $customerId]);
     $scheme['installments'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
     $schemesWithInstallments[] = $scheme;
 }
@@ -69,16 +78,20 @@ if ($latestSubscription) {
     $stmt->execute([$autoSchemeId, $customerId]);
     $autoInstallmentId = (int) ($stmt->fetchColumn() ?: 0);
 
-    // Fallback to first active installment if all are already paid/pending or mapping is unavailable.
+    // Fallback to first unpaid active installment if mapping is unavailable.
     if ($autoInstallmentId <= 0) {
         $stmt = $db->prepare("
-            SELECT InstallmentID
-            FROM Installments
-            WHERE SchemeID = ? AND Status = 'Active'
-            ORDER BY InstallmentNumber ASC
+            SELECT i.InstallmentID
+            FROM Installments i
+            WHERE i.SchemeID = ? AND i.Status = 'Active'
+              AND NOT EXISTS (
+                  SELECT 1 FROM Payments p
+                  WHERE p.CustomerID = ? AND p.InstallmentID = i.InstallmentID AND p.Status IN ('Pending', 'Verified')
+              )
+            ORDER BY i.InstallmentNumber ASC
             LIMIT 1
         ");
-        $stmt->execute([$autoSchemeId]);
+        $stmt->execute([$autoSchemeId, $customerId]);
         $autoInstallmentId = (int) ($stmt->fetchColumn() ?: 0);
     }
 }
@@ -184,7 +197,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $stmt->execute([$customerId, $schemeId, $totalMonths]);
                             }
 
-                            // Re-check duplicate inside transaction (race: two tabs submitting)
+                            // Re-check duplicate inside transaction
                             $stmt = $db->prepare("
                                 SELECT 1 FROM Payments
                                 WHERE CustomerID = ? AND SchemeID = ? AND InstallmentID = ?
@@ -197,7 +210,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 @unlink($targetPath);
                                 $error_message = 'You already submitted a payment for this scheme and installment. Please wait for verification or contact support if you need help.';
                             } else {
-                                // Insert payment (online only: UTR + screenshot)
+                                // Insert payment
                                 $screenshotUrl = 'uploads/payments/' . $fileName;
                                 $stmt = $db->prepare("
                                     INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, StaffName, ScreenshotURL, Status, PayerRemark, SubmittedAt)
@@ -266,7 +279,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             padding: 24px;
             border: 1px solid var(--border-color);
         }
-        /* New styles for the installment info box */
         .installment-info-box {
             background: rgba(255, 255, 255, 0.03);
             border: 1px solid var(--border-color);
@@ -290,7 +302,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             box-shadow: 0 0 0 3px rgba(47, 155, 127, 0.2);
         }
         .form-control::placeholder { color: var(--text-secondary); }
-        /* Dropdown options: light bg + dark text so items are visible */
         .form-select option,
         .add-payment-card select option {
             background: #fff;
@@ -366,7 +377,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <select name="installment_id" id="installment_id" class="form-select form-control" required>
                                 <option value="">Select scheme first</option>
                             </select>
-                            
+
+                            <!-- Information Box added here -->
                             <div class="installment-info-box" id="installmentInfo" style="display: none;">
                                 <p class="mb-1 text-secondary"><strong>Amount:</strong> <span class="text-white" id="installmentAmount"></span></p>
                                 <p class="mb-0 text-secondary"><strong>Draw Date:</strong> <span class="text-white" id="installmentDrawDate"></span></p>
@@ -417,7 +429,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const displayAmountSpan = document.getElementById('installmentAmount');
         const displayDrawDateSpan = document.getElementById('installmentDrawDate');
 
-        // Helper function to update the info box UI (Moved to top so it's ready to use)
+        // Helper function to update the info box UI
         function updateInstallmentDetails(opt) {
             if (opt && opt.value !== "") {
                 const amt = parseFloat(opt.dataset.amount).toFixed(2);
@@ -441,20 +453,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         schemeSelect.addEventListener('change', function() {
             const schemeId = this.value;
-            installmentSelect.innerHTML = '<option value="">Select installment</option>';
-            updateInstallmentDetails(null);
-
-            if (!schemeId) return;
+            updateInstallmentDetails(null); // Reset info box
+            
+            if (!schemeId) {
+                installmentSelect.innerHTML = '<option value="">Select scheme first</option>';
+                return;
+            }
+            
             const installments = getInstallments(schemeId);
+            
+            // FIXED: Added handling in case the user has paid ALL installments
+            if (installments.length === 0) {
+                installmentSelect.innerHTML = '<option value="">All installments paid</option>';
+                installmentSelect.disabled = true; // Optional: disable if there's nothing to pay
+                return;
+            } else {
+                installmentSelect.disabled = false;
+                installmentSelect.innerHTML = '<option value="">Select installment</option>';
+            }
+
             installments.forEach(function(inst) {
                 const opt = document.createElement('option');
                 opt.value = inst.InstallmentID;
                 opt.textContent = 'Installment ' + inst.InstallmentNumber + ' — ₹' + parseFloat(inst.Amount).toFixed(2);
                 opt.dataset.amount = inst.Amount;
-                
-                // FIXED: This line was missing! It attaches the DrawDate to the option
                 opt.dataset.drawdate = inst.DrawDate; 
-                
                 installmentSelect.appendChild(opt);
             });
 
@@ -467,8 +490,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     }
                 }
                 installmentSelect.value = selectedInstallment.InstallmentID;
-                
-                // FIXED: This line was missing! It forces the box to show up on page load
                 updateInstallmentDetails(installmentSelect.options[installmentSelect.selectedIndex]);
             }
         });
