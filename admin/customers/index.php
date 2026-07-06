@@ -1129,7 +1129,7 @@ include("../components/topbar.php");
                             <tbody>
                                 <?php foreach ($customers as $customer): ?>
                                     <tr>
-                                        <td><span class="customer-id"><?php echo $customer['CustomerUniqueID']; ?></span></td>
+                                        <td><?php echo $customer['CustomerUniqueID']; ?></td>
                                         <td><?php echo htmlspecialchars($customer['Name']); ?></td>
                                         <td><?php echo htmlspecialchars($customer['Contact']); ?></td>
                                         <td><?php echo !empty($customer['Email']) ? htmlspecialchars($customer['Email']) : '-'; ?></td>
