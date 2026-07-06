@@ -209,8 +209,8 @@ if (empty($profileImageUrl)) {
         }
 
         .btn-outline-primary {
-            border: 1px solid var(--accent-green);
-            color: var(--accent-green);
+            border: 1px solid #ffbb50;
+            color: #ffbb50;
             background: transparent;
             padding: 8px 16px;
             border-radius: 6px;
@@ -218,8 +218,9 @@ if (empty($profileImageUrl)) {
         }
 
         .btn-outline-primary:hover {
-            background: var(--accent-green);
+            background: #ffbb50;
             color: white;
+            border:none
         }
 
         .row {
