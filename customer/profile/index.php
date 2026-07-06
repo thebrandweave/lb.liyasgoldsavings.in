@@ -194,7 +194,7 @@ if (empty($profileImageUrl)) {
         }
 
         .status-active {
-            background: rgba(47, 155, 127, 0.1);
+            background: rgba(197, 135, 0, 0.36);
             color: #ffbb50;
         }
 
