@@ -424,7 +424,7 @@ const displayDrawDateSpan = document.getElementById('installmentDrawDate');
         schemeSelect.addEventListener('change', function() {
             const schemeId = this.value;
             installmentSelect.innerHTML = '<option value="">Select installment</option>';
-            amountInput.value = '';
+            updateInstallmentDetails(null);
 
             if (!schemeId) return;
             const installments = getInstallments(schemeId);
@@ -451,7 +451,7 @@ const displayDrawDateSpan = document.getElementById('installmentDrawDate');
 
         installmentSelect.addEventListener('change', function() {
             const opt = this.options[this.selectedIndex];
-            if (opt && opt.dataset.amount) amountInput.value = opt.dataset.amount;
+        updateInstallmentDetails(opt);
         });
 
         if (schemeSelect.value) {
