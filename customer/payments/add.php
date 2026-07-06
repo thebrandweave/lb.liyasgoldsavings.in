@@ -265,7 +265,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         body { background: var(--dark-bg); color: var(--text-primary); min-height: 100vh; margin: 0; font-family: 'Inter', sans-serif; }
         .add-payment-container { padding: 24px; margin-top: 70px; max-width: 560px; margin-left: auto; margin-right: auto; }
         .add-payment-header {
-            background: linear-gradient(135deg, #ffbb50 0%, #1e6e59 100%);
+            background: linear-gradient(14deg, #ffbb50, #000000);;
             border-radius: 12px;
             padding: 24px;
             margin-bottom: 24px;

@@ -77,7 +77,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .scheme-header {
-            background: linear-gradient(135deg, #ffbb50 0%, #1e6e59 100%);
+            background: linear-gradient(14deg, #ffbb50, #000000);;
             border-radius: 12px;
             padding: 30px 20px;
             margin-bottom: 20px;

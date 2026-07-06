@@ -238,7 +238,7 @@ $pending_withdrawals = $stmt->fetch(PDO::FETCH_ASSOC)['pending_withdrawals'];
         }
 
         .badge {
-            background: linear-gradient(135deg, #ffbb50 0%, #1e6e59 100%) !important;
+            background: linear-gradient(14deg, #ffbb50, #000000); !important;
             color: #fff;
             font-weight: 500;
             padding: 6px 12px;

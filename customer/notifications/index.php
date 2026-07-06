@@ -84,7 +84,7 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
         .notifications-header {
-            background: linear-gradient(135deg, #ffbb50 0%, #1e6e59 100%);
+            background: linear-gradient(14deg, #ffbb50, #000000);;
             border-radius: 12px;
             padding: 40px 24px;
             margin-bottom: 24px;
