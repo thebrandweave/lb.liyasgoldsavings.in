@@ -284,7 +284,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .table thead th {
-            background:linear-gradient(14deg, #ffbb50, #000000);
+            background:linear-gradient(180deg, #ffbb50, #000000);
             color: var(--text-primary);
             font-weight: 500;
             border-bottom: none;
