@@ -78,7 +78,7 @@ require_once  $c_path.'c_includes/loader.php';
         <li class="nav-item">
             <a class="nav-link" href="<?php echo $c_path; ?>logout">
                 <i class="fas fa-sign-out-alt"></i>
-                <span>logout</span>
+                <span>Logout</span>
             </a>
         </li>
     </ul>
