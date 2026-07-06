@@ -255,7 +255,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $stmt = $conn->prepare("SELECT CustomerUniqueID FROM Customers WHERE CustomerID = ?");
                 $stmt->execute([$userId]);
                 $customerData = $stmt->fetch(PDO::FETCH_ASSOC);
-                $uniqueID = $customerData['CustomerUniqueID'];
+                $uniqueID = $customerData['CustomerUniqueID'] ?? '';
+
+                // Fallback: If database trigger didn't generate CustomerUniqueID, generate it manually
+                if (empty($uniqueID)) {
+                    $uniqueID = 'LB' . $userId;
+                    $updateStmt = $conn->prepare("UPDATE Customers SET CustomerUniqueID = ? WHERE CustomerID = ?");
+                    $updateStmt->execute([$uniqueID, $userId]);
+                }
 
                 // Log activity (non-blocking)
                 $stmt = $conn->prepare("
@@ -338,6 +345,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $registeredUniqueID = $uniqueID;
             $registeredType = $registrationType;
             $registeredName = $name;
+            $registeredContact = $contact;
 
             // Reset form data
             $name = '';
@@ -748,7 +756,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
                 <div class="success-details">
                     <p><strong>Name:</strong> <?php echo htmlspecialchars($registeredName); ?></p>
-                    <p><strong>Contact:</strong> <?php echo htmlspecialchars($contact); ?></p>
+                    <p><strong>Contact:</strong> <?php echo htmlspecialchars($registeredContact); ?></p>
                     <p><strong>ID:</strong> <?php echo htmlspecialchars($registeredUniqueID); ?></p>
                     <p><strong>Type:</strong> <?php echo ucfirst($registeredType); ?></p>
                     <?php if ($registeredType === 'customer'): ?>

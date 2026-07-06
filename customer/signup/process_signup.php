@@ -53,7 +53,14 @@ try {
     $stmt = $db->prepare("SELECT CustomerUniqueID FROM Customers WHERE CustomerID = ?");
     $stmt->execute([$customerId]);
     $customerData = $stmt->fetch(PDO::FETCH_ASSOC);
-    $customerUniqueID = $customerData['CustomerUniqueID'];
+    $customerUniqueID = $customerData['CustomerUniqueID'] ?? '';
+
+    // Fallback: If database trigger didn't generate CustomerUniqueID, generate it manually
+    if (empty($customerUniqueID)) {
+        $customerUniqueID = 'LB' . $customerId;
+        $updateStmt = $db->prepare("UPDATE Customers SET CustomerUniqueID = ? WHERE CustomerID = ?");
+        $updateStmt->execute([$customerUniqueID, $customerId]);
+    }
 
     // Send welcome notification based on enabled channels
     try {

@@ -145,7 +145,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     $stmt = $conn->prepare("SELECT CustomerUniqueID FROM Customers WHERE CustomerID = ?");
                     $stmt->execute([$customerId]);
                     $customerData = $stmt->fetch(PDO::FETCH_ASSOC);
-                    $customerUniqueID = $customerData['CustomerUniqueID'];
+                    $customerUniqueID = $customerData['CustomerUniqueID'] ?? '';
+
+                    // Fallback: If database trigger didn't generate CustomerUniqueID, generate it manually
+                    if (empty($customerUniqueID)) {
+                        $customerUniqueID = 'LB' . $customerId;
+                        $updateStmt = $conn->prepare("UPDATE Customers SET CustomerUniqueID = ? WHERE CustomerID = ?");
+                        $updateStmt->execute([$customerUniqueID, $customerId]);
+                    }
 
                     // Log activity
                     $stmt = $conn->prepare("
