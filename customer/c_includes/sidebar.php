@@ -149,7 +149,7 @@ require_once  $c_path.'c_includes/loader.php';
 
     .sidebar .nav-link.active {
         color: #fff;
-        background: #2F9B7F;
+        background: #ffbb50;
         /* Green background for active state */
         border-left: none;
         /* Remove left border */
@@ -175,7 +175,7 @@ require_once  $c_path.'c_includes/loader.php';
         font-size: 0.7rem;
         padding: 0.25rem 0.5rem;
         border-radius: 50%;
-        background: #2F9B7F !important;
+        background: #ffbb50 !important;
         /* Green background */
         color: #fff;
         box-shadow: none;
@@ -237,7 +237,7 @@ require_once  $c_path.'c_includes/loader.php';
         top: 18px;
         left: 18px;
         z-index: 1100;
-        background: #2F9B7F;
+        background: #ffbb50;
         color: #fff;
         border: none;
         border-radius: 6px;

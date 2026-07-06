@@ -41,7 +41,7 @@ if (empty($profileImageUrl)) {
         :root {
             --dark-bg: #1A1D21;
             --card-bg: #222529;
-            --accent-green: #2F9B7F;
+            --accent-green: #ffbb50;
             --text-primary: rgba(255, 255, 255, 0.9);
             --text-secondary: rgba(255, 255, 255, 0.7);
             --card-hover: #2A2D31;
@@ -63,7 +63,7 @@ if (empty($profileImageUrl)) {
         }
 
         .profile-header {
-            background: linear-gradient(135deg, #2F9B7F 0%, #1e6e59 100%);
+            background: linear-gradient(135deg, #ffbb50 0%, #1e6e59 100%);
             border-radius: 12px;
             padding: 40px;
             margin-bottom: 24px;
@@ -195,7 +195,7 @@ if (empty($profileImageUrl)) {
 
         .status-active {
             background: rgba(47, 155, 127, 0.1);
-            color: #2F9B7F;
+            color: #ffbb50;
         }
 
         .status-inactive {

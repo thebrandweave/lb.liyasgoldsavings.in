@@ -218,7 +218,7 @@ $currentInstallment = ($interval->y * 12) + $interval->m + 1;
         :root {
             --dark-bg: #1A1D21;
             --card-bg: #222529;
-            --accent-green: #2F9B7F;
+            --accent-green: #ffbb50;
             --text-primary: rgba(255, 255, 255, 0.9);
             --text-secondary: rgba(255, 255, 255, 0.7);
             --border-color: rgba(255, 255, 255, 0.05);

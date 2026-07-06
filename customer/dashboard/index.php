@@ -130,7 +130,7 @@ $pending_withdrawals = $stmt->fetch(PDO::FETCH_ASSOC)['pending_withdrawals'];
         :root {
             --dark-bg: #1A1D21;
             --card-bg: #222529;
-            --accent-green: #2F9B7F;
+            --accent-green: #ffbb50;
             --text-primary: rgba(255, 255, 255, 0.9);
             --text-secondary: rgba(255, 255, 255, 0.7);
             --card-hover: #2A2D31;
@@ -152,7 +152,7 @@ $pending_withdrawals = $stmt->fetch(PDO::FETCH_ASSOC)['pending_withdrawals'];
         }
 
         .dashboard-header {
-            background: linear-gradient(135deg, #2F9B7F 0%, #1e6e59 100%);
+            background:linear-gradient(14deg, #ffbb50, #000000);
             border-radius: 12px;
             padding: 20px;
             margin-bottom: 20px;
@@ -178,7 +178,7 @@ $pending_withdrawals = $stmt->fetch(PDO::FETCH_ASSOC)['pending_withdrawals'];
             background: var(--card-bg);
             border-radius: 12px;
             padding: 16px;
-            box-shadow: 0 0 10px #2F9B7F;
+            box-shadow: 0 0 10px #ffbb50;
         }
 
         .stats-icon {
@@ -216,7 +216,7 @@ $pending_withdrawals = $stmt->fetch(PDO::FETCH_ASSOC)['pending_withdrawals'];
         }
 
         .info-card h4 i {
-            color: #2F9B7F;
+            color: #ffbb50;
         }
 
         .winner-item {
@@ -238,7 +238,7 @@ $pending_withdrawals = $stmt->fetch(PDO::FETCH_ASSOC)['pending_withdrawals'];
         }
 
         .badge {
-            background: linear-gradient(135deg, #2F9B7F 0%, #1e6e59 100%) !important;
+            background: linear-gradient(135deg, #ffbb50 0%, #1e6e59 100%) !important;
             color: #fff;
             font-weight: 500;
             padding: 6px 12px;
@@ -249,7 +249,7 @@ $pending_withdrawals = $stmt->fetch(PDO::FETCH_ASSOC)['pending_withdrawals'];
         .payment-due-date {
             font-size: 24px;
             font-weight: 600;
-            color: #2F9B7F;
+            color: #ffbb50;
             margin: 16px 0;
         }
 
@@ -260,7 +260,7 @@ $pending_withdrawals = $stmt->fetch(PDO::FETCH_ASSOC)['pending_withdrawals'];
 
         .empty-state i {
             font-size: 32px;
-            color: #2F9B7F;
+            color: #ffbb50;
             margin-bottom: 16px;
         }
 

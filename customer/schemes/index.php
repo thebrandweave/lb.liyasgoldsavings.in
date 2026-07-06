@@ -56,7 +56,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
         :root {
             --dark-bg: #1A1D21;
             --card-bg: #222529;
-            --accent-green: #2F9B7F;
+            --accent-green: #ffbb50;
             --text-primary: rgba(255, 255, 255, 0.9);
             --text-secondary: rgba(255, 255, 255, 0.7);
             --border-color: rgba(255, 255, 255, 0.05);
@@ -77,7 +77,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .scheme-header {
-            background: linear-gradient(135deg, #2F9B7F 0%, #1e6e59 100%);
+            background: linear-gradient(135deg, #ffbb50 0%, #1e6e59 100%);
             border-radius: 12px;
             padding: 30px 20px;
             margin-bottom: 20px;

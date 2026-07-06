@@ -114,7 +114,7 @@ if (empty($profileImageUrl)) {
         position: absolute;
         top: 0;
         right: 0;
-        background: #2F9B7F !important;
+        background: #ffbb50 !important;
         /* Match sidebar green */
         color: #fff;
         font-size: 0.7rem;
