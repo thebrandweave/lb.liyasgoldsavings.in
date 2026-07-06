@@ -89,17 +89,20 @@ if (isLoggedIn()) {
             padding: 12px;
             color: var(--text-primary);
             transition: all 0.3s ease;
+            text-transform:uppercase;
         }
 
         .form-control:focus {
             background: rgba(255, 255, 255, 0.1);
-            border-color: var(--accent-green);
+            border-color: #ffbb50;
             box-shadow: 0 0 0 0.2rem rgba(47, 155, 127, 0.25);
             color: var(--text-primary);
         }
 
         .form-control::placeholder {
             color: var(--text-secondary);
+             text-transform:none;
+
         }
 
         .btn-login {
