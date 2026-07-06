@@ -207,7 +207,7 @@ if (isLoggedIn()) {
             <div class="mb-3">
                 <label for="password" class="form-label">Password</label>
                 <div class="position-relative">
-                    <input type="password" class="form-control" id="password" name="password"
+                    <input type="password"  style="text-transform:none;" class="form-control" id="password" name="password"
                         placeholder="Enter your password" required>
                     <i class="fas fa-eye position-absolute" style="right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer;"
                         onclick="togglePassword()"></i>
@@ -233,21 +233,20 @@ if (isLoggedIn()) {
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        function togglePassword() {
-            const passwordInput = document.getElementById('password');
-            const toggleIcon = document.querySelector('.fa-eye');
+      function togglePassword() {
+    const passwordInput = document.getElementById("password");
+    const toggleIcon = document.querySelector(".fa-eye, .fa-eye-slash");
 
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                toggleIcon.classList.remove('fa-eye');
-                toggleIcon.classList.add('fa-eye-slash');
-            } else {
-                passwordInput.type = 'password';
-                toggleIcon.classList.remove('fa-eye-slash');
-                toggleIcon.classList.add('fa-eye');
-            }
-        }
-
+    if (passwordInput.type === "password") {
+        passwordInput.type = "text";
+        toggleIcon.classList.remove("fa-eye-slash");
+        toggleIcon.classList.add("fa-eye");
+    } else {
+        passwordInput.type = "password";
+        toggleIcon.classList.remove("fa-eye");
+        toggleIcon.classList.add("fa-eye-slash");
+    }
+}
         // Check for error message in URL
         const urlParams = new URLSearchParams(window.location.search);
         const error = urlParams.get('error');
