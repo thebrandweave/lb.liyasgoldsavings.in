@@ -236,7 +236,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
         }
 
         .btn-subscribed:hover {
-            background: rgba(47, 155, 127, 0.15);
+            background: rgba(225, 225, 225, 0.1);
             transform: none;
             color: var(--accent-green);
             text-decoration: none;
