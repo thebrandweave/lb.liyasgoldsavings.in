@@ -234,7 +234,7 @@ foreach ($nextPayments as $payment) {
         }
 
         .status-active {
-            background: rgba(47, 155, 127, 0.1);
+              background: rgba(225, 225, 225, 0.1);
             color: var(--accent-green);
         }
 
