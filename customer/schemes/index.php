@@ -240,6 +240,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             transform: none;
             color: var(--accent-green);
             text-decoration: none;
+            padding: 6px 12px;
         }
 
         .btn-outline-primary {
