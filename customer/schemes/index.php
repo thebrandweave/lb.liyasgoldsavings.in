@@ -233,7 +233,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             color: var(--accent-green);
             cursor: not-allowed;
             text-decoration: none;
-               padding: 6px 12px;
+               padding: 6px 8px;
         }
 
         .btn-subscribed:hover {
