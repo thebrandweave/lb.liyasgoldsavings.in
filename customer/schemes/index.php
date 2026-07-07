@@ -291,12 +291,12 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             padding: 10px 12px;
             font-size: clamp(13px, 2.5vw, 14px);
             white-space: nowrap;
-            border:1px solid white;
+            /* border:1px solid white; */
             border-radius:20px;
         }
 
         .table tbody td {
-            color: var(--text-secondary);
+            color: black;
             border-color: var(--border-color);
             padding: 10px 12px;
             vertical-align: middle;
