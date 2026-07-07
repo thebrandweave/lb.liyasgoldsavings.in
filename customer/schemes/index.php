@@ -313,7 +313,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
         .bg-success {
             background: rgba(107, 77, 32, 0.1) !important;
-            color: var(--accent-green);
+            color: #15d552;
         }
 
         /* Responsive Design */
