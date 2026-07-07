@@ -194,7 +194,7 @@ $activeSubscriptions = $stmt->fetchAll(PDO::FETCH_ASSOC);
             position: absolute;
             top: 12px;
             right: 12px;
-            background: rgba(47, 155, 127, 0.1);
+            background: rgba(225, 225, 225, 0.1);
             color: var(--accent-green);
             padding: 6px 12px;
             border-radius: 6px;
