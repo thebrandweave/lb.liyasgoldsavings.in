@@ -343,7 +343,7 @@ foreach ($nextPayments as $payment) {
 
         .subscription-tabs .nav-link:hover {
             color: var(--text-primary);
-            background: rgba(47, 155, 127, 0.1);
+              background: rgba(225, 225, 225, 0.1);
             border-color: var(--accent-green);
         }
 
