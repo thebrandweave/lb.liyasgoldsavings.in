@@ -216,7 +216,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
 
         .detail-item {
-            background: rgba(47, 155, 127, 0.1);
+          background: rgba(225, 225, 225, 0.1);
             padding: 16px;
             border-radius: 8px;
             border: 1px solid var(--border-color);
