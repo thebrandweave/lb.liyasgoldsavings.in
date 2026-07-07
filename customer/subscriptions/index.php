@@ -315,7 +315,7 @@ foreach ($nextPayments as $payment) {
         }
 
         .payment-info {
-            background: rgba(47, 155, 127, 0.1);
+          background: rgba(225, 225, 225, 0.1);
             border-radius: 8px;
             padding: 16px;
             margin-top: 16px;
