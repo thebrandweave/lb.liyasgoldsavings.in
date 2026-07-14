@@ -8,7 +8,7 @@ require_once("../config/config.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Dream - About Us</title>
+    <title>Liyas Gold Savings - About Us</title>
         <link rel="icon" type="image/png" href="./landing_assets/images/1gdlogo.png">
     <link rel="shortcut icon" type="image/png" href="./landing_assets/images/1gdlogo.png">
     <link rel="apple-touch-icon" href="./landing_assets/images/1gdlogo.png">
