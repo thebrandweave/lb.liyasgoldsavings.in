@@ -9,6 +9,15 @@ require_once("../config/config.php");
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Golden Dream - About Us</title>
+        <link rel="icon" type="image/png" href="./landing_assets/images/1gdlogo.png">
+    <link rel="shortcut icon" type="image/png" href="./landing_assets/images/1gdlogo.png">
+    <link rel="apple-touch-icon" href="./landing_assets/images/1gdlogo.png">
+    <meta name="description" content="GoldenDream - Strategic investments across high-growth sectors. We partner with visionary companies to create sustainable value and drive innovation.">
+    <meta name="keywords" content="venture capital, private equity, investments, portfolio companies, technology, healthcare, renewable energy, GoldenDream, India">
+    <meta name="author" content="GoldenDream">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="English">
+    <meta name="revisit-after" content="7 days">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>

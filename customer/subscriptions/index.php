@@ -345,6 +345,7 @@ foreach ($nextPayments as $payment) {
             color: var(--text-primary);
               background: rgba(225, 225, 225, 0.1);
             border-color: var(--accent-green);
+
         }
 
         .subscription-tabs .nav-link.active {
