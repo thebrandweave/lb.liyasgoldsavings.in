@@ -211,7 +211,7 @@ try {
         }
 
         .btn-primary:hover {
-            background: rgb(223, 152, 0);
+            background: rgb(0, 0, 0);
             box-shadow: 0 4px 6px rgba(13, 106, 80, 0.2);
         }
 
