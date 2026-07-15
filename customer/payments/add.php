@@ -431,22 +431,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         
 
         // Helper function to update the info box UI
-        function updateInstallmentDetails(opt) {
-            if (opt && opt.value !== "") {
-                const amt = parseFloat(opt.dataset.amount).toFixed(2);
-                const drawDate = opt.dataset.drawdate ? opt.dataset.drawdate : "Not Available";
-                
-                displayAmountSpan.textContent = "₹" + amt;
-                displayDrawDateSpan.textContent = drawDate;
-                
-                installmentInfoBox.style.display = 'block';
-                amountInput.value = amt;
-            } else {
-                installmentInfoBox.style.display = 'none';
-                amountInput.value = '';
-            }
-        }
+   function updateInstallmentDetails(opt) {
+    if (opt && opt.value !== "") {
+        const amt = parseFloat(opt.dataset.amount).toFixed(2);
 
+        displayAmountSpan.textContent = "₹" + amt;
+
+        displayDrawDateSpan.textContent = opt.dataset.drawdate
+            ? new Date(opt.dataset.drawdate).toLocaleDateString('en-GB')
+            : "Not Available";
+
+        installmentInfoBox.style.display = 'block';
+        amountInput.value = amt;
+    } else {
+        installmentInfoBox.style.display = 'none';
+        amountInput.value = '';
+    }
+}
         function getInstallments(schemeId) {
             const scheme = schemesData.find(s => s.SchemeID == schemeId);
             return scheme ? scheme.installments : [];
