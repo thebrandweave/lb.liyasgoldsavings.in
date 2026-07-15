@@ -409,7 +409,7 @@ $currentPage = 'profile';
         .btn-submit:hover {
             background: var(--Topsecondary-color);
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(0, 210, 255, 0.3);
+            box-shadow: 0 8px 20px rgba(46, 46, 46, 0.3);
         }
 
         .alert {
