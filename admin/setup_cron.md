@@ -56,3 +56,21 @@ Check the queue status:
 ```sql
 SELECT Status, COUNT(*) as count FROM WhatsAppQueue GROUP BY Status;
 ```
+
+---
+
+## Weekly Leaderboard Snapshot Setup
+
+The weekly earners leaderboard system automates capturing the top 10 earners of the previous week every Monday.
+
+### Setup Instructions
+
+Add this cron job to run every Monday at midnight:
+
+```bash
+# Edit crontab
+crontab -e
+
+# Add this line (replace with your actual path)
+0 0 * * 1 php /path/to/your/project/admin/weekly_snapshot.php
+```

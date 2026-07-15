@@ -44,21 +44,62 @@ if ($selectedWeek != '') {
     ";
     $stmt = $conn->prepare($query);
     $stmt->bindParam(':week', $selectedWeek);
+    $stmt->execute();
+    $topEarners = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } else {
+    // Calculate current tracking week in realtime from WalletLogs (Monday to Sunday)
+    $weekStart = date('Y-m-d 00:00:00', strtotime('monday this week'));
+    $weekEnd = date('Y-m-d 23:59:59', strtotime('sunday this week'));
+
     $query = "
-        SELECT *
-        FROM WeeklyTopEarners
-        WHERE WeekStartDate = (
-            SELECT MAX(WeekStartDate)
-            FROM WeeklyTopEarners
-        )
-        ORDER BY RankNo ASC
+        SELECT
+            p.PromoterUniqueID,
+            p.Name,
+            p.ProfileImageURL,
+            SUM(
+                CASE
+                    WHEN wl.TransactionType='Credit'
+                    THEN wl.Amount
+                    ELSE -wl.Amount
+                END
+            ) AS TotalEarnings
+        FROM WalletLogs wl
+        INNER JOIN Promoters p
+            ON p.PromoterUniqueID = wl.PromoterUniqueID
+        WHERE wl.CreatedAt BETWEEN :weekStart AND :weekEnd
+          AND p.PromoterUniqueID NOT IN (
+                'GD012009',
+                'GD012071',
+                'GD012157',
+                'GD012169',
+                'GD011551',
+                'GD011516',
+                'GD012111',
+                'GD011521',
+                'GD012206',
+                'GD012120',
+                'GDP0904',
+                'GD011946',
+                'GD011811',
+                'GD012198',
+                'GDP0667',
+                'GDP0816',
+                'GDP0931',
+                'GDP0822'
+          )
+        GROUP BY
+            p.PromoterUniqueID,
+            p.Name,
+            p.ProfileImageURL
+        ORDER BY TotalEarnings DESC
+        LIMIT 10
     ";
     $stmt = $conn->prepare($query);
+    $stmt->bindParam(':weekStart', $weekStart);
+    $stmt->bindParam(':weekEnd', $weekEnd);
+    $stmt->execute();
+    $topEarners = $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
-
-$stmt->execute();
-$topEarners = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 $podiumEarners = array_slice($topEarners, 0, 3);
 $remainingEarners = array_slice($topEarners, 3);
