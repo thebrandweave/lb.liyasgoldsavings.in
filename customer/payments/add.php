@@ -428,7 +428,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         const installmentInfoBox = document.getElementById('installmentInfo');
         const displayAmountSpan = document.getElementById('installmentAmount');
         const displayDrawDateSpan = document.getElementById('installmentDrawDate');
-        displayDrawDateSpan.textContent = new Date(drawDate).toLocaleDateString('en-GB');
+        
 
         // Helper function to update the info box UI
         function updateInstallmentDetails(opt) {
