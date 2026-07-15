@@ -387,7 +387,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Amount (₹) <span class="text-danger">*</span></label>
-                            <input type="number" name="amount" id="amount" class="form-control" step="0.01" min="0.01" required placeholder="0.00">
+                            <input type="text" name="amount" id="amount" class="form-control" step="0.01" min="0.01" required placeholder="0.00">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">UTR / Reference number <span class="text-danger">*</span></label>
