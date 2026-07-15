@@ -264,12 +264,12 @@ class SMSAPI
             }
 
             // Welcome template details from screenshot
-            // Template ID: 1007289085098841045
-            // Template: "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is var. Visit https://lb.liyasgoldsavings.in/ for more details."
+            // Template ID: 1007289085098641045
+            // Template: "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is var. Visit https://goldendream.in/ for more details."
             // Source Address: PGDVTR
             // Variables: var1 = Customer Name, var2 = Customer Unique ID
 
-            $welcomeTemplate = "Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://lb.liyasgoldsavings.in/ for more details.";
+            $welcomeTemplate = "Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://goldendream.in/ for more details.";
 
             // Format the welcome message
             $message = str_replace('{var1}', $customerName, $welcomeTemplate);
@@ -279,7 +279,7 @@ class SMSAPI
             $apiData = [
                 'customerId' => $this->config['CustomerID'],
                 'destinationAddress' => [$phoneNumber],
-                'dltTemplateId' => '1007289085098841045', // Welcome template ID
+                'dltTemplateId' => '1007289085098641045', // Welcome template ID
                 'entityId' => $this->config['DLTEntityID'],
                 'message' => $message,
                 'messageType' => 'SERVICE_EXPLICIT',

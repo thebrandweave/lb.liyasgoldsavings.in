@@ -72,14 +72,14 @@ try {
         ) VALUES (
             'Airtel',
             'https://iqsms.airtel.in/api/v1/send-prepaid-sms',
-            'f8758d82_260c_404b_8d4a_a15ce94593d4',
+            'f8758d62_260c_404b_8d4a_a15ce94593d4',
             'jx0NgVQjBT',
-            '72c5ff0d-4624-4072-bc1c-dcef281dd7f7',
+            '72c5ff0d-4624-4972-bc1c-dcef261dd7f7',
             'PGDVTR',
-            '1001791223682244844',
-            '1007289085098841045',
+            '1001791223662244844',
+            '1007289085098641045',
             'SERVICE_EXPLICIT',
-            'Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://lb.liyasgoldsavings.in/ for more details.',
+            'Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://goldendream.in/ for more details.',
             'Active'
         )
         ON DUPLICATE KEY UPDATE

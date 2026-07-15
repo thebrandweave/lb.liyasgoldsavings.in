@@ -6,14 +6,14 @@
 
 // Credentials (from test/sms.php)
 define('SMS_API_URL', 'https://iqsms.airtel.in/api/v1/send-prepaid-sms');
-define('SMS_CUSTOMER_ID', '72c5ff0d-4624-4072-bc1c-dcef281dd7f7');
-define('SMS_USERNAME', 'f8758d82_260c_404b_8d4a_a15ce94593d4');
+define('SMS_CUSTOMER_ID', '72c5ff0d-4624-4972-bc1c-dcef261dd7f7');
+define('SMS_USERNAME', 'f8758d62_260c_404b_8d4a_a15ce94593d4');
 define('SMS_PASSWORD', 'jx0NgVQjBT');
-define('SMS_ENTITY_ID', '1001791223682244844');
+define('SMS_ENTITY_ID', '1001791223662244844');
 
-// Template ID 1007289085098841045 - Welcome
+// Template ID 1007289085098641045 - Welcome
 // "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is var. Visit https://goldendream.in/ for more details."
-define('SMS_TEMPLATE_WELCOME_ID', '1007289085098841045');
+define('SMS_TEMPLATE_WELCOME_ID', '1007289085098641045');
 define('SMS_SOURCE_WELCOME', 'PGDVTR');
 
 // Template ID 1007000046423973167 - Payment received
@@ -104,7 +104,7 @@ function smsHelperPhone($phone) {
 }
 
 /**
- * Welcome SMS (onboarding) - Template 1007289085098841045, PGDVTR
+ * Welcome SMS (onboarding) - Template 1007289085098641045, PGDVTR
  * var1 = customer name, var2 = customer unique ID
  */
 function sendWelcomeSMSHardcoded($phoneNumber, $customerName, $customerUniqueID) {
@@ -115,7 +115,7 @@ function sendWelcomeSMSHardcoded($phoneNumber, $customerName, $customerUniqueID)
         return false;
     }
     // Exact template text; replace first var with name, second with customer ID
-    $message = "Dear " . $customerName . ", welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is " . $customerUniqueID . ". Visit https://liyasgoldsavings.in/ for more details.";
+    $message = "Dear " . $customerName . ", welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is " . $customerUniqueID . ". Visit https://goldendream.in/ for more details.";
 
     $data = [
         'customerId' => SMS_CUSTOMER_ID,
