@@ -8,7 +8,7 @@ $password = "jx0NgVQjBT";
 
 $data = [
     "customerId" => $customerId,
-    "destinationAddress" => ["918088122761"],
+    "destinationAddress" => ["916362514956"],
     "message" => "Dear Ajlan, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is 12345. Visit https://goldendream.in/ for more details.",
     "sourceAddress" => "PGDVTR",
     "messageType" => "SERVICE_EXPLICIT",
