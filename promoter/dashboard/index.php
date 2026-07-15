@@ -488,7 +488,7 @@ $currentPage = 'dashboard';
         }
 
         .kyc-pending {
-            background: rgba(105, 95, 55, 0.1);
+            background: rgba(3, 3, 2, 0.1);
             color: #f1c40f;
         }
 
