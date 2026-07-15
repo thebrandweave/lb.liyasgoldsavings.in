@@ -172,7 +172,7 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
         .notification-card.unread {
-            background: rgba(47, 155, 127, 0.1);
+            background: rgba(134, 134, 134, 0.1);
             border-color: var(--accent-green);
         }
 
