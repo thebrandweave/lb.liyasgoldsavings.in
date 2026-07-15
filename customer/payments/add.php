@@ -438,7 +438,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         displayAmountSpan.textContent = "₹" + amt;
 
         displayDrawDateSpan.textContent = opt.dataset.drawdate
-            ? new Date(opt.dataset.drawdate).toLocaleDateString('en-GB')
+            ? new Date(opt.dataset.drawdate).toLocaleDateString('en-GB').replace(/\//g, '-')
             : "Not Available";
 
         installmentInfoBox.style.display = 'block';
