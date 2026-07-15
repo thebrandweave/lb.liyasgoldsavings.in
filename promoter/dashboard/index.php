@@ -207,7 +207,7 @@ $currentPage = 'dashboard';
     <style>
         :root {
             --primary-color: #dac50f;
-            --primary-light: rgba(13, 106, 80, 0.1);
+            --primary-light: rgba(41, 41, 41, 0.1);
             --secondary-color: #2c3e50;
             --success-color: #2ecc71;
             --warning-color: #f1c40f;

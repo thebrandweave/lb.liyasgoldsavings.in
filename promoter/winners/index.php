@@ -71,7 +71,7 @@ foreach ($winners as $winner) {
     <style>
         :root {
             --primary-color: rgb(155, 128, 18);
-            --primary-light: rgba(13, 106, 80, 0.1);
+            --primary-light: rgba(46, 46, 46, 0.1);
             --secondary-color: #2c3e50;
             --success-color: #2ecc71;
             --error-color: #e74c3c;

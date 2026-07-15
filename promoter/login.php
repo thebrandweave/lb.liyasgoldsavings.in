@@ -304,7 +304,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .login-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(13, 106, 80, 0.4);
+            box-shadow: 0 6px 20px rgba(39, 39, 39, 0.4);
         }
 
         .login-btn:active {

@@ -81,10 +81,10 @@
             
             requiredFields.forEach(field => {
                 if (!field.value.trim()) {
-                    field.style.borderColor = '#dc3545';
+                    field.style.borderColor = '#c98200';
                     isValid = false;
                 } else {
-                    field.style.borderColor = '#28a745';
+                    field.style.borderColor = '#000000';
                 }
             });
             
