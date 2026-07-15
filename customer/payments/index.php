@@ -163,7 +163,7 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
         .stat-item {
             text-align: center;
             padding: 14px;
-            background: rgba(47, 155, 127, 0.1);
+            background: rgba(136, 136, 136, 0.1);
             border-radius: 8px;
             border: 1px solid var(--border-color);
             transition: all 0.3s ease;
@@ -340,7 +340,7 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
         .btn-payment:hover {
-            background: #248c6f;
+            background: #000000;
             transform: translateY(-2px);
         }
 
