@@ -239,7 +239,7 @@ $remainingEarners = array_slice($topEarners, 3);
 
         .podium-card:hover {
             transform: translateY(-12px);
-            box-shadow: 0 40px 60px -20px rgba(13, 106, 80, 0.12);
+            box-shadow: 0 40px 60px -20px rgba(63, 63, 63, 0.12);
         }
 
         /* Advanced Order Handling & Height Hierarchies */
