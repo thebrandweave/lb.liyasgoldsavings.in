@@ -51,12 +51,12 @@
     }
 
     .circle:nth-child(2) {
-        stroke: #878b8b;
+        stroke: #393a33;
         animation-delay: 0.4s;
     }
 
     .circle:nth-child(3) {
-        stroke: rgb(27, 83, 161);
+        stroke: rgb(139, 139, 139);
         animation-delay: 0.8s;
     }
 
