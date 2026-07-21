@@ -90,16 +90,30 @@ if (isset($_POST['add_winner'])) {
     $userType = $_POST['user_type'];
     $prizeType = $_POST['prize_type'];
     $remarks = trim($_POST['remarks'] ?? '');
+    
+    $winningDateInput = trim($_POST['winning_date'] ?? '');
+    if (!empty($winningDateInput)) {
+        if (preg_match('/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/', $winningDateInput, $matches)) {
+            $winningDate = "{$matches[3]}-{$matches[2]}-{$matches[1]} " . date('H:i:s');
+        } else {
+            $winningDate = date('Y-m-d H:i:s', strtotime($winningDateInput));
+        }
+    } else {
+        $winningDate = date('Y-m-d H:i:s');
+    }
+
+    $schemeId = (!empty($_POST['is_scheme_winner']) && !empty($_POST['scheme_id'])) ? $_POST['scheme_id'] : null;
+    $installmentId = (!empty($_POST['is_scheme_winner']) && !empty($_POST['installment_id'])) ? $_POST['installment_id'] : null;
 
     try {
         $conn->beginTransaction();
 
         // Add winner
         $stmt = $conn->prepare("
-            INSERT INTO Winners (UserID, UserType, PrizeType, Status, AdminID, Remarks)
-            VALUES (?, ?, ?, 'Pending', ?, ?)
+            INSERT INTO Winners (UserID, UserType, PrizeType, Status, AdminID, SchemeID, InstallmentID, Remarks, WinningDate)
+            VALUES (?, ?, ?, 'Pending', ?, ?, ?, ?, ?)
         ");
-        $stmt->execute([$userId, $userType, $prizeType, $_SESSION['admin_id'], $remarks]);
+        $stmt->execute([$userId, $userType, $prizeType, $_SESSION['admin_id'], $schemeId, $installmentId, $remarks, $winningDate]);
 
         // Create notification
         $notificationMessage = "Congratulations! You have won a $prizeType!";
@@ -135,16 +149,56 @@ if (isset($_POST['add_winner'])) {
     exit();
 }
 
+// Edit Winner Details
+if (isset($_POST['edit_winner'])) {
+    $winnerId = $_POST['winner_id'];
+    $prizeType = $_POST['prize_type'];
+    $status = $_POST['status'];
+    $remarks = trim($_POST['remarks'] ?? '');
+
+    $winningDateInput = trim($_POST['winning_date'] ?? '');
+    if (!empty($winningDateInput)) {
+        if (preg_match('/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/', $winningDateInput, $matches)) {
+            $winningDate = "{$matches[3]}-{$matches[2]}-{$matches[1]} " . date('H:i:s');
+        } else {
+            $winningDate = date('Y-m-d H:i:s', strtotime($winningDateInput));
+        }
+    } else {
+        $winningDate = date('Y-m-d H:i:s');
+    }
+
+    try {
+        $stmt = $conn->prepare("
+            UPDATE Winners 
+            SET PrizeType = ?,
+                Status = ?,
+                WinningDate = ?,
+                Remarks = ?,
+                AdminID = ?
+            WHERE WinnerID = ?
+        ");
+        $stmt->execute([$prizeType, $status, $winningDate, $remarks, $_SESSION['admin_id'], $winnerId]);
+
+        $_SESSION['success_message'] = "Winner updated successfully.";
+    } catch (PDOException $e) {
+        $_SESSION['error_message'] = "Failed to update winner: " . $e->getMessage();
+    }
+
+    header("Location: index.php");
+    exit();
+}
+
 // Pagination settings
 $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
 $recordsPerPage = 10;
 $offset = ($page - 1) * $recordsPerPage;
 
 // Search and filtering
-$search = isset($_GET['search']) ? $_GET['search'] : '';
-$status = isset($_GET['status_filter']) ? $_GET['status_filter'] : '';
-$prizeType = isset($_GET['prize_type']) ? $_GET['prize_type'] : '';
-$userType = isset($_GET['user_type']) ? $_GET['user_type'] : '';
+$search = isset($_GET['search']) ? trim($_GET['search']) : '';
+$status = isset($_GET['status_filter']) ? trim($_GET['status_filter']) : '';
+$prizeType = isset($_GET['prize_type']) ? trim($_GET['prize_type']) : '';
+$userType = isset($_GET['user_type']) ? trim($_GET['user_type']) : '';
+$monthFilter = isset($_GET['month_filter']) ? trim($_GET['month_filter']) : '';
 
 // Build query conditions
 $conditions = [];
@@ -155,29 +209,34 @@ if (!empty($search)) {
         CASE 
             WHEN w.UserType = 'Customer' THEN c.Name 
             WHEN w.UserType = 'Promoter' THEN p.Name 
-        END LIKE ? OR
+        END LIKE :search_name OR
         CASE 
             WHEN w.UserType = 'Customer' THEN c.CustomerUniqueID
             WHEN w.UserType = 'Promoter' THEN p.PromoterUniqueID
-        END LIKE ?
+        END LIKE :search_id
     )";
-    $params[] = "%$search%";
-    $params[] = "%$search%";
+    $params[':search_name'] = "%$search%";
+    $params[':search_id'] = "%$search%";
 }
 
 if (!empty($status)) {
-    $conditions[] = "w.Status = ?";
-    $params[] = $status;
+    $conditions[] = "w.Status = :status";
+    $params[':status'] = $status;
 }
 
 if (!empty($prizeType)) {
-    $conditions[] = "w.PrizeType = ?";
-    $params[] = $prizeType;
+    $conditions[] = "w.PrizeType = :prize_type";
+    $params[':prize_type'] = $prizeType;
 }
 
 if (!empty($userType)) {
-    $conditions[] = "w.UserType = ?";
-    $params[] = $userType;
+    $conditions[] = "w.UserType = :user_type";
+    $params[':user_type'] = $userType;
+}
+
+if (!empty($monthFilter)) {
+    $conditions[] = "DATE_FORMAT(w.WinningDate, '%Y-%m') = :month_filter";
+    $params[':month_filter'] = $monthFilter;
 }
 
 $whereClause = !empty($conditions) ? " WHERE " . implode(" AND ", $conditions) : "";
@@ -190,7 +249,10 @@ $countQuery = "
     LEFT JOIN Promoters p ON w.UserType = 'Promoter' AND w.UserID = p.PromoterID"
     . $whereClause;
 $stmt = $conn->prepare($countQuery);
-$stmt->execute($params);
+foreach ($params as $key => $value) {
+    $stmt->bindValue($key, $value);
+}
+$stmt->execute();
 $totalRecords = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 $totalPages = ceil($totalRecords / $recordsPerPage);
 
@@ -220,7 +282,7 @@ $query = "
 $stmt = $conn->prepare($query);
 
 foreach ($params as $key => $value) {
-    $stmt->bindValue($key + 1, $value);
+    $stmt->bindValue($key, $value);
 }
 
 $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
@@ -228,6 +290,29 @@ $stmt->bindParam(':limit', $recordsPerPage, PDO::PARAM_INT);
 $stmt->execute();
 
 $winners = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Get available months for month filter
+$stmtMonths = $conn->query("
+    SELECT DISTINCT 
+        DATE_FORMAT(WinningDate, '%Y-%m') as MonthVal, 
+        DATE_FORMAT(WinningDate, '%M %Y') as MonthLabel 
+    FROM Winners 
+    WHERE WinningDate IS NOT NULL 
+    ORDER BY MonthVal DESC
+");
+$availableMonths = $stmtMonths ? $stmtMonths->fetchAll(PDO::FETCH_ASSOC) : [];
+
+// Helper array for pagination & URL links
+$urlParams = [];
+if (!empty($search)) $urlParams['search'] = $search;
+if (!empty($status)) $urlParams['status_filter'] = $status;
+if (!empty($prizeType)) $urlParams['prize_type'] = $prizeType;
+if (!empty($userType)) $urlParams['user_type'] = $userType;
+if (!empty($monthFilter)) $urlParams['month_filter'] = $monthFilter;
+
+function getWinnerPageUrl($pageNum, $urlParams) {
+    return 'index.php?' . http_build_query(array_merge(['page' => $pageNum], $urlParams));
+}
 
 // Get all active customers and promoters for add winner form
 $stmt = $conn->query("SELECT CustomerID, Name, CustomerUniqueID FROM Customers WHERE Status = 'Active' ORDER BY Name");
@@ -477,7 +562,7 @@ include("../components/topbar.php");
 
         /* Add missing styles for the Add New Winner button */
         .add-winner-btn {
-            background: linear-gradient(135deg, #000000, #878b8b);
+            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
@@ -630,6 +715,18 @@ include("../components/topbar.php");
                     </div>
 
                     <div class="filter-group">
+                        <label class="filter-label">Month:</label>
+                        <select class="filter-select" name="month_filter">
+                            <option value="">All Months</option>
+                            <?php foreach ($availableMonths as $m): ?>
+                                <option value="<?php echo htmlspecialchars($m['MonthVal']); ?>" <?php echo $monthFilter === $m['MonthVal'] ? 'selected' : ''; ?>>
+                                    <?php echo htmlspecialchars($m['MonthLabel']); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
                         <label class="filter-label">Status:</label>
                         <select class="filter-select" name="status_filter">
                             <option value="">All Status</option>
@@ -659,6 +756,15 @@ include("../components/topbar.php");
                             <option value="Promoter" <?php echo $userType === 'Promoter' ? 'selected' : ''; ?>>Promoter</option>
                         </select>
                     </div>
+
+                    <?php if (!empty($search) || !empty($status) || !empty($prizeType) || !empty($userType) || !empty($monthFilter)): ?>
+                        <div class="filter-group" style="justify-content: flex-end;">
+                            <label class="filter-label">&nbsp;</label>
+                            <a href="index.php" class="action-btn expire-btn" style="text-decoration: none; text-align: center; height: 21px; display: inline-flex; align-items: center; justify-content: center;">
+                                <i class="fas fa-undo"></i> Reset Filters
+                            </a>
+                        </div>
+                    <?php endif; ?>
                 </div>
 
                 <?php if (count($winners) > 0): ?>
@@ -684,6 +790,9 @@ include("../components/topbar.php");
                                 </div>
 
                                 <div class="winner-actions">
+                                    <button class="action-btn" style="background: linear-gradient(135deg, #3498db, #2980b9); box-shadow: 0 2px 4px rgba(52,152,219,0.2);" onclick='showEditWinnerModal(<?php echo htmlspecialchars(json_encode($winner), ENT_QUOTES, "UTF-8"); ?>)'>
+                                        <i class="fas fa-edit"></i> Edit
+                                    </button>
                                     <?php if ($winner['Status'] === 'Pending'): ?>
                                         <button class="action-btn claim-btn" onclick="showRemarks(this, 'claim', <?php echo $winner['WinnerID']; ?>)">
                                             <i class="fas fa-check"></i> Mark Claimed
@@ -698,7 +807,15 @@ include("../components/topbar.php");
                             <div class="winner-details">
                                 <div class="detail-item">
                                     <span class="detail-label">Winning Date</span>
-                                    <span class="detail-value"><?php echo date('M d, Y H:i', strtotime($winner['WinningDate'])); ?></span>
+                                    <span class="detail-value">
+                                        <?php 
+                                        if (!empty($winner['WinningDate']) && $winner['WinningDate'] !== '0000-00-00 00:00:00') {
+                                            echo date('M d, Y H:i', strtotime($winner['WinningDate']));
+                                        } else {
+                                            echo '<span style="color: #e74c3c;">Not set</span>';
+                                        }
+                                        ?>
+                                    </span>
                                 </div>
 
                                 <?php if (!empty($winner['Remarks'])): ?>
@@ -716,11 +833,19 @@ include("../components/topbar.php");
                                 <?php endif; ?>
                             </div>
 
-                            <form action="" method="POST" class="remarks-form" style="display: none;">
-                                <input type="hidden" name="winner_id" value="<?php echo $winner['WinnerID']; ?>">
-                                <input type="hidden" name="action" value="">
-                                <textarea name="remarks" class="remarks-input" placeholder="Enter remarks (optional)"></textarea>
-                            </form>
+                        <form action="" method="POST" class="remarks-form" style="display: none;">
+    <input type="hidden" name="winner_id" value="<?php echo $winner['WinnerID']; ?>">
+    <input type="hidden" name="action" value="">
+    <textarea name="remarks" class="remarks-input" placeholder="Enter remarks (optional)"></textarea>
+    <div class="remarks-form-actions" style="display:none; gap:10px; margin-top:10px;">
+        <button type="submit" class="action-btn claim-btn confirm-remarks-btn">
+            <i class="fas fa-check"></i> Confirm
+        </button>
+        <button type="button" class="action-btn expire-btn cancel-remarks-btn">
+            Cancel
+        </button>
+    </div>
+</form>
                         </div>
                     <?php endforeach; ?>
 
@@ -728,8 +853,8 @@ include("../components/topbar.php");
                     <?php if ($totalPages > 1): ?>
                         <div class="pagination">
                             <?php if ($page > 1): ?>
-                                <a href="?page=1<?php echo !empty($search) ? '&search=' . urlencode($search) : ''; ?>">&laquo;</a>
-                                <a href="?page=<?php echo $page - 1; ?><?php echo !empty($search) ? '&search=' . urlencode($search) : ''; ?>">&lsaquo;</a>
+                                <a href="<?php echo getWinnerPageUrl(1, $urlParams); ?>">&laquo;</a>
+                                <a href="<?php echo getWinnerPageUrl($page - 1, $urlParams); ?>">&lsaquo;</a>
                             <?php endif; ?>
 
                             <?php
@@ -737,15 +862,15 @@ include("../components/topbar.php");
                             $endPage = min($totalPages, $page + 2);
 
                             for ($i = $startPage; $i <= $endPage; $i++): ?>
-                                <a href="?page=<?php echo $i; ?><?php echo !empty($search) ? '&search=' . urlencode($search) : ''; ?>"
+                                <a href="<?php echo getWinnerPageUrl($i, $urlParams); ?>"
                                     class="<?php echo $i === $page ? 'active' : ''; ?>">
                                     <?php echo $i; ?>
                                 </a>
                             <?php endfor; ?>
 
                             <?php if ($page < $totalPages): ?>
-                                <a href="?page=<?php echo $page + 1; ?><?php echo !empty($search) ? '&search=' . urlencode($search) : ''; ?>">&rsaquo;</a>
-                                <a href="?page=<?php echo $totalPages; ?><?php echo !empty($search) ? '&search=' . urlencode($search) : ''; ?>">&raquo;</a>
+                                <a href="<?php echo getWinnerPageUrl($page + 1, $urlParams); ?>">&rsaquo;</a>
+                                <a href="<?php echo getWinnerPageUrl($totalPages, $urlParams); ?>">&raquo;</a>
                             <?php endif; ?>
                         </div>
                     <?php endif; ?>
@@ -754,7 +879,7 @@ include("../components/topbar.php");
                     <div class="no-records">
                         <i class="fas fa-trophy"></i>
                         <p>No winners found</p>
-                        <?php if (!empty($search) || !empty($status) || !empty($prizeType) || !empty($userType)): ?>
+                        <?php if (!empty($search) || !empty($status) || !empty($prizeType) || !empty($userType) || !empty($monthFilter)): ?>
                             <a href="index.php" class="btn btn-secondary">Clear Filters</a>
                         <?php endif; ?>
                     </div>
@@ -805,6 +930,11 @@ include("../components/topbar.php");
                             </option>
                         <?php endforeach; ?>
                     </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Winning Date (DD/MM/YYYY)</label>
+                    <input type="date" name="winning_date" class="form-control" value="<?php echo date('Y-m-d'); ?>" placeholder="DD/MM/YYYY" required>
                 </div>
 
                 <div class="form-group">
@@ -860,6 +990,52 @@ include("../components/topbar.php");
         </div>
     </div>
 
+    <!-- Edit Winner Modal -->
+    <div class="modal" id="editWinnerModal">
+        <div class="modal-content">
+            <span class="close-modal" onclick="hideEditWinnerModal()">&times;</span>
+            <h2>Edit Winner Details</h2>
+            <form action="" method="POST">
+                <input type="hidden" name="edit_winner" value="1">
+                <input type="hidden" name="winner_id" id="edit_winner_id" value="">
+
+                <div class="form-group">
+                    <label>Winning Date (DD/MM/YYYY)</label>
+                    <input type="date" name="winning_date" id="edit_winning_date" class="form-control" placeholder="DD/MM/YYYY" required>
+                </div>
+
+                <div class="form-group">
+                    <label>Prize Type</label>
+                    <select name="prize_type" id="edit_prize_type" class="form-control" required>
+                        <option value="Surprise Prize">Surprise Prize</option>
+                        <option value="Bumper Prize">Bumper Prize</option>
+                        <option value="Gift Hamper">Gift Hamper</option>
+                        <option value="Education Scholarship">Education Scholarship</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Status</label>
+                    <select name="status" id="edit_status" class="form-control" required>
+                        <option value="Pending">Pending</option>
+                        <option value="Claimed">Claimed</option>
+                        <option value="Expired">Expired</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>Remarks</label>
+                    <textarea name="remarks" id="edit_remarks" class="form-control" rows="3" placeholder="Enter remarks"></textarea>
+                </div>
+
+                <button type="submit" class="action-btn claim-btn">
+                    <i class="fas fa-save"></i> Save Changes
+                </button>
+            </form>
+        </div>
+    </div>
+
     <!-- Add Select2 JS -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
@@ -880,20 +1056,23 @@ include("../components/topbar.php");
 
             // Handle search and filters
             const searchInput = document.querySelector('.search-input');
-            const statusSelect = document.querySelector('select[name="status_filter"]');
-            const prizeTypeSelect = document.querySelector('select[name="prize_type"]');
-            const userTypeSelect = document.querySelector('select[name="user_type"]');
+            const monthSelect = document.querySelector('.filter-container select[name="month_filter"]');
+            const statusSelect = document.querySelector('.filter-container select[name="status_filter"]');
+            const prizeTypeSelect = document.querySelector('.filter-container select[name="prize_type"]');
+            const userTypeSelect = document.querySelector('.filter-container select[name="user_type"]');
 
             let searchTimeout;
 
             function updateFilters() {
-                const search = searchInput.value.trim();
-                const status = statusSelect.value;
-                const prizeType = prizeTypeSelect.value;
-                const userType = userTypeSelect.value;
+                const search = searchInput ? searchInput.value.trim() : '';
+                const month = monthSelect ? monthSelect.value : '';
+                const status = statusSelect ? statusSelect.value : '';
+                const prizeType = prizeTypeSelect ? prizeTypeSelect.value : '';
+                const userType = userTypeSelect ? userTypeSelect.value : '';
 
                 const params = new URLSearchParams();
                 if (search) params.append('search', search);
+                if (month) params.append('month_filter', month);
                 if (status) params.append('status_filter', status);
                 if (prizeType) params.append('prize_type', prizeType);
                 if (userType) params.append('user_type', userType);
@@ -901,47 +1080,72 @@ include("../components/topbar.php");
                 window.location.href = 'index.php' + (params.toString() ? '?' + params.toString() : '');
             }
 
-            searchInput.addEventListener('input', function() {
-                clearTimeout(searchTimeout);
-                searchTimeout = setTimeout(updateFilters, 500);
-            });
+            if (searchInput) {
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(updateFilters, 500);
+                });
+            }
 
-            statusSelect.addEventListener('change', updateFilters);
-            prizeTypeSelect.addEventListener('change', updateFilters);
-            userTypeSelect.addEventListener('change', updateFilters);
+            if (monthSelect) monthSelect.addEventListener('change', updateFilters);
+            if (statusSelect) statusSelect.addEventListener('change', updateFilters);
+            if (prizeTypeSelect) prizeTypeSelect.addEventListener('change', updateFilters);
+            if (userTypeSelect) userTypeSelect.addEventListener('change', updateFilters);
         });
 
         // Handle remarks form
-        function showRemarks(button, action, winnerId) {
-            const card = button.closest('.winner-card');
-            const form = card.querySelector('.remarks-form');
-            const remarksInput = form.querySelector('.remarks-input');
+function showRemarks(button, action, winnerId) {
+    const card = button.closest('.winner-card');
+    const form = card.querySelector('.remarks-form');
+    const remarksInput = form.querySelector('.remarks-input');
+    const actionsDiv = form.querySelector('.remarks-form-actions');
 
-            // Hide any other visible remarks inputs
-            document.querySelectorAll('.remarks-input').forEach(input => {
-                if (input !== remarksInput) {
-                    input.style.display = 'none';
-                }
-            });
-
-            if (remarksInput.style.display === 'block') {
-                remarksInput.style.display = 'none';
-                return;
-            }
-
-            form.querySelector('input[name="action"]').value = action;
-            remarksInput.style.display = 'block';
-            remarksInput.focus();
-
-            remarksInput.onkeypress = function(e) {
-                if (e.key === 'Enter' && !e.shiftKey) {
-                    e.preventDefault();
-                    if (confirm(`Are you sure you want to mark this winner as ${action}ed?`)) {
-                        form.submit();
-                    }
-                }
-            };
+    // Hide any other open remarks forms
+    document.querySelectorAll('.remarks-form').forEach(f => {
+        if (f !== form) {
+            f.style.display = 'none';
         }
+    });
+
+    const isOpen = form.style.display === 'block';
+    if (isOpen) {
+        form.style.display = 'none';
+        return;
+    }
+
+    form.querySelector('input[name="action"]').value = action;
+
+    // Show the FORM itself, not just the textarea
+    form.style.display = 'block';
+    remarksInput.style.display = 'block';
+    actionsDiv.style.display = 'flex';
+    remarksInput.focus();
+
+    // Confirm on click, not just on Enter keypress
+    const confirmBtn = form.querySelector('.confirm-remarks-btn');
+    const cancelBtn = form.querySelector('.cancel-remarks-btn');
+
+    confirmBtn.onclick = function(e) {
+        e.preventDefault();
+        if (confirm(`Are you sure you want to mark this winner as ${action}ed?`)) {
+            form.submit();
+        }
+    };
+
+    cancelBtn.onclick = function() {
+        form.style.display = 'none';
+    };
+
+    // Keep Enter-to-submit as a convenience, but it's no longer the only way
+    remarksInput.onkeypress = function(e) {
+        if (e.key === 'Enter' && !e.shiftKey) {
+            e.preventDefault();
+            if (confirm(`Are you sure you want to mark this winner as ${action}ed?`)) {
+                form.submit();
+            }
+        }
+    };
+}
 
         // Improved Add Winner Modal handling
         function showAddWinnerModal() {
@@ -976,6 +1180,31 @@ include("../components/topbar.php");
         function hideAddWinnerModal() {
             const modal = document.getElementById('addWinnerModal');
             modal.style.display = 'none';
+        }
+
+        // Edit Winner Modal handling
+        function showEditWinnerModal(winner) {
+            const modal = document.getElementById('editWinnerModal');
+            document.getElementById('edit_winner_id').value = winner.WinnerID;
+            document.getElementById('edit_prize_type').value = winner.PrizeType;
+            document.getElementById('edit_status').value = winner.Status;
+            document.getElementById('edit_remarks').value = winner.Remarks || '';
+
+            if (winner.WinningDate && winner.WinningDate !== '0000-00-00 00:00:00') {
+                const d = new Date(winner.WinningDate);
+                const isoStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+                document.getElementById('edit_winning_date').value = isoStr;
+            } else {
+                const d = new Date();
+                const isoStr = new Date(d.getTime() - (d.getTimezoneOffset() * 60000)).toISOString().slice(0, 16);
+                document.getElementById('edit_winning_date').value = isoStr;
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        function hideEditWinnerModal() {
+            document.getElementById('editWinnerModal').style.display = 'none';
         }
 
         // Toggle user select based on user type
