@@ -562,7 +562,7 @@ include("../components/topbar.php");
 
         /* Add missing styles for the Add New Winner button */
         .add-winner-btn {
-            background: linear-gradient(135deg, #3a7bd5, #00d2ff);
+            background: linear-gradient(135deg, #000000, #878b8b);
             color: white;
             padding: 10px 20px;
             border-radius: 8px;
@@ -790,7 +790,7 @@ include("../components/topbar.php");
                                 </div>
 
                                 <div class="winner-actions">
-                                    <button class="action-btn" style="background: linear-gradient(135deg, #3498db, #2980b9); box-shadow: 0 2px 4px rgba(52,152,219,0.2);" onclick='showEditWinnerModal(<?php echo htmlspecialchars(json_encode($winner), ENT_QUOTES, "UTF-8"); ?>)'>
+                                    <button class="action-btn" style="background:linear-gradient(135deg, #000000, #878b8b); box-shadow: 0 2px 4px rgba(52,152,219,0.2);" onclick='showEditWinnerModal(<?php echo htmlspecialchars(json_encode($winner), ENT_QUOTES, "UTF-8"); ?>)'>
                                         <i class="fas fa-edit"></i> Edit
                                     </button>
                                     <?php if ($winner['Status'] === 'Pending'): ?>
