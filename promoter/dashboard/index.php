@@ -1101,6 +1101,87 @@ $currentPage = 'dashboard';
                 font-size: 12px;
             }
         }
+
+        /* Promoter Dashboard Responsiveness Fixes */
+        @media (max-width: 992px) {
+            .stats-grid,
+            .quick-access-section,
+            .quick-actions-grid,
+            .wallet-logs,
+            .inspiration-card {
+                margin-left: 0 !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 15px !important;
+            }
+
+            .stat-card {
+                padding: 18px !important;
+            }
+
+            .stat-value {
+                font-size: 22px !important;
+            }
+
+            .stat-label {
+                font-size: 12px !important;
+            }
+
+            .commission-input-group {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .commission-input-group button.generate-btn {
+                padding: 12px 25px !important;
+                width: 100% !important;
+                min-height: 48px;
+            }
+
+            .referral-link-container {
+                flex-direction: column !important;
+                gap: 10px !important;
+            }
+
+            .referral-link-container button.copy-btn {
+                padding: 12px 20px !important;
+                width: 100% !important;
+                min-height: 48px;
+            }
+
+            .profile-details p {
+                word-break: break-all;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr) !important;
+                gap: 10px !important;
+            }
+
+            .stat-card {
+                padding: 12px !important;
+            }
+
+            .stat-value {
+                font-size: 18px !important;
+            }
+
+            .stat-icon {
+                width: 40px !important;
+                height: 40px !important;
+                font-size: 18px !important;
+            }
+
+            .dashboard-container {
+                padding: 0 10px !important;
+            }
+        }
     </style>
 </head>
 <body>
