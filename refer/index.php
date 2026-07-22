@@ -876,6 +876,31 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         function selectRegistrationType(type) {
             window.location.href = './?id=<?php echo htmlspecialchars($promoterID); ?>&type=' + type<?php echo !empty($referralCode) ? ' + "&ref=' . htmlspecialchars($referralCode) . '"' : ''; ?>;
         }
+
+        // Prevent form resubmission prompt and duplicate submissions on page refresh
+        if (window.history.replaceState) {
+            window.history.replaceState(null, null, window.location.href);
+        }
+
+        // Warn user before leaving or refreshing the page if they have unsaved changes in the form
+        let formDirty = false;
+        const registrationForm = document.querySelector('form');
+        if (registrationForm) {
+            registrationForm.addEventListener('input', function() {
+                formDirty = true;
+            });
+            registrationForm.addEventListener('submit', function() {
+                formDirty = false; // Do not warn when submitting the form
+            });
+        }
+
+        window.addEventListener('beforeunload', function(e) {
+            if (formDirty) {
+                // Cancel the event and show default browser confirmation dialog
+                e.preventDefault();
+                e.returnValue = '';
+            }
+        });
     </script>
 </body>
 
