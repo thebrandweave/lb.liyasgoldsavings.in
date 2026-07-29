@@ -477,7 +477,7 @@ $remainingEarners = array_slice($topEarners, 3);
                 </div>
                 <form method="GET">
                     <select name="week" onchange="this.form.submit()" class="week-selector">
-                        <!-- <option value="">Current Tracking Week</option> -->
+                        <option value="">Current Tracking Week</option>
                         <?php foreach($weeks as $week): ?>
                             <option value="<?= $week['WeekStartDate'] ?>" <?= ($selectedWeek == $week['WeekStartDate']) ? 'selected' : '' ?>>
                                 <?= date('d M Y', strtotime($week['WeekStartDate'])) ?> &mdash; <?= date('d M Y', strtotime($week['WeekEndDate'])) ?>
