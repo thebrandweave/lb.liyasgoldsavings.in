@@ -316,15 +316,21 @@ class SMSAPI
             }
 
             // Check if request was successful
-            if ($httpCode == 200) {
-                $responseData = json_decode($response, true);
-                if (isset($responseData['status']) && $responseData['status'] === 'success') {
-                    return true;
-                } else {
-                    error_log("Welcome SMS API returned error: " . ($responseData['message'] ?? 'Unknown error'));
-                    return false;
-                }
-            } else {
+          if ($httpCode == 200 || $httpCode == 201) {
+
+    $responseData = json_decode($response, true);
+
+    if (
+        isset($responseData['messageRequestId']) &&
+        !empty($responseData['messageRequestId'])
+    ) {
+        return true;
+    }
+
+    error_log("Welcome SMS Response: " . $response);
+
+    return false;
+}else {
                 error_log("Welcome SMS API HTTP Error: " . $httpCode . " - " . $response);
                 return false;
             }

@@ -58,8 +58,11 @@ class NotificationService
         $result = ['sms' => null, 'whatsapp' => null];
 
         if ($channels['sms']) {
-            $result['sms'] = $this->smsAPI->sendWelcomeSMS($phoneNumber, $customerName, $customerUniqueID);
-        }
+$result['sms'] = sendWelcomeSMSHardcoded(
+    $phoneNumber,
+    $customerName,
+    $customerUniqueID
+);        }
 
         if ($channels['whatsapp']) {
             $params = [

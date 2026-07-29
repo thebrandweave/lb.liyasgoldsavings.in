@@ -79,6 +79,8 @@ function smsHelperSend($data) {
     curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
     $response = curl_exec($ch);
+    error_log("WELCOME SMS RESPONSE: " . $response);
+    error_log("WELCOME SMS HTTP CODE: " . curl_getinfo($ch, CURLINFO_HTTP_CODE));
     $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
 
