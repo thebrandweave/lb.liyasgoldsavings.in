@@ -177,6 +177,9 @@ $remainingEarners = array_slice($topEarners, 3);
             transition: var(--transition);
             cursor: pointer;
             overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .podium-card::before {
@@ -232,6 +235,8 @@ $remainingEarners = array_slice($topEarners, 3);
             transition: var(--transition);
         }
         .rank-first .podium-img { width: 130px; height: 130px; }
+        .rank-second .podium-img { width: 115px; height: 115px; }
+        .rank-third .podium-img { width: 100px; height: 100px; }
 
         .podium-badge-pill {
             position: absolute;
@@ -259,6 +264,8 @@ $remainingEarners = array_slice($topEarners, 3);
             letter-spacing: -0.25px;
         }
         .rank-first .podium-name { font-size: 24px; }
+        .rank-second .podium-name { font-size: 21px; }
+        .rank-third .podium-name { font-size: 19px; }
 
         .podium-id {
             font-size: 13px;
@@ -274,6 +281,8 @@ $remainingEarners = array_slice($topEarners, 3);
             letter-spacing: -0.5px;
         }
         .rank-first .podium-earnings { font-size: 34px; }
+        .rank-second .podium-earnings { font-size: 28px; }
+        .rank-third .podium-earnings { font-size: 24px; }
 
         .applaud-trigger {
             background: #f8fafc;
@@ -396,10 +405,28 @@ $remainingEarners = array_slice($topEarners, 3);
                 width: 100% !important;
                 order: unset !important;
                 padding: 32px !important;
+                min-height: auto !important;
             }
             .podium-img {
                 width: 100px !important;
                 height: 100px !important;
+            }
+        }
+
+        @media (min-width: 993px) {
+            .rank-first {
+                min-height: 480px;
+            }
+            .rank-second {
+                padding: 46px 24px 38px 24px;
+                min-height: 420px;
+            }
+            .rank-third {
+                padding: 36px 24px 32px 24px;
+                min-height: 360px;
+            }
+            .applaud-trigger {
+                margin-top: auto;
             }
         }
 
@@ -454,7 +481,7 @@ $remainingEarners = array_slice($topEarners, 3);
                 ?>
                     <div class="podium-card <?= $cardClass ?>" onclick="popConfetti(event)">
                         <div class="avatar-container">
-                            <img src="<?= htmlspecialchars($profileImage) ?>" class="podium-img" alt="Profile">
+                            <img src="<?= htmlspecialchars($profileImage) ?>" class="podium-img" alt="Profile" onerror="this.src='../assets/images/default-user.png'; this.onerror=null;">
                             <span class="podium-badge-pill"><?= $pillLabel ?></span>
                         </div>
                         <div class="podium-name"><?= htmlspecialchars($row['Name']) ?></div>
@@ -476,7 +503,7 @@ $remainingEarners = array_slice($topEarners, 3);
                     <div class="list-row" onclick="popConfetti(event)">
                         <div class="list-left">
                             <div class="list-rank">#<?= sprintf("%02d", $currentRank) ?></div>
-                            <img src="<?= htmlspecialchars($profileImage) ?>" class="list-img" alt="Profile">
+                            <img src="<?= htmlspecialchars($profileImage) ?>" class="list-img" alt="Profile" onerror="this.src='../assets/images/default-user.png'; this.onerror=null;">
                             <div class="list-meta">
                                 <h4><?= htmlspecialchars($row['Name']) ?></h4>
                                 <p>ID: <?= htmlspecialchars($row['PromoterUniqueID']) ?></p>
