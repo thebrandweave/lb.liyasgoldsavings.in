@@ -134,8 +134,8 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
 
     // Set document properties
     $spreadsheet->getProperties()
-        ->setCreator('Golden Dreams')
-        ->setLastModifiedBy('Golden Dreams')
+        ->setCreator('Liyas Gold Savingss')
+        ->setLastModifiedBy('Liyas Gold Savingss')
         ->setTitle('Customer Export')
         ->setSubject('Customer Export')
         ->setDescription('Customer export generated on ' . date('Y-m-d H:i:s'));

@@ -26,7 +26,7 @@ function getDatabaseBackup($conn)
             $tables[] = $row[0];
         }
 
-        $backup = "-- Golden Dream Database Backup\n";
+        $backup = "-- Liyas Gold Savings Database Backup\n";
         $backup .= "-- Generated on: " . date('Y-m-d H:i:s') . "\n\n";
 
         // Iterate through each table

@@ -258,7 +258,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Golden Dream</title>
+    <title>Register - Liyas Gold Savings</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -505,7 +505,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="container">
         <div class="header">
-            <h1>Golden Dream</h1>
+            <h1>Liyas Gold Savings</h1>
             <p>Join our community and start your journey</p>
         </div>
 
@@ -625,7 +625,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="footer">
-        <p>&copy; <?php echo date('Y'); ?> Golden Dream. All rights reserved.</p>
+        <p>&copy; <?php echo date('Y'); ?> Liyas Gold Savings. All rights reserved.</p>
     </div>
 
     <script>

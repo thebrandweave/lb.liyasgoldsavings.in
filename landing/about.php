@@ -1220,7 +1220,7 @@ require_once("../config/config.php");
         <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:40px;">
             <div class="hero-text">
                 <h2>Empowering Your Financial Future</h2>
-                <h1>Grow Your Wealth with Golden Dream</h1>
+                <h1>Grow Your Wealth with Liyas Gold Savings</h1>
                 <ul>
                     <li>✔ <span>Secure, trusted investment schemes</span></li>
                     <li>✔ <span>Flexible payment options</span></li>
@@ -1231,7 +1231,7 @@ require_once("../config/config.php");
                 <!-- <a href="https://lb.liyasgoldsavings.in//refer?id=GDP0001&ref=NTAw" class="btn">Start Your Journey</a> -->
             </div>
             <div class="hero-image">
-                <img src="./landing_assets/images/hero.gif" alt="Golden Dream Platform" loading="lazy">
+                <img src="./landing_assets/images/hero.gif" alt="Liyas Gold Savings Platform" loading="lazy">
             </div>
         </div>
     </section>
@@ -1240,7 +1240,7 @@ require_once("../config/config.php");
     <section class="features" id="features">
         <div class="container">
             <div class="section-title">
-                <h2>Why Choose Golden Dream?</h2>
+                <h2>Why Choose Liyas Gold Savings?</h2>
                 <p>Discover the benefits of joining our platform and how we can help you achieve your financial goals.</p>
             </div>
             <div class="features-grid">
@@ -1273,7 +1273,7 @@ require_once("../config/config.php");
     <section class="cta">
         <div class="container">
             <h2>Ready to Start Your Investment Journey?</h2>
-            <p>Join thousands of satisfied investors who have already discovered the benefits of Golden Dream.</p>
+            <p>Join thousands of satisfied investors who have already discovered the benefits of Liyas Gold Savings.</p>
             <!-- <a href="https://lb.liyasgoldsavings.in//refer?id=GDP0001&ref=NTAw" class="btn">Sign Up Now</a> -->
         </div>
     </section>
@@ -1282,7 +1282,7 @@ require_once("../config/config.php");
     <section class="registration-process" style="background:#f7f7fa; padding: 80px 0;">
         <div class="container" style="display:flex;align-items:center;justify-content:space-between;gap:40px;">
             <div style="flex:1.2;">
-                <h2 style="font-size:2.3rem;font-weight:700;margin-bottom:32px;color:#111;">Register with Golden Dream in 3 easy steps</h2>
+                <h2 style="font-size:2.3rem;font-weight:700;margin-bottom:32px;color:#111;">Register with Liyas Gold Savings in 3 easy steps</h2>
                 <div style="border-left:3px solid #111;padding-left:18px;margin-bottom:32px;">
                     <div style="margin-bottom:32px;">
                         <span style="font-size:1.3rem;font-weight:600;color:#111;">1. Create your account</span>
@@ -1299,7 +1299,7 @@ require_once("../config/config.php");
             </div>
             <div style="flex:1;display:flex;align-items:center;justify-content:center;">
                 <div style="background:#fff;border-radius:24px;padding:32px 24px;box-shadow:0 8px 32px rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center;min-width:320px;min-height:320px;">
-                    <img src="./landing_assets/images/register.png" alt="Register with Golden Dream" style="max-width:260px;border-radius:16px;" loading="lazy">
+                    <img src="./landing_assets/images/register.png" alt="Register with Liyas Gold Savings" style="max-width:260px;border-radius:16px;" loading="lazy">
                 </div>
             </div>
         </div>
@@ -1322,12 +1322,12 @@ require_once("../config/config.php");
             <div style="flex:2;">
                 <div style="color:#a36d16;font-size:2.5rem;line-height:1;">&#10077;</div>
                 <div style="font-size:2rem;font-weight:500;color:#222;margin-bottom:32px;max-width:700px;">
-                    At <span style="color:#a36d16;font-weight:600;">Golden Dream</span>, our mission is to <span style="color:#a36d16;font-weight:600;">empower every individual</span> to achieve financial freedom. We believe in <span style="color:#a36d16;font-weight:600;">trust, transparency,</span> and <span style="color:#a36d16;font-weight:600;">growth for all</span>.
+                    At <span style="color:#a36d16;font-weight:600;">Liyas Gold Savings</span>, our mission is to <span style="color:#a36d16;font-weight:600;">empower every individual</span> to achieve financial freedom. We believe in <span style="color:#a36d16;font-weight:600;">trust, transparency,</span> and <span style="color:#a36d16;font-weight:600;">growth for all</span>.
                 </div>
                 <div style="margin-top:32px;border-top:1px solid #eee;padding-top:18px;">
                     <div style="font-weight:700;font-size:1.1rem;color:#222;">Sameer Akbar</div>
                     <div style="color:#a36d16;font-weight:600;">Managing Director</div>
-                    <div style="color:#555;font-size:1rem;">Visionary leader dedicated to helping you build a brighter financial future with Golden Dream.</div>
+                    <div style="color:#555;font-size:1rem;">Visionary leader dedicated to helping you build a brighter financial future with Liyas Gold Savings.</div>
                 </div>
             </div>
         </div>
@@ -1380,23 +1380,23 @@ require_once("../config/config.php");
     <section class="faq-section">
         <div class="faq-container">
             <div class="faq-title">
-                <h2>Golden Dream FAQs</h2>
-                <p>Find answers to frequently asked questions about Golden Dream and our investment platform.</p>
+                <h2>Liyas Gold Savings FAQs</h2>
+                <p>Find answers to frequently asked questions about Liyas Gold Savings and our investment platform.</p>
             </div>
             <div class="faq-grid">
                 <!-- Column 1 -->
                 <div class="faq-card">
                     <div class="faq-question">
-                        <span>What is Golden Dream?</span>
+                        <span>What is Liyas Gold Savings?</span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        Golden Dream is a secure investment platform designed to help you grow your wealth through trusted schemes and expert guidance. We provide a range of investment options tailored to your financial goals.
+                        Liyas Gold Savings is a secure investment platform designed to help you grow your wealth through trusted schemes and expert guidance. We provide a range of investment options tailored to your financial goals.
                     </div>
                 </div>
                 <div class="faq-card">
                     <div class="faq-question">
-                        <span>How do I register on Golden Dream?</span>
+                        <span>How do I register on Liyas Gold Savings?</span>
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
@@ -1418,7 +1418,7 @@ require_once("../config/config.php");
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        You can start investing with as little as ₹1000 on Golden Dream. We offer flexible investment options to suit various budgets and financial goals.
+                        You can start investing with as little as ₹1000 on Liyas Gold Savings. We offer flexible investment options to suit various budgets and financial goals.
                     </div>
                 </div>
                 <div class="faq-card">
@@ -1464,7 +1464,7 @@ require_once("../config/config.php");
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        No, Golden Dream is fully transparent. All fees are clearly mentioned before you invest. We believe in complete transparency with our investors.
+                        No, Liyas Gold Savings is fully transparent. All fees are clearly mentioned before you invest. We believe in complete transparency with our investors.
                     </div>
                 </div>
                 <div class="faq-card">
@@ -1473,7 +1473,7 @@ require_once("../config/config.php");
                         <i class="fas fa-chevron-down"></i>
                     </div>
                     <div class="faq-answer">
-                        Yes, you can monitor all your investments and returns in real-time from your Golden Dream dashboard. We provide detailed analytics and reports for better tracking.
+                        Yes, you can monitor all your investments and returns in real-time from your Liyas Gold Savings dashboard. We provide detailed analytics and reports for better tracking.
                     </div>
                 </div>
             </div>

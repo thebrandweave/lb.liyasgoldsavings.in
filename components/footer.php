@@ -189,7 +189,7 @@
                 <span>Developed by <a style="text-decoration: none;color:teal;" href="https://intelexsolutions.in/"> <img src="../landing_assets/images/intelex.png" style="height: 20px;margin-bottom:-5px;" alt=""> Intelex Solutions</a></span>
             </div> -->
            <p>
-  <span class="gold-text">&copy;</span> 2026 Golden Dream. All rights reserved.
+  <span class="gold-text">&copy;</span> 2026 Liyas Gold Savings. All rights reserved.
 </p>
             <!-- <div class="last-updated">
                 <i class="fas fa-clock"></i>

@@ -1,4 +1,4 @@
-# Golden Dream Messaging System
+# Liyas Gold Savings Messaging System
 
 This document describes the unified messaging system that allows switching between SMS and WhatsApp for sending notifications.
 
@@ -10,7 +10,7 @@ This document describes the unified messaging system that allows switching betwe
 - **Unified Messaging Service**: Single interface for both SMS and WhatsApp
 - **Automatic Fallback**: If preferred method fails, automatically tries the other method
 - **Bulk Messaging**: Support for sending messages to multiple recipients
-- **Golden Dream Branding**: Automatic branding for all messages
+- **Liyas Gold Savings Branding**: Automatic branding for all messages
 
 ## Database Tables
 
@@ -56,7 +56,7 @@ $database = new Database();
 $messagingService = new MessagingService($database);
 
 // Send message using preferred method
-$messagingService->sendMessage('9876543210', 'Hello from Golden Dream!');
+$messagingService->sendMessage('9876543210', 'Hello from Liyas Gold Savings!');
 
 // Send notification with branding
 $messagingService->sendNotification('9876543210', 'Payment received!', 'payment');
@@ -69,7 +69,7 @@ $messagingService->sendMessage('9876543210', 'Urgent message', 'SMS');
 
 ```php
 $phoneNumbers = ['9876543210', '9876543211', '9876543212'];
-$message = 'Important announcement from Golden Dream!';
+$message = 'Important announcement from Liyas Gold Savings!';
 
 $messagingService->sendBulkMessage($phoneNumbers, $message);
 ```
@@ -115,7 +115,7 @@ The system uses Airtel's SMS API with the following parameters:
 
 The system supports different message types with automatic branding:
 
-- **general**: Default Golden Dream branding
+- **general**: Default Liyas Gold Savings branding
 - **payment**: Payment confirmation messages
 - **winner**: Winner announcement messages
 - **reminder**: Payment reminder messages

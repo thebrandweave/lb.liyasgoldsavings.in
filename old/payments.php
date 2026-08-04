@@ -164,7 +164,7 @@ error_log("Customer Data: " . print_r($customer, true));
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Dream - Payments</title>
+    <title>Liyas Gold Savings - Payments</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="stylesheet" href="css/payments.css">
 </head>
@@ -175,7 +175,7 @@ error_log("Customer Data: " . print_r($customer, true));
         <aside class="sidebar">
             <div class="logo">
                 <i class="fas fa-crown"></i>
-                <h2>Golden Dream</h2>
+                <h2>Liyas Gold Savings</h2>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">

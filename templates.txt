@@ -72,7 +72,7 @@
         },
         {
           "type": "FOOTER",
-          "text": "Golden Dream Support"
+          "text": "Liyas Gold Savings Support"
         }
       ],
       "language": "en",
@@ -102,7 +102,7 @@
               },
               {
                 "param_name": "scheme_name",
-                "example": "Golden dream"
+                "example": "Liyas Gold Savings"
               },
               {
                 "param_name": "installment_name",
@@ -121,7 +121,7 @@
         },
         {
           "type": "FOOTER",
-          "text": "Thank you, Golden Dream Team"
+          "text": "Thank you, Liyas Gold Savings Team"
         }
       ],
       "language": "en",
@@ -166,7 +166,7 @@
         },
         {
           "type": "FOOTER",
-          "text": "Golden Dream Team"
+          "text": "Liyas Gold Savings Team"
         }
       ],
       "language": "en",
@@ -215,7 +215,7 @@
         },
         {
           "type": "FOOTER",
-          "text": "Golden Dream Team"
+          "text": "Liyas Gold Savings Team"
         }
       ],
       "language": "en",
@@ -236,7 +236,7 @@
         },
         {
           "type": "BODY",
-          "text": "Dear {{customer_name}}, thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan.\nWe have received your payment of Rs {{payment_amount}} successfully.",
+          "text": "Dear {{customer_name}}, thank you for choosing PROGEEDEE Ventures Private Limited Liyas Gold Savings Savings Plan.\nWe have received your payment of Rs {{payment_amount}} successfully.",
           "example": {
             "body_text_named_params": [
               {
@@ -252,7 +252,7 @@
         },
         {
           "type": "FOOTER",
-          "text": "Golden Dream Team"
+          "text": "Liyas Gold Savings Team"
         }
       ],
       "language": "en",
@@ -273,7 +273,7 @@
         },
         {
           "type": "BODY",
-          "text": "Dear {{customer_name}}, your registration for the Golden Dream Savings Plan is completed.\nYour Customer ID is {{customer_id}} in our records.",
+          "text": "Dear {{customer_name}}, your registration for the Liyas Gold Savings Savings Plan is completed.\nYour Customer ID is {{customer_id}} in our records.",
           "example": {
             "body_text_named_params": [
               {

@@ -253,7 +253,7 @@ background: linear-gradient(to right, #FFFFFF, #ECE9E6); /* W3C, IE 10+/ Edge, F
 <body>
     <div class="container">
         <div class="logo">
-            <h1>Golden Dream</h1>
+            <h1>Liyas Gold Savings</h1>
             <p>Your Financial Future Starts Here</p>
         </div>
 

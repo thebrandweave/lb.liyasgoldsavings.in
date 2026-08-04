@@ -436,7 +436,7 @@ include("../../components/topbar.php");
                     </div>
                     <div class="form-group">
                         <label for="test_message">Test Message</label>
-                        <input type="text" id="test_message" class="form-control" placeholder="Enter test message" value="Test message from Golden Dream">
+                        <input type="text" id="test_message" class="form-control" placeholder="Enter test message" value="Test message from Liyas Gold Savings">
                     </div>
                     <button type="button" class="btn btn-primary" onclick="testSMS()">
                         <i class="fas fa-paper-plane"></i> Send Test

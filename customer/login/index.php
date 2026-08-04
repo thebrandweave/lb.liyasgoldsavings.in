@@ -15,7 +15,7 @@ if (isLoggedIn()) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login - Golden Dream</title>
+    <title>Login - Liyas Gold Savings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
@@ -191,7 +191,7 @@ if (isLoggedIn()) {
 <body>
     <div class="login-container">
         <div class="logo">
-            <h1>Golden Dream</h1>
+            <h1>Liyas Gold Savings</h1>
             <p class="text-muted">Welcome back! Please login to your account.</p>
         </div>
 

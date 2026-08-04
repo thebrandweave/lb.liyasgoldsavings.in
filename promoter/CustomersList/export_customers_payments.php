@@ -166,7 +166,7 @@ $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 
 // Title
-$sheet->setCellValue('A1', 'Golden Dream - Customer Payments Export');
+$sheet->setCellValue('A1', 'Liyas Gold Savings - Customer Payments Export');
 $sheet->mergeCells('A1:L1');
 $sheet->getStyle('A1')->getFont()->setBold(true)->setSize(16);
 $sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);

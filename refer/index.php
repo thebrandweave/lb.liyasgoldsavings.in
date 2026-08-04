@@ -368,7 +368,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Register - Golden Dream</title>
+    <title>Register - Liyas Gold Savings</title>
     <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <link rel="preload" href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
     <noscript>
@@ -705,7 +705,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="container">
         <div class="header">
-            <h1>Golden Dream</h1>
+            <h1>Liyas Gold Savings</h1>
             <p>Join our community and start your journey</p>
         </div>
 
@@ -752,7 +752,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <i class="fas fa-check-circle"></i>
                 </div>
                 <h2 class="success-title">Registration Successful!</h2>
-                <p class="success-message">Thank you for registering with Golden Dream.</p>
+                <p class="success-message">Thank you for registering with Liyas Gold Savings.</p>
 
                 <div class="success-details">
                     <p><strong>Name:</strong> <?php echo htmlspecialchars($registeredName); ?></p>
@@ -869,7 +869,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="footer">
-        <p>&copy; <?php echo date('Y'); ?> Golden Dream. All rights reserved.</p>
+        <p>&copy; <?php echo date('Y'); ?> Liyas Gold Savings. All rights reserved.</p>
     </div>
 
     <script>

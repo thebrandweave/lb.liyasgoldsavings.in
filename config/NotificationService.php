@@ -190,7 +190,7 @@ $result['sms'] = sendWelcomeSMSHardcoded(
         $message .= "Due Date: " . $dueDate . "\n\n";
         $message .= "Please submit your payment at the earliest.\n\n";
         $message .= "If already paid, please ignore this message.\n\n";
-        $message .= "Thank you,\nGolden Dreams Team";
+        $message .= "Thank you,\nLiyas Gold Savingss Team";
 
         if ($channels['sms']) {
             $result['sms'] = $this->smsAPI->sendSMS($phoneNumber, $message);
@@ -215,7 +215,7 @@ $result['sms'] = sendWelcomeSMSHardcoded(
         $channels = $this->getChannels();
         $result = ['sms' => null, 'whatsapp' => null];
 
-        $message = "Welcome to Golden Dream! Dear " . $promoterName . ", you have successfully joined as a promoter. " .
+        $message = "Welcome to Liyas Gold Savings! Dear " . $promoterName . ", you have successfully joined as a promoter. " .
             "Your ID is: " . $promoterId . " and your commission rate is: " . $commissionRate . ".";
 
         if ($channels['sms']) {

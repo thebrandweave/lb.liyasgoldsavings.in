@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Privacy Policy | Golden Dream</title>
+    <title>Privacy Policy | Liyas Gold Savings</title>
     <style>
         :root {
             --bg: #f4f7fb;
@@ -113,14 +113,14 @@
     <div class="wrap">
         <div class="card">
             <div class="hero">
-                <img class="logo" src="../landing/landing_assets/images/gdLogo.png" alt="Golden Dream Logo">
+                <img class="logo" src="../landing/landing_assets/images/gdLogo.png" alt="Liyas Gold Savings Logo">
                 <h1>Privacy Policy</h1>
                 <p class="meta">Last updated: <?php echo htmlspecialchars($lastUpdated); ?></p>
             </div>
 
             <div class="content">
                 <p>
-                    Golden Dream ("we", "our", "us") values your privacy. This Privacy Policy explains
+                    Liyas Gold Savings ("we", "our", "us") values your privacy. This Privacy Policy explains
                     how we collect, use, store, and protect your information when you use our website and services.
                 </p>
 
@@ -187,7 +187,7 @@
             </div>
 
             <div class="footer-note">
-                Golden Dream &copy; <?php echo date('Y'); ?>. All rights reserved.
+                Liyas Gold Savings &copy; <?php echo date('Y'); ?>. All rights reserved.
             </div>
         </div>
     </div>

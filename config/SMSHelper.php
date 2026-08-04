@@ -12,12 +12,12 @@ define('SMS_PASSWORD', 'jx0NgVQjBT');
 define('SMS_ENTITY_ID', '1001791223662244844');
 
 // Template ID 1007289085098641045 - Welcome
-// "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is var. Visit https://goldendream.in/ for more details."
+// "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Liyas Gold Savings Savings Plan. Your Customer ID is var. Visit https://goldendream.in/ for more details."
 define('SMS_TEMPLATE_WELCOME_ID', '1007289085098641045');
 define('SMS_SOURCE_WELCOME', 'PGDVTR');
 
 // Template ID 1007000046423973167 - Payment received
-// "Dear var Thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan We have received your payment of Rs var"
+// "Dear var Thank you for choosing PROGEEDEE Ventures Private Limited Liyas Gold Savings Savings Plan We have received your payment of Rs var"
 define('SMS_TEMPLATE_PAYMENT_ID', '1007000046423973167');
 define('SMS_SOURCE_PAYMENT', 'PRGDVN');
 
@@ -117,7 +117,7 @@ function sendWelcomeSMSHardcoded($phoneNumber, $customerName, $customerUniqueID)
         return false;
     }
     // Exact template text; replace first var with name, second with customer ID
-    $message = "Dear " . $customerName . ", welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is " . $customerUniqueID . ". Visit https://goldendream.in/ for more details.";
+    $message = "Dear " . $customerName . ", welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Liyas Gold Savings Savings Plan. Your Customer ID is " . $customerUniqueID . ". Visit https://goldendream.in/ for more details.";
 
     $data = [
         'customerId' => SMS_CUSTOMER_ID,
@@ -141,7 +141,7 @@ function sendWelcomeSMSHardcoded($phoneNumber, $customerName, $customerUniqueID)
 /**
  * Payment verified SMS - Template 1007000046423973167, PRGDVN
  * var1 = customer name, var2 = amount (no decimals)
- * Template: "Dear var Thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan We have received your payment of Rs var"
+ * Template: "Dear var Thank you for choosing PROGEEDEE Ventures Private Limited Liyas Gold Savings Savings Plan We have received your payment of Rs var"
  */
 function sendPaymentVerifiedSMSHardcoded($phoneNumber, $customerName, $amount) {
     $phone = smsHelperPhone($phoneNumber);
@@ -151,7 +151,7 @@ function sendPaymentVerifiedSMSHardcoded($phoneNumber, $customerName, $amount) {
         return false;
     }
     $amountStr = number_format((float) $amount, 0, '', '');
-    $message = "Dear " . $customerName . " Thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan We have received your payment of Rs " . $amountStr;
+    $message = "Dear " . $customerName . " Thank you for choosing PROGEEDEE Ventures Private Limited Liyas Gold Savings Savings Plan We have received your payment of Rs " . $amountStr;
 
     $data = [
         'customerId' => SMS_CUSTOMER_ID,

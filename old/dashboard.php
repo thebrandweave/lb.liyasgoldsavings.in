@@ -66,7 +66,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Golden Dream - Customer Dashboard</title>
+    <title>Liyas Gold Savings - Customer Dashboard</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
         * {
@@ -347,7 +347,7 @@ try {
         <aside class="sidebar">
             <div class="logo">
                 <i class="fas fa-crown"></i>
-                <h2>Golden Dream</h2>
+                <h2>Liyas Gold Savings</h2>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">

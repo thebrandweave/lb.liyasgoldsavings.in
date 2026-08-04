@@ -227,7 +227,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login | Golden Dreams</title>
+    <title>Admin Login | Liyas Gold Savingss</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -478,7 +478,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <i class="fas fa-crown" style="font-size: 32px; color: #f1c40f;"></i>
             </div>
             <h1>Admin Login</h1>
-            <p>Golden Dreams Management Portal</p>
+            <p>Liyas Gold Savingss Management Portal</p>
         </div>
 
         <div class="login-form">
@@ -529,7 +529,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             </form>
 
             <div class="login-footer">
-                <p>&copy; <?php echo date('Y'); ?> Golden Dreams. All rights reserved.</p>
+                <p>&copy; <?php echo date('Y'); ?> Liyas Gold Savingss. All rights reserved.</p>
             </div>
         </div>
     </div>

@@ -142,7 +142,7 @@ class SMSAPI
                         $errorMsg = 'Invalid phone number(s): ' . implode(', ', $responseData['incorrectNum']);
                     } elseif (isset($responseData['message']) && is_string($responseData['message'])) {
                         // Check if message is an actual error message (not the SMS content)
-                        $testMessages = ['test message from golden dream', 'test message'];
+                        $testMessages = ['test message from Liyas Gold Savings', 'test message'];
                         $messageLower = strtolower(trim($responseData['message']));
                         if (!in_array($messageLower, $testMessages)) {
                             $errorMsg = $responseData['message'];
@@ -265,11 +265,11 @@ class SMSAPI
 
             // Welcome template details from screenshot
             // Template ID: 1007289085098641045
-            // Template: "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is var. Visit https://goldendream.in/ for more details."
+            // Template: "Dear var, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Liyas Gold Savings Savings Plan. Your Customer ID is var. Visit https://goldendream.in/ for more details."
             // Source Address: PGDVTR
             // Variables: var1 = Customer Name, var2 = Customer Unique ID
 
-            $welcomeTemplate = "Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://goldendream.in/ for more details.";
+            $welcomeTemplate = "Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Liyas Gold Savings Savings Plan. Your Customer ID is {var2}. Visit https://goldendream.in/ for more details.";
 
             // Format the welcome message
             $message = str_replace('{var1}', $customerName, $welcomeTemplate);
@@ -353,7 +353,7 @@ class SMSAPI
 
         try {
             // Test with a simple message
-            $testMessage = "Test message from Golden Dream SMS API";
+            $testMessage = "Test message from Liyas Gold Savings SMS API";
             return $this->sendSMS('8197458962', $testMessage);
         } catch (Exception $e) {
             return ['success' => false, 'message' => $e->getMessage()];

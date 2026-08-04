@@ -122,11 +122,11 @@ $sheet = $spreadsheet->getActiveSheet();
 
 // Set document properties
 $spreadsheet->getProperties()
-    ->setCreator('Golden Dreams')
-    ->setLastModifiedBy('Golden Dreams')
+    ->setCreator('Liyas Gold Savingss')
+    ->setLastModifiedBy('Liyas Gold Savingss')
     ->setTitle('Payments Export')
     ->setSubject('Payments Data Export')
-    ->setDescription('Payments data exported from Golden Dreams system');
+    ->setDescription('Payments data exported from Liyas Gold Savingss system');
 
 // Set headers
 $headers = [

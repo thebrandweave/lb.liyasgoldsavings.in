@@ -5,7 +5,7 @@ require_once  $c_path.'c_includes/loader.php';
 <div class="sidebar" id="sidebar">
     <div class="sidebar-header">
         <div class="side-logo">
-            <h3>Golden Dream</h3>
+            <h3>Liyas Gold Savings</h3>
         </div>
         <button class="sidebar-close-btn" id="sidebarCloseBtn" style="display:none;" aria-label="Close Sidebar">&times;</button>
     </div>

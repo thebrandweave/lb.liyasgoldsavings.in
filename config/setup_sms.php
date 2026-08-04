@@ -79,7 +79,7 @@ try {
             '1001791223662244844',
             '1007289085098641045',
             'SERVICE_EXPLICIT',
-            'Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://goldendream.in/ for more details.',
+            'Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Liyas Gold Savings Savings Plan. Your Customer ID is {var2}. Visit https://goldendream.in/ for more details.',
             'Active'
         )
         ON DUPLICATE KEY UPDATE

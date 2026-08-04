@@ -35,7 +35,7 @@ $defaultImagePath = '../../uploads/profile/image.png';
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID Card | Golden Dreams</title>
+    <title>ID Card | Liyas Gold Savingss</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -340,8 +340,8 @@ $defaultImagePath = '../../uploads/profile/image.png';
                 </div>
                 <div class="id-card-inner">
                     <div class="id-card-header">
-                        <img src="../assets/images/logo.png" alt="Golden Dreams Logo" class="company-logo">
-                        <div class="company-name">Golden Dream</div>
+                        <img src="../assets/images/logo.png" alt="Liyas Gold Savingss Logo" class="company-logo">
+                        <div class="company-name">Liyas Gold Savings</div>
                         <div class="card-title">Authorized Promoter</div>
                     </div>
 

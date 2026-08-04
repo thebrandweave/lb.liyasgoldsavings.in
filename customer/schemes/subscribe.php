@@ -211,7 +211,7 @@ $currentInstallment = ($interval->y * 12) + $interval->m + 1;
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Subscribe to Scheme - Golden Dream</title>
+    <title>Subscribe to Scheme - Liyas Gold Savings</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>

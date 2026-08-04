@@ -274,7 +274,7 @@
             <!-- Left: Brand Logo -->
             <div class="nav-brand-wrapper">
                 <a href="./" class="premium-logo">
-                    <img src="./landing_assets/images/gdLogo.png" alt="Golden Dream Logo" class="logo-img">
+                    <img src="./landing_assets/images/gdLogo.png" alt="Liyas Gold Savings Logo" class="logo-img">
                     <!-- <span class="logo-text">Golden <span class="text-gold">Dream</span></span> -->
                 </a>
             </div>

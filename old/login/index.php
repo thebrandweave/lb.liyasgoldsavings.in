@@ -141,7 +141,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Golden Dream - Login</title>
+  <title>Liyas Gold Savings - Login</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
   <link rel="stylesheet" href="./login.css">
 </head>
@@ -151,7 +151,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SERVER['HTTP_X_REQUESTED_WI
     <div class="login-box">
       <div class="logo">
         <i class="fas fa-crown"></i>
-        <h2>Golden Dream</h2>
+        <h2>Liyas Gold Savings</h2>
       </div>
       <form id="loginForm" class="login-form">
         <div class="input-group">

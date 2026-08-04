@@ -79,7 +79,7 @@ if ($shop_pos !== false) {
     </div>
     
     <div class="footer-bottom">
-      <p class="copyright">Golden Dream © <?php echo date('Y'); ?>. All Rights Reserved.</p>
+      <p class="copyright">Liyas Gold Savings © <?php echo date('Y'); ?>. All Rights Reserved.</p>
       <div class="developed-by">
         <span>Developed by</span>
         <img src="<?php echo $shop_base; ?>assets/image/developer_logo.png" alt="Developer Logo" class="developer-logo">
