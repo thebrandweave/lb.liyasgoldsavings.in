@@ -37,13 +37,32 @@ if (isset($_POST['action']) && isset($_POST['payment_id'])) {
         $stmt->execute([$paymentId]);
         $payment = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        // Update payment status and verifier remarks
+        if (!$payment) {
+            throw new Exception("Payment not found");
+        }
+
+        // Prevent duplicate processing if payment is already Verified or Rejected
+        if (in_array($payment['Status'], ['Verified', 'Rejected'])) {
+            $conn->rollBack();
+            $_SESSION['error_message'] = "Payment #$paymentId has already been " . strtolower($payment['Status']) . ".";
+            header("Location: index.php");
+            exit();
+        }
+
+        // Update payment status and verifier remarks atomically
         $stmt = $conn->prepare("
-        UPDATE Payments 
-        SET Status = ?, AdminID = ?, VerifiedAt = CURRENT_TIMESTAMP, VerifierRemark = ?
-        WHERE PaymentID = ?
-    ");
+            UPDATE Payments 
+            SET Status = ?, AdminID = ?, VerifiedAt = CURRENT_TIMESTAMP, VerifierRemark = ?
+            WHERE PaymentID = ? AND Status NOT IN ('Verified', 'Rejected')
+        ");
         $stmt->execute([$newStatus, $_SESSION['admin_id'], $verifierRemark, $paymentId]);
+
+        if ($stmt->rowCount() === 0) {
+            $conn->rollBack();
+            $_SESSION['error_message'] = "Payment #$paymentId was already updated by another action.";
+            header("Location: index.php");
+            exit();
+        }
 
         // Create notification for customer
         if ($newStatus === 'Verified') {

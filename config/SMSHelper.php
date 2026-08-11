@@ -106,6 +106,26 @@ function sanitizeCustomerName($fullName) {
  * @return array ['ok' => bool, 'httpCode' => int, 'response' => string]
  */
 function smsHelperSend($data) {
+    static $recentSends = [];
+
+    $phoneKey = isset($data['destinationAddress'][0]) ? (string)$data['destinationAddress'][0] : '';
+    $msgKey = isset($data['message']) ? md5((string)$data['message']) : '';
+    $dedupKey = $phoneKey . '_' . $msgKey;
+
+    $currentTime = time();
+    if (!empty($phoneKey) && !empty($msgKey) && isset($recentSends[$dedupKey])) {
+        if (($currentTime - $recentSends[$dedupKey]) < 60) {
+            error_log("SMSHelper: Duplicate SMS suppressed for {$phoneKey} within 60s window.");
+            return [
+                'ok' => true,
+                'httpCode' => 200,
+                'response' => '{"status":"SUPPRESSED_DUPLICATE"}'
+            ];
+        }
+    }
+
+    $recentSends[$dedupKey] = $currentTime;
+
     $ch = curl_init(SMS_API_URL);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
     curl_setopt($ch, CURLOPT_POST, true);

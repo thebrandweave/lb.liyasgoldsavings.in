@@ -103,13 +103,28 @@ if (isset($_POST['action']) && isset($_POST['payment_id'])) {
 
         $newStatus = ($action === 'verify') ? 'Verified' : 'Rejected';
 
-        // Update payment status
+        // Prevent duplicate processing if payment is already Verified or Rejected
+        if (isset($payment['Status']) && in_array($payment['Status'], ['Verified', 'Rejected'])) {
+            $conn->rollBack();
+            $_SESSION['error_message'] = "Payment #$paymentId has already been " . strtolower($payment['Status']) . ".";
+            header("Location: view.php?id=$paymentId");
+            exit();
+        }
+
+        // Update payment status atomically
         $stmt = $conn->prepare("
             UPDATE Payments 
             SET Status = ?, AdminID = ?, VerifiedAt = CURRENT_TIMESTAMP 
-            WHERE PaymentID = ?
+            WHERE PaymentID = ? AND Status NOT IN ('Verified', 'Rejected')
         ");
         $stmt->execute([$newStatus, $_SESSION['admin_id'], $paymentId]);
+
+        if ($stmt->rowCount() === 0) {
+            $conn->rollBack();
+            $_SESSION['error_message'] = "Payment #$paymentId was already updated by another action.";
+            header("Location: view.php?id=$paymentId");
+            exit();
+        }
 
         // Create notification for customer
         $notificationMessage = "Your payment of ₹" . number_format($payment['Amount'], 2) .
