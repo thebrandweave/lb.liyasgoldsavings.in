@@ -26,7 +26,7 @@ class Database
             $this->username = "root";
             $this->password = "";
         } else {
-            $this->host = "82.25.121.121";
+            $this->host = "localhost";
             $this->db_name = "u232955123_LB_DB";
             $this->username = "u232955123_LB_DB";
             $this->password = "Brandweave@24";
