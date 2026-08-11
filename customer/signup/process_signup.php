@@ -1,7 +1,7 @@
 <?php
 require_once '../config/config.php';
 require_once '../config/jwt_config.php';
-require_once '../config/NotificationService.php';
+require_once '../../config/NotificationService.php';
 
 header('Content-Type: application/json');
 

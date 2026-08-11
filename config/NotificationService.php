@@ -69,10 +69,7 @@ $result['sms'] = sendWelcomeSMSHardcoded(
                 ['type' => 'text', 'parameter_name' => 'customer_name', 'text' => (string)$customerName],
                 ['type' => 'text', 'parameter_name' => 'customer_id', 'text' => (string)$customerUniqueID]
             ];
-            $buttonParams = [
-                ['index' => 0, 'text' => 'la']
-            ];
-            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_customer_register', null, $params, $buttonParams);
+            $result['whatsapp'] = $this->whatsappAPI->sendTemplate($phoneNumber, 'gd_customer_register', null, $params);
         }
 
         return $result;
