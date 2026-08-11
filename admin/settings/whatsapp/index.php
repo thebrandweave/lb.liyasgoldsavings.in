@@ -23,12 +23,18 @@ $conn = $database->getConnection();
 
 // Get current settings
 try {
+    // Ensure VerifyToken column exists in database table
+    $stmt = $conn->query("SHOW COLUMNS FROM WhatsAppAPIConfig LIKE 'VerifyToken'");
+    if (!$stmt->fetch()) {
+        $conn->exec("ALTER TABLE WhatsAppAPIConfig ADD COLUMN VerifyToken VARCHAR(255) DEFAULT 'liyas_whatsapp_verify_token_2026'");
+    }
+
     $stmt = $conn->query("SELECT * FROM WhatsAppAPIConfig ORDER BY ConfigID DESC LIMIT 1");
     $settings = $stmt->fetch(PDO::FETCH_ASSOC);
 
     // If no settings exist, create a default record
     if (!$settings) {
-        $stmt = $conn->prepare("INSERT INTO WhatsAppAPIConfig (APIProviderName, APIEndpoint, AccessToken, Token, InstanceID, PhoneNumberID, DefaultTemplateName, TemplateLanguageCode, Status) VALUES ('Meta Cloud API', 'https://graph.facebook.com/v25.0', '', '', '', '', 'hello_world', 'en_US', 'Active')");
+        $stmt = $conn->prepare("INSERT INTO WhatsAppAPIConfig (APIProviderName, APIEndpoint, AccessToken, Token, InstanceID, PhoneNumberID, DefaultTemplateName, TemplateLanguageCode, VerifyToken, Status) VALUES ('Meta Cloud API', 'https://graph.facebook.com/v25.0', '', '', '', '', 'hello_world', 'en_US', 'liyas_whatsapp_verify_token_2026', 'Active')");
         $stmt->execute();
         $settings = [
             'ConfigID' => $conn->lastInsertId(),
@@ -38,6 +44,7 @@ try {
             'PhoneNumberID' => '',
             'DefaultTemplateName' => 'hello_world',
             'TemplateLanguageCode' => 'en_US',
+            'VerifyToken' => 'liyas_whatsapp_verify_token_2026',
             'Status' => 'Active'
         ];
     }
@@ -50,6 +57,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $conn->beginTransaction();
 
+        $verifyToken = trim($_POST['verify_token'] ?? '');
+        if (empty($verifyToken)) {
+            $verifyToken = 'liyas_whatsapp_verify_token_2026';
+        }
+
         // Update existing record
         $stmt = $conn->prepare("
             UPDATE WhatsAppAPIConfig SET 
@@ -59,6 +71,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 PhoneNumberID = :phoneNumberId,
                 DefaultTemplateName = :defaultTemplateName,
                 TemplateLanguageCode = :templateLanguageCode,
+                VerifyToken = :verifyToken,
                 Status = :status
             WHERE ConfigID = :configId
         ");
@@ -70,6 +83,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             ':phoneNumberId' => $_POST['phone_number_id'],
             ':defaultTemplateName' => $_POST['default_template_name'],
             ':templateLanguageCode' => $_POST['template_language_code'],
+            ':verifyToken' => $verifyToken,
             ':status' => $_POST['status']
         ];
 
@@ -90,6 +104,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header("Location: index.php");
     exit();
 }
+
 
 // Include header and sidebar
 include("../../components/sidebar.php");
@@ -248,11 +263,16 @@ include("../../components/topbar.php");
 
 <body>
     <div class="content-wrapper">
-        <div class="page-header">
+        <div class="page-header" style="display: flex; justify-content: space-between; align-items: center;">
             <h1 class="page-title">WhatsApp Meta Cloud API Settings</h1>
-            <a href="../" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to Settings
-            </a>
+            <div style="display: flex; gap: 10px;">
+                <a href="replies.php" class="btn btn-primary" style="background: #25D366; border: none;">
+                    <i class="fab fa-whatsapp"></i> View Customer Replies
+                </a>
+                <a href="../" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to Settings
+                </a>
+            </div>
         </div>
 
         <?php if (isset($_SESSION['success_message'])): ?>
@@ -299,27 +319,51 @@ include("../../components/topbar.php");
                 </h2>
                 <div class="form-group">
                     <label for="access_token">Access Token</label>
-                    <input type="password" id="access_token" name="access_token" class="form-control"
-                        value="<?php echo htmlspecialchars($settings['AccessToken'] ?? ''); ?>" required>
-                    <p class="help-text">Meta App system user access token</p>
+                    <div style="position: relative;">
+                        <input type="password" id="access_token" name="access_token" class="form-control" style="padding-right: 40px;"
+                            value="<?php echo htmlspecialchars($settings['AccessToken'] ?? ''); ?>" required placeholder="EAAG...">
+                        <button type="button" id="toggleToken" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; color: #666;">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <p class="help-text">Copy from Meta Developer Dashboard -> <strong>Step 1: Access token</strong> (or System User token)</p>
                 </div>
                 <div class="form-group">
                     <label for="phone_number_id">Phone Number ID</label>
                     <input type="text" id="phone_number_id" name="phone_number_id" class="form-control"
-                        value="<?php echo htmlspecialchars($settings['PhoneNumberID'] ?? ''); ?>" required>
-                    <p class="help-text">Meta WhatsApp Phone Number ID (used in /{phone-number-id}/messages endpoint)</p>
+                        value="<?php echo htmlspecialchars($settings['PhoneNumberID'] ?? ''); ?>" required placeholder="e.g. 105432198765432">
+                    <p class="help-text">Copy from Meta Developer Dashboard -> <strong>Step 2: Send a message</strong> -> <strong>Phone number ID</strong></p>
                 </div>
                 <div class="form-group">
                     <label for="default_template_name">Default Template Name</label>
                     <input type="text" id="default_template_name" name="default_template_name" class="form-control"
                         value="<?php echo htmlspecialchars($settings['DefaultTemplateName'] ?? 'hello_world'); ?>" required>
-                    <p class="help-text">Fallback template name for generic notifications (example: hello_world)</p>
+                    <p class="help-text">Fallback template name for generic test notifications (example: hello_world)</p>
                 </div>
                 <div class="form-group">
                     <label for="template_language_code">Template Language Code</label>
                     <input type="text" id="template_language_code" name="template_language_code" class="form-control"
                         value="<?php echo htmlspecialchars($settings['TemplateLanguageCode'] ?? 'en_US'); ?>" required>
-                    <p class="help-text">Template language code (example: en_US)</p>
+                    <p class="help-text">Template language code (example: en_US or en)</p>
+                </div>
+            </div>
+
+            <!-- Incoming Webhook Section -->
+            <div class="form-section">
+                <h2 class="section-title">
+                    <i class="fas fa-reply-all"></i>
+                    Incoming Messages Webhook Setup
+                </h2>
+                <div class="form-group">
+                    <label>Webhook Callback URL</label>
+                    <input type="text" class="form-control" value="https://lb.liyasgoldsavings.in/api/whatsapp_webhook.php" readonly style="background-color: #f8f9fa;">
+                    <p class="help-text">Paste this URL into Meta Developer Console $\rightarrow$ <strong>WhatsApp</strong> $\rightarrow$ <strong>Configuration</strong> $\rightarrow$ <strong>Edit Webhook</strong>.</p>
+                </div>
+                <div class="form-group">
+                    <label for="verify_token">Webhook Verify Token</label>
+                    <input type="text" id="verify_token" name="verify_token" class="form-control"
+                        value="<?php echo htmlspecialchars($settings['VerifyToken'] ?? 'liyas_whatsapp_verify_token_2026'); ?>" required>
+                    <p class="help-text">Token used by Meta to verify your webhook subscription.</p>
                 </div>
             </div>
 
@@ -339,6 +383,7 @@ include("../../components/topbar.php");
                 </div>
             </div>
 
+
             <div class="btn-group">
                 <button type="button" class="btn btn-secondary" onclick="window.location.href='../'">
                     <i class="fas fa-times"></i> Cancel
@@ -348,11 +393,37 @@ include("../../components/topbar.php");
                 </button>
             </div>
         </form>
+
+        <!-- Test Connection Section -->
+        <div class="settings-form" style="margin-top: 30px;">
+            <div class="form-section" style="border-bottom: none; padding-bottom: 0;">
+                <h2 class="section-title">
+                    <i class="fas fa-paper-plane"></i>
+                    Test WhatsApp Connection
+                </h2>
+                <p class="help-text" style="margin-bottom: 15px; font-size: 13px;">
+                    Send a test <code>hello_world</code> template message to verify your Meta WhatsApp Cloud API credentials. Make sure you saved your settings above before testing.
+                </p>
+
+                <div id="testAlert" style="display: none; padding: 12px; border-radius: 6px; margin-bottom: 15px; font-size: 14px;"></div>
+
+                <div class="form-group">
+                    <label for="test_phone">Recipient Mobile Number</label>
+                    <div style="display: flex; gap: 10px;">
+                        <input type="text" id="test_phone" class="form-control" placeholder="e.g. 917902796976 or 7902796976" style="flex: 1;">
+                        <button type="button" id="btnTestWA" class="btn btn-primary" style="white-space: nowrap;">
+                            <i class="fas fa-paper-plane"></i> Send Test Message
+                        </button>
+                    </div>
+                    <p class="help-text">Include country code (e.g. 917902796976). Note: For unverified Meta apps, recipient number must be added to your Meta test recipient list.</p>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script>
-        // Add fade-out effect for alerts
         document.addEventListener('DOMContentLoaded', function() {
+            // Fade-out alerts
             setTimeout(() => {
                 const alerts = document.querySelectorAll('.alert');
                 alerts.forEach(alert => {
@@ -362,8 +433,76 @@ include("../../components/topbar.php");
                     }, 500);
                 });
             }, 3000);
+
+            // Toggle Access Token visibility
+            const toggleBtn = document.getElementById('toggleToken');
+            const tokenInput = document.getElementById('access_token');
+            if (toggleBtn && tokenInput) {
+                toggleBtn.addEventListener('click', function() {
+                    const isPwd = tokenInput.type === 'password';
+                    tokenInput.type = isPwd ? 'text' : 'password';
+                    this.innerHTML = isPwd ? '<i class="fas fa-eye-slash"></i>' : '<i class="fas fa-eye"></i>';
+                });
+            }
+
+            // Test WhatsApp message execution
+            const btnTestWA = document.getElementById('btnTestWA');
+            const testPhoneInput = document.getElementById('test_phone');
+            const testAlert = document.getElementById('testAlert');
+
+            if (btnTestWA) {
+                btnTestWA.addEventListener('click', function() {
+                    const phone = testPhoneInput.value.trim();
+                    if (!phone) {
+                        testAlert.style.display = 'block';
+                        testAlert.style.background = '#f8d7da';
+                        testAlert.style.color = '#721c24';
+                        testAlert.innerHTML = '<i class="fas fa-exclamation-triangle"></i> Please enter a valid recipient phone number.';
+                        return;
+                    }
+
+                    btnTestWA.disabled = true;
+                    btnTestWA.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+                    testAlert.style.display = 'block';
+                    testAlert.style.background = '#e2e3e5';
+                    testAlert.style.color = '#383d41';
+                    testAlert.innerHTML = '<i class="fas fa-sync fa-spin"></i> Sending test message to Meta WhatsApp API...';
+
+                    fetch('test_hello_world.php', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ phone: phone })
+                    })
+                    .then(res => res.json())
+                    .then(data => {
+                        btnTestWA.disabled = false;
+                        btnTestWA.innerHTML = '<i class="fas fa-paper-plane"></i> Send Test Message';
+
+                        if (data.success) {
+                            testAlert.style.background = '#d4edda';
+                            testAlert.style.color = '#155724';
+                            testAlert.innerHTML = '<i class="fas fa-check-circle"></i> <strong>Success!</strong> ' + data.message;
+                        } else {
+                            testAlert.style.background = '#f8d7da';
+                            testAlert.style.color = '#721c24';
+                            let errDetail = data.message || 'Failed to send message.';
+                            if (data.response && data.response.error && data.response.error.message) {
+                                errDetail += ' Details: ' + data.response.error.message;
+                            }
+                            testAlert.innerHTML = '<i class="fas fa-times-circle"></i> <strong>Error:</strong> ' + errDetail;
+                        }
+                    })
+                    .catch(err => {
+                        btnTestWA.disabled = false;
+                        btnTestWA.innerHTML = '<i class="fas fa-paper-plane"></i> Send Test Message';
+                        testAlert.style.background = '#f8d7da';
+                        testAlert.style.color = '#721c24';
+                        testAlert.innerHTML = '<i class="fas fa-times-circle"></i> Network error: ' + err.message;
+                    });
+                });
+            }
         });
     </script>
 </body>
 
-</html>
+</html>

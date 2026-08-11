@@ -226,5 +226,22 @@ class WhatsAppMetaAPI
 
         return $result;
     }
+
+    public function sendTextMessage($phoneNumber, $messageBody)
+    {
+        $phone = $this->formatPhone($phoneNumber);
+
+        $payload = [
+            'messaging_product' => 'whatsapp',
+            'to' => $phone,
+            'type' => 'text',
+            'text' => [
+                'body' => $messageBody
+            ]
+        ];
+
+        return $this->sendRequest($payload);
+    }
 }
+
 

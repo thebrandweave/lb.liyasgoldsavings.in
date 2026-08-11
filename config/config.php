@@ -26,7 +26,7 @@ class Database
             $this->username = "root";
             $this->password = "";
         } else {
-            $this->host = "localhost";
+            $this->host = "82.25.121.121";
             $this->db_name = "u232955123_LB_DB";
             $this->username = "u232955123_LB_DB";
             $this->password = "Brandweave@24";
@@ -40,12 +40,14 @@ class Database
             );
             $this->conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         } catch (PDOException $e) {
-          die("Database Error: " . $e->getMessage());
+            error_log("Database Connection Error: " . $e->getMessage());
+            $this->conn = null;
         }
 
         return $this->conn;
     }
 }
+
 
 class EmailConfig {
     public static $smtpHost = "smtp.hostinger.com";

@@ -236,7 +236,7 @@
         },
         {
           "type": "BODY",
-          "text": "Dear {{customer_name}}, thank you for choosing PROGEEDEE Ventures Private Limited Liyas Gold Savings Savings Plan.\nWe have received your payment of Rs {{payment_amount}} successfully.",
+          "text": "Dear {{customer_name}}, thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan.\nWe have received your payment of Rs {{payment_amount}} successfully.",
           "example": {
             "body_text_named_params": [
               {
@@ -273,7 +273,7 @@
         },
         {
           "type": "BODY",
-          "text": "Dear {{customer_name}}, your registration for the Liyas Gold Savings Savings Plan is completed.\nYour Customer ID is {{customer_id}} in our records.",
+          "text": "Dear {{customer_name}}, your registration for the Golden Dream Savings Plan is completed.\nYour Customer ID is {{customer_id}} in our records.",
           "example": {
             "body_text_named_params": [
               {
