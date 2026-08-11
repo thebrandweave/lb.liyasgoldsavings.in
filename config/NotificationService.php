@@ -54,15 +54,17 @@ class NotificationService
 
     public function sendWelcomeCustomer($phoneNumber, $customerName, $customerUniqueID)
     {
+        $customerName = function_exists('sanitizeCustomerName') ? sanitizeCustomerName($customerName) : trim((string)$customerName);
         $channels = $this->getChannels();
         $result = ['sms' => null, 'whatsapp' => null];
 
         if ($channels['sms']) {
-$result['sms'] = sendWelcomeSMSHardcoded(
-    $phoneNumber,
-    $customerName,
-    $customerUniqueID
-);        }
+            $result['sms'] = sendWelcomeSMSHardcoded(
+                $phoneNumber,
+                $customerName,
+                $customerUniqueID
+            );
+        }
 
         if ($channels['whatsapp']) {
             $params = [
@@ -77,6 +79,7 @@ $result['sms'] = sendWelcomeSMSHardcoded(
 
     public function sendPaymentVerified($phoneNumber, $customerName, $amount, $customerId = '', $schemeName = '', $installmentName = '')
     {
+        $customerName = function_exists('sanitizeCustomerName') ? sanitizeCustomerName($customerName) : trim((string)$customerName);
         $channels = $this->getChannels();
         $result = ['sms' => null, 'whatsapp' => null];
 
@@ -100,6 +103,7 @@ $result['sms'] = sendWelcomeSMSHardcoded(
 
     public function sendPaymentRejected($phoneNumber, $customerName, $amount, $remarks = '')
     {
+        $customerName = function_exists('sanitizeCustomerName') ? sanitizeCustomerName($customerName) : trim((string)$customerName);
         $channels = $this->getChannels();
         $result = ['sms' => null, 'whatsapp' => null];
 
@@ -121,6 +125,7 @@ $result['sms'] = sendWelcomeSMSHardcoded(
 
     public function sendWalletUpdate($phoneNumber, $promoterName, $walletAction, $transactionAmount, $newBalanceAmount, $adminRemarks = '')
     {
+        $promoterName = function_exists('sanitizeCustomerName') ? sanitizeCustomerName($promoterName) : trim((string)$promoterName);
         $channels = $this->getChannels();
         $result = ['sms' => null, 'whatsapp' => null];
 
@@ -150,6 +155,7 @@ $result['sms'] = sendWelcomeSMSHardcoded(
 
     public function sendWithdrawalStatus($phoneNumber, $userName, $withdrawalAmount, $withdrawalStatus, $adminRemarks = '')
     {
+        $userName = function_exists('sanitizeCustomerName') ? sanitizeCustomerName($userName) : trim((string)$userName);
         $channels = $this->getChannels();
         $result = ['sms' => null, 'whatsapp' => null];
 
@@ -178,6 +184,7 @@ $result['sms'] = sendWelcomeSMSHardcoded(
 
     public function sendPaymentReminder($phoneNumber, $customerName, $schemeName, $installmentName, $dueAmount, $dueDate)
     {
+        $customerName = function_exists('sanitizeCustomerName') ? sanitizeCustomerName($customerName) : trim((string)$customerName);
         $channels = $this->getChannels();
         $result = ['sms' => null, 'whatsapp' => null];
 
@@ -209,6 +216,7 @@ $result['sms'] = sendWelcomeSMSHardcoded(
 
     public function sendPromoterRegistrationSuccess($phoneNumber, $promoterName, $promoterId, $commissionRate)
     {
+        $promoterName = function_exists('sanitizeCustomerName') ? sanitizeCustomerName($promoterName) : trim((string)$promoterName);
         $channels = $this->getChannels();
         $result = ['sms' => null, 'whatsapp' => null];
 

@@ -42,6 +42,10 @@ class SMSAPI
                 $phoneNumber = '91' . $phoneNumber;
             }
 
+            if ($customerName) {
+                $customerName = function_exists('sanitizeCustomerName') ? sanitizeCustomerName($customerName) : trim($customerName);
+            }
+
             // Always prefer configured DLT template for payment messages when variables provided
             if ($customerName && $amount && !empty($this->config['MessageTemplate'])) {
                 $message = $this->formatTemplateMessage($customerName, $amount);
@@ -270,6 +274,10 @@ class SMSAPI
             // Variables: var1 = Customer Name, var2 = Customer Unique ID
 
             $welcomeTemplate = "Dear {var1}, welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is {var2}. Visit https://goldendream.in/ for more details.";
+
+            if (function_exists('sanitizeCustomerName')) {
+                $customerName = sanitizeCustomerName($customerName);
+            }
 
             // Format the welcome message
             $message = str_replace('{var1}', $customerName, $welcomeTemplate);

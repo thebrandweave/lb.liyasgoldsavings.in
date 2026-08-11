@@ -61,61 +61,72 @@ function smsHelperLog($type, $phone, $success, $detail = '') {
 }
 
 /**
+ * Sanitize customer name for Airtel SMS and WhatsApp DLT compliance:
+ * - Trims whitespace
+ * - Replaces multiple/double spaces with a single space
+ * - Keeps only first and second name
+ * - Trims trailing single-character initials
+ */
+function sanitizeCustomerName($fullName) {
+    if (empty($fullName)) {
+        return '';
+    }
+
+    // 1. Replace special non-breaking spaces or multi-whitespace with standard single space
+    $name = preg_replace('/\s+/', ' ', trim((string)$fullName));
+
+    // 2. Remove special characters except letters, numbers, and spaces
+    $name = preg_replace('/[^a-zA-Z0-9\s]/', '', $name);
+
+    // 3. Split into words
+    $words = array_values(array_filter(explode(' ', $name)));
+
+    if (empty($words)) {
+        return '';
+    }
+
+    // Filter out trailing single-letter initials if more than 1 word exists
+    // e.g. ["bilal", "ahmed", "s"] -> remove "s"
+    if (count($words) > 1) {
+        $lastIndex = count($words) - 1;
+        if (strlen($words[$lastIndex]) === 1) {
+            array_pop($words);
+        }
+    }
+
+    // Keep only the first 2 words (first and second name)
+    $words = array_slice($words, 0, 2);
+
+    return implode(' ', $words);
+}
+
+/**
  * Send one SMS via Airtel API (same cURL as test/sms.php).
  * @param array $data Payload: customerId, destinationAddress, message, sourceAddress, messageType, dltTemplateId, entityId
  * @return array ['ok' => bool, 'httpCode' => int, 'response' => string]
  */
-function smsHelperSend($data, $maxRetries = 3) {
-    $attempt = 0;
-    $result = ['ok' => false, 'httpCode' => 0, 'response' => ''];
+function smsHelperSend($data) {
+    $ch = curl_init(SMS_API_URL);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'accept: application/json',
+        'content-type: application/json',
+        'Authorization: Basic ' . base64_encode(SMS_USERNAME . ':' . SMS_PASSWORD)
+    ]);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
-    while ($attempt < $maxRetries) {
-        $attempt++;
-        $ch = curl_init(SMS_API_URL);
-        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_POST, true);
-        curl_setopt($ch, CURLOPT_HTTPHEADER, [
-            'accept: application/json',
-            'content-type: application/json',
-            'Authorization: Basic ' . base64_encode(SMS_USERNAME . ':' . SMS_PASSWORD)
-        ]);
-        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+    $response = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
 
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        $responseStr = $response === false ? '' : $response;
-        $isOk = ($httpCode >= 200 && $httpCode < 300);
-
-        // Check if Airtel API payload returned a scrubbing error or failure status
-        if ($isOk && !empty($responseStr)) {
-            $decoded = json_decode($responseStr, true);
-            if (isset($decoded['status']) && in_array(strtoupper($decoded['status']), ['ERROR', 'FAILED', 'SCRUBBING_ERROR'])) {
-                $isOk = false;
-            }
-        }
-
-        $result = [
-            'ok' => $isOk,
-            'httpCode' => $httpCode,
-            'response' => $responseStr
-        ];
-
-        if ($isOk) {
-            if ($attempt > 1) {
-                error_log("SMSHelper: Succeeded on retry attempt {$attempt}");
-            }
-            return $result;
-        }
-
-        error_log("SMSHelper: Attempt {$attempt}/{$maxRetries} failed with HTTP {$httpCode}. Retrying in 500ms...");
-        usleep(500000); // 0.5 second delay before retry
-    }
-
-    return $result;
+    return [
+        'ok' => ($httpCode >= 200 && $httpCode < 300),
+        'httpCode' => $httpCode,
+        'response' => $response === false ? '' : $response
+    ];
 }
 
 /**
@@ -143,6 +154,7 @@ function sendWelcomeSMSHardcoded($phoneNumber, $customerName, $customerUniqueID)
         error_log("SMSHelper welcome: invalid phone");
         return false;
     }
+    $customerName = sanitizeCustomerName($customerName);
     // Exact template text; replace first var with name, second with customer ID
     $message = "Dear " . $customerName . ", welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is " . $customerUniqueID . ". Visit https://goldendream.in/ for more details.";
 
@@ -177,6 +189,7 @@ function sendPaymentVerifiedSMSHardcoded($phoneNumber, $customerName, $amount) {
         error_log("SMSHelper payment verified: invalid phone");
         return false;
     }
+    $customerName = sanitizeCustomerName($customerName);
     $amountStr = number_format((float) $amount, 0, '', '');
     $message = "Dear " . $customerName . " Thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan We have received your payment of Rs " . $amountStr;
 
