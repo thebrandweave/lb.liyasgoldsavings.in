@@ -429,17 +429,17 @@ include("../../components/topbar.php");
             <div class="test-section">
                 <h4><i class="fas fa-flask"></i> Test SMS Configuration</h4>
                 <p class="help-text">Test your SMS configuration by sending a test message</p>
-                <div class="test-form">
-                    <div class="form-group">
-                        <label for="test_phone">Phone Number</label>
-                        <input type="tel" id="test_phone" class="form-control" placeholder="Enter phone number">
+                <div class="test-form" style="display: flex; gap: 12px; align-items: flex-end; flex-wrap: wrap; margin-top: 15px;">
+                    <div class="form-group" style="flex: 1; min-width: 200px; margin-bottom: 0;">
+                        <label for="test_phone" style="font-weight: 600; display: block; margin-bottom: 6px;">Phone Number</label>
+                        <input type="tel" id="test_phone" class="form-control" placeholder="Enter phone number (e.g. 919876543210)">
                     </div>
-                    <div class="form-group">
-                        <label for="test_message">Test Message</label>
+                    <div class="form-group" style="flex: 1.5; min-width: 250px; margin-bottom: 0;">
+                        <label for="test_message" style="font-weight: 600; display: block; margin-bottom: 6px;">Test Message</label>
                         <input type="text" id="test_message" class="form-control" placeholder="Enter test message" value="Test message from Liyas Gold Savings">
                     </div>
-                    <button type="button" class="btn btn-primary" onclick="testSMS()">
-                        <i class="fas fa-paper-plane"></i> Send Test
+                    <button type="button" class="btn btn-primary" onclick="testSMS()" style="background: #000000; color: #ffffff; border: none; padding: 10px 24px; font-weight: 600; white-space: nowrap; height: 42px; cursor: pointer;">
+                        <i class="fas fa-paper-plane"></i> Send Test SMS
                     </button>
                 </div>
                 <div id="test_result" style="margin-top: 15px; display: none;"></div>
