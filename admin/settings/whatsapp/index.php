@@ -409,9 +409,9 @@ include("../../components/topbar.php");
 
                 <div class="form-group">
                     <label for="test_phone">Recipient Mobile Number</label>
-                    <div style="display: flex; gap: 10px;">
-                        <input type="text" id="test_phone" class="form-control" placeholder="e.g. 917902796976 or 7902796976" style="flex: 1;">
-                        <button type="button" id="btnTestWA" class="btn btn-primary" style="white-space: nowrap;">
+                    <div style="display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 8px;">
+                        <input type="text" id="test_phone" class="form-control" placeholder="e.g. 917902796976 or 7902796976" style="flex: 1; min-width: 220px;">
+                        <button type="button" id="btnTestWA" class="btn btn-primary" style="background: #25D366; color: white; border: none; white-space: nowrap; padding: 12px 24px; font-weight: 600; cursor: pointer;">
                             <i class="fas fa-paper-plane"></i> Send Test Message
                         </button>
                     </div>
