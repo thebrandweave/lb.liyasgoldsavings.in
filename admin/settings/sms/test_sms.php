@@ -43,8 +43,14 @@ try {
         $phone = '91' . $phone;
     }
 
-    // Send test SMS with detailed response
-    $result = $smsAPI->sendSMS($phone, $message, null, null, true);
+    // Send test SMS formatted with DLT template variables so Airtel DLT scrubbing engine passes
+    require_once("../../../config/SMSHelper.php");
+    $ok = sendWelcomeSMSHardcoded($phone, 'Test User', 'TEST101');
+    $result = [
+        'success' => $ok,
+        'message' => $ok ? 'Test DLT Welcome SMS sent successfully' : 'DLT Scrubbing or API failed',
+        'httpCode' => $ok ? 200 : 400
+    ];
 
     // Debug: Check what we're getting back
     if (!is_array($result)) {
