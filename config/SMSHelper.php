@@ -65,30 +65,57 @@ function smsHelperLog($type, $phone, $success, $detail = '') {
  * @param array $data Payload: customerId, destinationAddress, message, sourceAddress, messageType, dltTemplateId, entityId
  * @return array ['ok' => bool, 'httpCode' => int, 'response' => string]
  */
-function smsHelperSend($data) {
-    $ch = curl_init(SMS_API_URL);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_POST, true);
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'accept: application/json',
-        'content-type: application/json',
-        'Authorization: Basic ' . base64_encode(SMS_USERNAME . ':' . SMS_PASSWORD)
-    ]);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+function smsHelperSend($data, $maxRetries = 3) {
+    $attempt = 0;
+    $result = ['ok' => false, 'httpCode' => 0, 'response' => ''];
 
-    $response = curl_exec($ch);
-    error_log("WELCOME SMS RESPONSE: " . $response);
-    error_log("WELCOME SMS HTTP CODE: " . curl_getinfo($ch, CURLINFO_HTTP_CODE));
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    while ($attempt < $maxRetries) {
+        $attempt++;
+        $ch = curl_init(SMS_API_URL);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_POST, true);
+        curl_setopt($ch, CURLOPT_HTTPHEADER, [
+            'accept: application/json',
+            'content-type: application/json',
+            'Authorization: Basic ' . base64_encode(SMS_USERNAME . ':' . SMS_PASSWORD)
+        ]);
+        curl_setopt($ch, CURLOPT_POSTFIELDS, json_encode($data));
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 30);
 
-    return [
-        'ok' => ($httpCode >= 200 && $httpCode < 300),
-        'httpCode' => $httpCode,
-        'response' => $response === false ? '' : $response
-    ];
+        $response = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        $responseStr = $response === false ? '' : $response;
+        $isOk = ($httpCode >= 200 && $httpCode < 300);
+
+        // Check if Airtel API payload returned a scrubbing error or failure status
+        if ($isOk && !empty($responseStr)) {
+            $decoded = json_decode($responseStr, true);
+            if (isset($decoded['status']) && in_array(strtoupper($decoded['status']), ['ERROR', 'FAILED', 'SCRUBBING_ERROR'])) {
+                $isOk = false;
+            }
+        }
+
+        $result = [
+            'ok' => $isOk,
+            'httpCode' => $httpCode,
+            'response' => $responseStr
+        ];
+
+        if ($isOk) {
+            if ($attempt > 1) {
+                error_log("SMSHelper: Succeeded on retry attempt {$attempt}");
+            }
+            return $result;
+        }
+
+        error_log("SMSHelper: Attempt {$attempt}/{$maxRetries} failed with HTTP {$httpCode}. Retrying in 500ms...");
+        usleep(500000); // 0.5 second delay before retry
+    }
+
+    return $result;
 }
 
 /**
