@@ -238,11 +238,15 @@ class SMSAPI
 
     private function formatTemplateMessage($customerName, $amount)
     {
+        if (function_exists('sanitizeCustomerName')) {
+            $customerName = sanitizeCustomerName($customerName);
+        }
         $template = $this->config['MessageTemplate'];
 
         // Replace variables in the template
         $message = str_replace('{var1}', $customerName, $template);
         $message = str_replace('{var2}', $amount, $message);
+        $message = preg_replace('/\s+/', ' ', $message);
 
         return $message;
     }

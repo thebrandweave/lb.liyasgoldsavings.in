@@ -177,6 +177,7 @@ function sendWelcomeSMSHardcoded($phoneNumber, $customerName, $customerUniqueID)
     $customerName = sanitizeCustomerName($customerName);
     // Exact template text; replace first var with name, second with customer ID
     $message = "Dear " . $customerName . ", welcome to PROGEEDEE Ventures Private Limited. You have successfully registered for the Golden Dream Savings Plan. Your Customer ID is " . $customerUniqueID . ". Visit https://goldendream.in/ for more details.";
+    $message = preg_replace('/\s+/', ' ', $message);
 
     $data = [
         'customerId' => SMS_CUSTOMER_ID,
@@ -212,6 +213,7 @@ function sendPaymentVerifiedSMSHardcoded($phoneNumber, $customerName, $amount) {
     $customerName = sanitizeCustomerName($customerName);
     $amountStr = number_format((float) $amount, 0, '', '');
     $message = "Dear " . $customerName . " Thank you for choosing PROGEEDEE Ventures Private Limited Golden Dream Savings Plan We have received your payment of Rs " . $amountStr;
+    $message = preg_replace('/\s+/', ' ', $message);
 
     $data = [
         'customerId' => SMS_CUSTOMER_ID,
