@@ -101,6 +101,16 @@ function sanitizeCustomerName($fullName) {
 }
 
 /**
+ * Check if current time is within TRAI restricted SMS time band (9:00 PM - 10:00 AM IST)
+ * @return bool True if inside restricted time band (9 PM - 10 AM)
+ */
+function isSMSTimeBandRestricted() {
+    date_default_timezone_set('Asia/Kolkata');
+    $currentHour = (int)date('H'); // 0 to 23
+    return ($currentHour >= 21 || $currentHour < 10);
+}
+
+/**
  * Send one SMS via Airtel API (same cURL as test/sms.php).
  * @param array $data Payload: customerId, destinationAddress, message, sourceAddress, messageType, dltTemplateId, entityId
  * @return array ['ok' => bool, 'httpCode' => int, 'response' => string]
@@ -111,6 +121,17 @@ function smsHelperSend($data) {
     $phoneKey = isset($data['destinationAddress'][0]) ? (string)$data['destinationAddress'][0] : '';
     $msgKey = isset($data['message']) ? md5((string)$data['message']) : '';
     $dedupKey = $phoneKey . '_' . $msgKey;
+
+    // TRAI 9 PM - 10 AM Time Band Check for SERVICE_EXPLICIT SMS
+    $msgType = strtoupper($data['messageType'] ?? 'SERVICE_EXPLICIT');
+    if ($msgType === 'SERVICE_EXPLICIT' && isSMSTimeBandRestricted()) {
+        error_log("SMSHelper: Suppressed SERVICE_EXPLICIT SMS for {$phoneKey} during 9 PM - 10 AM TRAI restricted window. Routing via WhatsApp fallback.");
+        return [
+            'ok' => false,
+            'httpCode' => 651,
+            'response' => '{"status":"RESTRICTED_TIME_BAND","message":"TRAI 9 PM - 10 AM Time Band Restriction"}'
+        ];
+    }
 
     $currentTime = time();
     if (!empty($phoneKey) && !empty($msgKey) && isset($recentSends[$dedupKey])) {
