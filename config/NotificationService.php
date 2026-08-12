@@ -224,7 +224,7 @@ class NotificationService
             "Your ID is: " . $promoterId . " and your commission rate is: " . $commissionRate . ".";
 
         if ($channels['sms']) {
-            $result['sms'] = $this->smsAPI->sendSMS($phoneNumber, $message);
+            $result['sms'] = sendWelcomeSMSHardcoded($phoneNumber, $promoterName, $promoterId);
         }
 
         if ($channels['whatsapp']) {
