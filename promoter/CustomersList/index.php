@@ -202,7 +202,7 @@ try {
                 SELECT 1 FROM Payments p 
                 WHERE p.InstallmentID = i.InstallmentID 
                 AND p.CustomerID = ?
-                AND p.Status IN ('Pending')
+                AND p.Status ='Verified'
             )
             AND EXISTS (
                 SELECT 1 FROM Subscriptions sub 
@@ -212,7 +212,7 @@ try {
         ");
         $stmt->execute([$customer['CustomerID'], $customer['CustomerID']]);
         $unpaidResult = $stmt->fetch(PDO::FETCH_ASSOC);
-        $customer['payment_stats']['unpaid']['count'] = $unpaidResult['unpaid_count'];
+        $customer['payment_stats']['unpaid']['count'] = (int)($unpaidResult['unpaid_count'] ?? 0);
     }
     unset($customer);
 } catch (PDOException $e) {
