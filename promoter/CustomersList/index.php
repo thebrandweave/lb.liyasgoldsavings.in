@@ -285,12 +285,15 @@ if (!empty($searchQuery) || !empty($filterStatus) || !empty($filterScheme) || !e
         if (!empty($filterInstallment) && !empty($filterPaymentStatus)) {
             $matchesInstallmentStatus = false;
             foreach ($customer['installments'] as $installment) {
+                $statusMatch = false;
+                if ($filterPaymentStatus === 'unpaid') {
+                    $statusMatch = empty($installment['PaymentID']) || !in_array(strtolower($installment['PaymentStatus'] ?? ''), ['verified', 'pending']);
+                } else {
+                    $statusMatch = !empty($installment['PaymentID']) && strtolower($installment['PaymentStatus'] ?? '') === $filterPaymentStatus;
+                }
                 if (
                     isset($installment['InstallmentID']) && $installment['InstallmentID'] == $filterInstallment &&
-                    (
-                        ($filterPaymentStatus === 'unpaid' && empty($installment['PaymentID'])) ||
-                        (!empty($installment['PaymentID']) && strtolower($installment['PaymentStatus']) === $filterPaymentStatus)
-                    )
+                    $statusMatch
                 ) {
                     $matchesInstallmentStatus = true;
                     break;
@@ -303,12 +306,16 @@ if (!empty($searchQuery) || !empty($filterStatus) || !empty($filterScheme) || !e
         if (!empty($filterPaymentStatus) && empty($filterInstallment)) {
             $matchesPaymentStatus = false;
             foreach ($customer['installments'] as $installment) {
-                if (
-                    (!empty($installment['PaymentID']) && strtolower($installment['PaymentStatus']) === $filterPaymentStatus) ||
-                    ($filterPaymentStatus === 'unpaid' && empty($installment['PaymentID']))
-                ) {
-                    $matchesPaymentStatus = true;
-                    break;
+                if ($filterPaymentStatus === 'unpaid') {
+                    if (empty($installment['PaymentID']) || !in_array(strtolower($installment['PaymentStatus'] ?? ''), ['verified', 'pending'])) {
+                        $matchesPaymentStatus = true;
+                        break;
+                    }
+                } else {
+                    if (!empty($installment['PaymentID']) && strtolower($installment['PaymentStatus'] ?? '') === $filterPaymentStatus) {
+                        $matchesPaymentStatus = true;
+                        break;
+                    }
                 }
             }
         }
@@ -1698,7 +1705,29 @@ function buildPageUrl($pageNum) {
                                                         </td>
                                                     </tr>
                                                 <?php else: ?>
-                                                    <?php foreach ($customer['installments'] as $installment): ?>
+                                                    <?php 
+                                                    $displayedCount = 0;
+                                                    foreach ($customer['installments'] as $installment): 
+                                                        if (!empty($filterScheme) && $filterScheme !== 'unsubscribed' && isset($installment['SchemeID']) && $installment['SchemeID'] != $filterScheme) {
+                                                            continue;
+                                                        }
+                                                        if (!empty($filterInstallment) && isset($installment['InstallmentID']) && $installment['InstallmentID'] != $filterInstallment) {
+                                                            continue;
+                                                        }
+                                                        if (!empty($filterPaymentStatus)) {
+                                                            if ($filterPaymentStatus === 'unpaid') {
+                                                                if (!empty($installment['PaymentID']) && in_array(strtolower($installment['PaymentStatus'] ?? ''), ['verified', 'pending'])) {
+                                                                    continue;
+                                                                }
+                                                            } else {
+                                                                if (empty($installment['PaymentID']) || strtolower($installment['PaymentStatus'] ?? '') !== $filterPaymentStatus) {
+                                                                    continue;
+                                                                }
+                                                            }
+                                                        }
+                                                        $displayedCount++;
+                                                        $hasValidPayment = !empty($installment['PaymentID']) && in_array(strtolower($installment['PaymentStatus'] ?? ''), ['verified', 'pending', 'rejected']);
+                                                    ?>
                                                         <tr>
                                                             <td class="detail-value"><?php echo htmlspecialchars($installment['SchemeName']); ?></td>
                                                             <td class="detail-value">
@@ -1707,7 +1736,7 @@ function buildPageUrl($pageNum) {
                                                             </td>
                                                             <td class="detail-value"><?php echo date('d M Y', strtotime($installment['DrawDate'])); ?></td>
                                                             <td class="detail-value">
-                                                                <?php if ($installment['PaymentID']): ?>
+                                                                <?php if ($hasValidPayment): ?>
                                                                     <span class="payment-status <?php echo strtolower($installment['PaymentStatus']); ?>">
                                                                         <?php echo htmlspecialchars($installment['PaymentStatus']); ?>
                                                                     </span>
@@ -1716,14 +1745,14 @@ function buildPageUrl($pageNum) {
                                                                 <?php endif; ?>
                                                             </td>
                                                             <td class="detail-value">
-                                                                <?php if ($installment['PaymentID']): ?>
+                                                                <?php if ($hasValidPayment): ?>
                                                                     ₹<?php echo number_format($installment['Amount'], 2); ?>
                                                                 <?php else: ?>
                                                                     -
                                                                 <?php endif; ?>
                                                             </td>
                                                             <td class="detail-value">
-                                                                <?php if ($installment['PaymentID']): ?>
+                                                                <?php if ($hasValidPayment && !empty($installment['SubmittedAt'])): ?>
                                                                     <?php echo date('d M Y', strtotime($installment['SubmittedAt'])); ?>
                                                                 <?php else: ?>
                                                                     -
@@ -1731,6 +1760,13 @@ function buildPageUrl($pageNum) {
                                                             </td>
                                                         </tr>
                                                     <?php endforeach; ?>
+                                                    <?php if ($displayedCount === 0): ?>
+                                                        <tr>
+                                                            <td colspan="6" style="text-align: center; color: var(--text-secondary); padding: 15px;">
+                                                                No matching installments for active filter
+                                                            </td>
+                                                        </tr>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
                                             </tbody>
                                         </table>

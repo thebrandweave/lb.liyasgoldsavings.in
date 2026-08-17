@@ -22,7 +22,7 @@ class Database
 
         if ($isLocalhost) {
             $this->host = "localhost";
-            $this->db_name = "liyaslb";
+            $this->db_name = "liyaslb"; 
             $this->username = "root";
             $this->password = "";
         } else {
@@ -43,7 +43,7 @@ class Database
             error_log("Database Connection Error: " . $e->getMessage());
             $this->conn = null;
         }
-
+    
         return $this->conn;
     }
 }

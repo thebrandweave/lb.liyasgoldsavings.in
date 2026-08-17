@@ -124,12 +124,15 @@ foreach ($customers as $customer) {
     if (!empty($filterInstallment) && !empty($filterPaymentStatus)) {
         $matchesInstallmentStatus = false;
         foreach ($customer['installments'] as $installment) {
+            $statusMatch = false;
+            if ($filterPaymentStatus === 'unpaid') {
+                $statusMatch = empty($installment['PaymentID']) || !in_array(strtolower($installment['PaymentStatus'] ?? ''), ['verified', 'pending']);
+            } else {
+                $statusMatch = !empty($installment['PaymentID']) && strtolower($installment['PaymentStatus'] ?? '') === $filterPaymentStatus;
+            }
             if (
                 isset($installment['InstallmentID']) && $installment['InstallmentID'] == $filterInstallment &&
-                (
-                    ($filterPaymentStatus === 'unpaid' && empty($installment['PaymentID'])) ||
-                    (!empty($installment['PaymentID']) && strtolower($installment['PaymentStatus']) === $filterPaymentStatus)
-                )
+                $statusMatch
             ) {
                 $matchesInstallmentStatus = true;
                 break;
@@ -140,12 +143,16 @@ foreach ($customers as $customer) {
     if (!empty($filterPaymentStatus) && empty($filterInstallment)) {
         $matchesPaymentStatus = false;
         foreach ($customer['installments'] as $installment) {
-            if (
-                (!empty($installment['PaymentID']) && strtolower($installment['PaymentStatus']) === $filterPaymentStatus) ||
-                ($filterPaymentStatus === 'unpaid' && empty($installment['PaymentID']))
-            ) {
-                $matchesPaymentStatus = true;
-                break;
+            if ($filterPaymentStatus === 'unpaid') {
+                if (empty($installment['PaymentID']) || !in_array(strtolower($installment['PaymentStatus'] ?? ''), ['verified', 'pending'])) {
+                    $matchesPaymentStatus = true;
+                    break;
+                }
+            } else {
+                if (!empty($installment['PaymentID']) && strtolower($installment['PaymentStatus'] ?? '') === $filterPaymentStatus) {
+                    $matchesPaymentStatus = true;
+                    break;
+                }
             }
         }
     }
@@ -221,10 +228,20 @@ foreach ($filteredCustomers as $customer) {
             if (!empty($filterInstallment) && $installment['InstallmentID'] != $filterInstallment) $exportThis = false;
             if (!empty($filterScheme) && $filterScheme !== 'unsubscribed' && $installment['SchemeID'] != $filterScheme) $exportThis = false;
             if (!empty($filterPaymentStatus)) {
-                if ($filterPaymentStatus === 'unpaid' && !empty($installment['PaymentID'])) $exportThis = false;
-                if ($filterPaymentStatus !== 'unpaid' && (empty($installment['PaymentID']) || strtolower($installment['PaymentStatus']) !== $filterPaymentStatus)) $exportThis = false;
+                if ($filterPaymentStatus === 'unpaid') {
+                    if (!empty($installment['PaymentID']) && in_array(strtolower($installment['PaymentStatus'] ?? ''), ['verified', 'pending'])) {
+                        $exportThis = false;
+                    }
+                } else {
+                    if (empty($installment['PaymentID']) || strtolower($installment['PaymentStatus'] ?? '') !== $filterPaymentStatus) {
+                        $exportThis = false;
+                    }
+                }
             }
             if (!$exportThis) continue;
+
+            $hasValidPayment = !empty($installment['PaymentID']) && in_array(strtolower($installment['PaymentStatus'] ?? ''), ['verified', 'pending', 'rejected']);
+
             $sheet->fromArray([
                 $customer['Name'],
                 $customer['CustomerUniqueID'],
@@ -234,10 +251,10 @@ foreach ($filteredCustomers as $customer) {
                 $installment['SchemeName'],
                 $installment['InstallmentName'],
                 $installment['InstallmentNumber'],
-                $installment['PaymentID'] ? $installment['PaymentStatus'] : 'Unpaid',
-                $installment['PaymentID'] ? $installment['Amount'] : '',
-                $installment['PaymentID'] ? $installment['SubmittedAt'] : '',
-                $installment['PaymentID'] ? $installment['VerifiedAt'] : '',
+                $hasValidPayment ? $installment['PaymentStatus'] : 'Unpaid',
+                $hasValidPayment ? $installment['Amount'] : '',
+                ($hasValidPayment && !empty($installment['SubmittedAt'])) ? $installment['SubmittedAt'] : '',
+                ($hasValidPayment && !empty($installment['VerifiedAt'])) ? $installment['VerifiedAt'] : '',
             ], null, 'A' . $row);
             $row++;
         }
@@ -263,4 +280,4 @@ header('Content-Disposition: attachment; filename="customers_payments_export.xls
 header('Cache-Control: max-age=0');
 $writer = new Xlsx($spreadsheet);
 $writer->save('php://output');
-exit; 
+exit;
