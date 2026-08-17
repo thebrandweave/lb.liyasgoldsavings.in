@@ -202,7 +202,7 @@ try {
                 SELECT 1 FROM Payments p 
                 WHERE p.InstallmentID = i.InstallmentID 
                 AND p.CustomerID = ?
-                AND p.Status IN ('Verified', 'Pending')
+                AND p.Status IN ('Pending')
             )
             AND EXISTS (
                 SELECT 1 FROM Subscriptions sub 
