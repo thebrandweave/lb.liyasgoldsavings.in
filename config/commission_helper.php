@@ -32,6 +32,18 @@ function processPromoterCommission($customerUniqueID, $conn)
         }
 
         $directPromoterID = trim($customerDetails['PromoterID']);
+        $schemeName = !empty($customerDetails['SchemeName']) ? $customerDetails['SchemeName'] : 'Gold Savings Plan';
+
+        // Fetch Direct Promoter
+        $stmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission, Name FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
+        $stmt->execute([$directPromoterID]);
+        $directPromoter = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        if (!$directPromoter) {
+            return false;
+        }
+
+        $commissionAmount = convertCommissionToInt($directPromoter['Commission']);
 
         // Check if direct commission already logged for this customer
         $checkStmt = $conn->prepare("
@@ -45,23 +57,10 @@ function processPromoterCommission($customerUniqueID, $conn)
             "%" . $customerUniqueID . "%",
             "%" . $customerDetails['Name'] . "%"
         ]);
-        if ($checkStmt->fetch(PDO::FETCH_ASSOC)['already_credited'] > 0) {
-            return false; // Already credited
-        }
+        $directAlreadyCredited = ($checkStmt->fetch(PDO::FETCH_ASSOC)['already_credited'] > 0);
 
-        // Fetch Direct Promoter
-        $stmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission, Name FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
-        $stmt->execute([$directPromoterID]);
-        $directPromoter = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if (!$directPromoter) {
-            return false;
-        }
-
-        $commissionAmount = convertCommissionToInt($directPromoter['Commission']);
-
-        if ($commissionAmount > 0) {
-            // Update/Create Direct Promoter Wallet
+        // Process Direct Promoter Commission if missing
+        if (!$directAlreadyCredited && $commissionAmount > 0) {
             $stmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ?");
             $stmt->execute([$directPromoterID]);
             $walletRecord = $stmt->fetch(PDO::FETCH_ASSOC);
@@ -74,14 +73,12 @@ function processPromoterCommission($customerUniqueID, $conn)
                 $stmt->execute([$directPromoter['PromoterID'], $directPromoterID, $commissionAmount, "Commission from payment"]);
             }
 
-            // WalletLog entry
-            $schemeName = !empty($customerDetails['SchemeName']) ? $customerDetails['SchemeName'] : 'Gold Savings Plan';
             $logMessage = "Commission earned from customer " . $customerDetails['Name'] . " (" . $customerUniqueID . ") for " . $schemeName . " scheme";
             $stmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message, TransactionType) VALUES (?, ?, ?, 'Credit')");
             $stmt->execute([$directPromoterID, $commissionAmount, $logMessage]);
         }
 
-        // Process Parent Promoter
+        // Process Parent Promoter Commission (Independently checked)
         if (!empty($directPromoter['ParentPromoterID']) && !empty($directPromoter['ParentCommission'])) {
             $parentPromoterID = trim($directPromoter['ParentPromoterID']);
             $parentCommissionAmount = convertCommissionToInt($directPromoter['ParentCommission']);
