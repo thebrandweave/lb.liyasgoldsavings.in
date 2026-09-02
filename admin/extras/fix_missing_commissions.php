@@ -1,8 +1,8 @@
 <?php
 // admin/extras/fix_missing_commissions.php
 session_start();
-set_time_limit(300); // Allow up to 5 minutes
-ini_set('memory_limit', '256M');
+set_time_limit(600); // Allow up to 10 minutes
+ini_set('memory_limit', '512M');
 
 require_once(__DIR__ . "/../../config/config.php");
 
@@ -21,11 +21,11 @@ function convertCommissionToInt($commission)
 $isCli = (php_sapi_name() === 'cli');
 
 if (!$isCli) {
-    echo "<!DOCTYPE html><html><head><title>Fix Missing Commissions</title><style>body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; font-size: 14px; line-height: 1.6; } pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre>";
+    echo "<!DOCTYPE html><html><head><title>Fix Missing Commissions - Full System</title><style>body { font-family: monospace; background: #1e1e1e; color: #d4d4d4; padding: 20px; font-size: 14px; line-height: 1.6; } pre { white-space: pre-wrap; word-wrap: break-word; }</style></head><body><pre>";
 }
 
 echo "===================================================\n";
-echo " PROMOTER MISSING COMMISSION REPAIR / BACKFILL SCRIPT (HIGH SPEED)\n";
+echo " ENTIRE SYSTEM PROMOTER MISSING COMMISSION REPAIR\n";
 echo "===================================================\n\n";
 
 try {
@@ -47,7 +47,7 @@ try {
         }
     }
 
-    // 2. Pre-load all existing WalletLogs keys into memory hash set for O(1) instant lookup
+    // 2. Pre-load all existing WalletLogs keys into memory hash set
     $lStmt = $conn->prepare("
         SELECT LogID, TRIM(PromoterUniqueID) AS PromoterUniqueID, Message 
         FROM WalletLogs 
@@ -59,36 +59,38 @@ try {
     $existingLogKeys = [];
     foreach ($allLogs as $l) {
         $pKey = trim($l['PromoterUniqueID']);
-        // Match LB numbers in log message
         if (preg_match('/(LB[0-9]+)/i', $l['Message'], $m)) {
             $lbKey = strtoupper($m[1]);
             $existingLogKeys[$pKey . '_' . $lbKey] = true;
         }
     }
 
-    // 3. Fetch all active customers with verified payments
+    // 3. Fetch ALL verified payments across the ENTIRE system
     $query = "
-        SELECT DISTINCT 
-            c.CustomerID, 
+        SELECT 
+            p.PaymentID,
+            p.CustomerID,
             c.CustomerUniqueID, 
             c.Name AS CustomerName, 
             TRIM(c.PromoterID) AS DirectPromoterRef,
             p.SchemeID,
-            s.SchemeName
-        FROM Customers c
-        JOIN Payments p ON c.CustomerID = p.CustomerID
+            s.SchemeName,
+            p.SubmittedAt
+        FROM Payments p
+        JOIN Customers c ON p.CustomerID = c.CustomerID
         LEFT JOIN Schemes s ON p.SchemeID = s.SchemeID
         WHERE p.Status = 'Verified'
           AND c.PromoterID IS NOT NULL
           AND TRIM(c.PromoterID) != ''
+        ORDER BY p.PaymentID ASC
     ";
 
     $stmt = $conn->prepare($query);
     $stmt->execute();
-    $verifiedCustomers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $allPayments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo "Loaded " . count($promoterByRef) . " promoter references and " . count($existingLogKeys) . " existing log records into memory.\n";
-    echo "Processing " . count($verifiedCustomers) . " verified customer payments...\n\n";
+    echo "Loaded " . count($promoterByRef) . " promoter records and " . count($existingLogKeys) . " log records.\n";
+    echo "Processing ALL " . count($allPayments) . " verified payment records across the ENTIRE database...\n\n";
 
     $creditedCount = 0;
     $skippedCount = 0;
@@ -98,13 +100,13 @@ try {
     $walletUpdates = []; // promoterUniqueID => float amount to add
     $logInserts = [];    // arrays of log data to insert
 
-    foreach ($verifiedCustomers as $cust) {
-        $custUniqueID = strtoupper(trim($cust['CustomerUniqueID']));
-        $custName = $cust['CustomerName'];
-        $directRef = $cust['DirectPromoterRef'];
-        $schemeName = !empty($cust['SchemeName']) ? $cust['SchemeName'] : 'Gold Savings Plan';
+    foreach ($allPayments as $pay) {
+        $custUniqueID = strtoupper(trim($pay['CustomerUniqueID']));
+        $custName = $pay['CustomerName'];
+        $directRef = $pay['DirectPromoterRef'];
+        $schemeName = !empty($pay['SchemeName']) ? $pay['SchemeName'] : 'Gold Savings Plan';
 
-        // Build hierarchy in memory
+        // Build full multi-level promoter hierarchy in memory
         $hierarchy = [];
         $currRef = $directRef;
         $visited = [];
@@ -156,7 +158,7 @@ try {
             }
         }
 
-        // 2. Process All Multi-level Parent Promoters
+        // 2. Process All Multi-level Parent Promoters in Hierarchy
         for ($i = 0; $i < count($hierarchy) - 1; $i++) {
             $childPromoter = $hierarchy[$i];
             $parentPromoter = $hierarchy[$i + 1];
@@ -203,9 +205,9 @@ try {
         }
     }
 
-    // 4. Batch Commit Wallet Updates & WalletLogs Inserts
+    // 4. Batch Commit Updates to Database
     echo "\n---------------------------------------------------\n";
-    echo " WRITING BATCH UPDATES TO DATABASE...\n";
+    echo " WRITING BATCH UPDATES TO ENTIRE DATABASE...\n";
     echo "---------------------------------------------------\n";
 
     if (!empty($walletUpdates)) {
@@ -236,7 +238,7 @@ try {
     $conn->commit();
 
     echo "\n===================================================\n";
-    echo " SUMMARY: Credited: $creditedCount | Up To Date: $skippedCount | Total Log Inserts: " . count($logInserts) . "\n";
+    echo " FULL SYSTEM BACKFILL COMPLETE: Credited: $creditedCount | Up To Date: $skippedCount | Total Log Inserts: " . count($logInserts) . "\n";
     echo "===================================================\n";
 
 } catch (Exception $e) {
