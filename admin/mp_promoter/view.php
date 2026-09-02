@@ -45,21 +45,14 @@ try {
     $stmt->execute([$promoter['PromoterUniqueID']]);
     $customerCount = $stmt->fetch(PDO::FETCH_ASSOC)['customer_count'];
 
-    // Get actual net wallet balance (Sum of positive Credits + negative Debits)
+    // Get wallet balance directly from PromoterWallet table
     $stmt = $conn->prepare("
-        SELECT COALESCE(SUM(Amount), 0) AS NetBalance
-        FROM WalletLogs 
-        WHERE TRIM(PromoterUniqueID) = TRIM(?) 
-           OR TRIM(PromoterUniqueID) = TRIM(?)
-           OR TRIM(PromoterUniqueID) = (SELECT TRIM(PromoterUniqueID) FROM Promoters WHERE PromoterID = ?)
+        SELECT BalanceAmount 
+        FROM PromoterWallet 
+        WHERE TRIM(PromoterUniqueID) = TRIM(?) OR UserID = ?
     ");
-    $stmt->execute([
-        $promoter['PromoterUniqueID'],
-        (string)$promoter['PromoterID'],
-        $promoterId
-    ]);
-    $netBalanceRow = $stmt->fetch(PDO::FETCH_ASSOC);
-    $walletBalance = floatval($netBalanceRow['NetBalance'] ?? 0);
+    $stmt->execute([$promoter['PromoterUniqueID'], $promoterId]);
+    $walletBalance = floatval($stmt->fetch(PDO::FETCH_ASSOC)['BalanceAmount'] ?? 0);
 
     // Get wallet logs
     $stmt = $conn->prepare("SELECT * FROM WalletLogs WHERE PromoterUniqueID = ? ORDER BY CreatedAt DESC LIMIT 10");
