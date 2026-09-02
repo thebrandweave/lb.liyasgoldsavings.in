@@ -109,17 +109,14 @@ if (isset($_POST['action']) && isset($_POST['payment_id'])) {
 
         $conn->commit();
 
-        // Set message based on first payment status
-        if ($newStatus === 'Verified' && $payment['payment_count'] == 0) {
-            $_SESSION['success_message'] = "Payment has been verified successfully. This was the first payment for this scheme.";
-            // Redirect to promoter commission page with customer unique ID
-            header("Location: ./promoterCommision.php?ref=" . urlencode(base64_encode($payment['CustomerUniqueID'])));
-            exit();
-        } else {
-            $_SESSION['success_message'] = "Payment has been $newStatus successfully.";
-            header("Location: index.php");
-            exit();
+        if ($newStatus === 'Verified') {
+            require_once("../../config/commission_helper.php");
+            processPromoterCommission($payment['CustomerUniqueID'], $conn);
         }
+
+        $_SESSION['success_message'] = "Payment has been $newStatus successfully.";
+        header("Location: index.php");
+        exit();
     } catch (PDOException $e) {
         $conn->rollBack();
         error_log("Failed to process payment: " . $e->getMessage());

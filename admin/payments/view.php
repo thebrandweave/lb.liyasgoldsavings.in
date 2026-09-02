@@ -151,6 +151,12 @@ if (isset($_POST['action']) && isset($_POST['payment_id'])) {
         ]);
 
         $conn->commit();
+
+        if ($newStatus === 'Verified') {
+            require_once("../../config/commission_helper.php");
+            processPromoterCommission($payment['CustomerUniqueID'], $conn);
+        }
+
         $_SESSION['success_message'] = "Payment has been $newStatus successfully.";
 
         // Redirect to refresh page with updated data
