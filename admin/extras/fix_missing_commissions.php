@@ -84,7 +84,7 @@ try {
             "%" . $custUniqueID . "%",
             "%" . $custName . "%"
         ]);
-        $directAlreadyCredited = $checkStmt->fetch(PDO::FETCH_ASSOC)['already_credited'];
+        $directAlreadyCredited = ($checkStmt->fetch(PDO::FETCH_ASSOC)['already_credited'] > 0);
 
         $actionTaken = false;
 
@@ -92,7 +92,7 @@ try {
             $conn->beginTransaction();
 
             // 1. Process Direct Promoter Commission if missing
-            if ($directAlreadyCredited == 0 && $commissionAmount > 0) {
+            if (!$directAlreadyCredited && $commissionAmount > 0) {
                 $wStmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ?");
                 $wStmt->execute([$promoterUniqueID]);
                 $walletRecord = $wStmt->fetch(PDO::FETCH_ASSOC);
@@ -115,17 +115,28 @@ try {
                 echo "ℹ️ Direct Commission (₹$commissionAmount) already credited for customer $custName ($custUniqueID) to promoter {$promoter['Name']} ($promoterUniqueID).\n";
             }
 
-            // 2. Process Parent Promoter Commission if applicable (Independently checked)
-            if (!empty($promoter['ParentPromoterID']) && !empty($promoter['ParentCommission'])) {
+            // 2. Process Parent Promoter Commission (Dynamically calculated if ParentCommission column is empty)
+            if (!empty($promoter['ParentPromoterID'])) {
                 $parentPromoterID = trim($promoter['ParentPromoterID']);
-                $parentCommissionAmount = convertCommissionToInt($promoter['ParentCommission']);
 
-                if ($parentCommissionAmount > 0) {
-                    $parentStmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, Name FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
-                    $parentStmt->execute([$parentPromoterID]);
-                    $parentPromoter = $parentStmt->fetch(PDO::FETCH_ASSOC);
+                $parentStmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, Commission, Name FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
+                $parentStmt->execute([$parentPromoterID]);
+                $parentPromoter = $parentStmt->fetch(PDO::FETCH_ASSOC);
 
-                    if ($parentPromoter) {
+                if ($parentPromoter) {
+                    // Calculate Parent Commission gap: Parent's Commission minus Child's Commission
+                    $parentCommissionAmount = 0;
+                    if (!empty($promoter['ParentCommission']) && convertCommissionToInt($promoter['ParentCommission']) > 0) {
+                        $parentCommissionAmount = convertCommissionToInt($promoter['ParentCommission']);
+                    } else {
+                        $parentActual = convertCommissionToInt($parentPromoter['Commission']);
+                        $childActual = convertCommissionToInt($promoter['Commission']);
+                        if ($parentActual > $childActual) {
+                            $parentCommissionAmount = $parentActual - $childActual;
+                        }
+                    }
+
+                    if ($parentCommissionAmount > 0) {
                         // Check if parent commission already logged
                         $pCheckStmt = $conn->prepare("
                             SELECT COUNT(*) as parent_already_credited 
@@ -138,9 +149,9 @@ try {
                             "%" . $custUniqueID . "%",
                             "%" . $custName . "%"
                         ]);
-                        $parentAlreadyCredited = $pCheckStmt->fetch(PDO::FETCH_ASSOC)['parent_already_credited'];
+                        $parentAlreadyCredited = ($pCheckStmt->fetch(PDO::FETCH_ASSOC)['parent_already_credited'] > 0);
 
-                        if ($parentAlreadyCredited == 0) {
+                        if (!$parentAlreadyCredited) {
                             $pwStmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ?");
                             $pwStmt->execute([$parentPromoterID]);
                             $parentWalletRecord = $pwStmt->fetch(PDO::FETCH_ASSOC);

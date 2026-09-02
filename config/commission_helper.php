@@ -67,7 +67,7 @@ function processPromoterCommission($customerUniqueID, $conn)
 
             if ($walletRecord) {
                 $stmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = BalanceAmount + ?, LastUpdated = CURRENT_TIMESTAMP WHERE TRIM(PromoterUniqueID) = ?");
-                $stmt->execute([$commissionAmount, $directPromoterID]);
+                $stmt->execute([$directPromoterID]);
             } else {
                 $stmt = $conn->prepare("INSERT INTO PromoterWallet (UserID, PromoterUniqueID, BalanceAmount, Message) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$directPromoter['PromoterID'], $directPromoterID, $commissionAmount, "Commission from payment"]);
@@ -78,30 +78,41 @@ function processPromoterCommission($customerUniqueID, $conn)
             $stmt->execute([$directPromoterID, $commissionAmount, $logMessage]);
         }
 
-        // Process Parent Promoter Commission (Independently checked)
-        if (!empty($directPromoter['ParentPromoterID']) && !empty($directPromoter['ParentCommission'])) {
+        // Process Parent Promoter Commission (Dynamically calculate gap if ParentCommission is empty)
+        if (!empty($directPromoter['ParentPromoterID'])) {
             $parentPromoterID = trim($directPromoter['ParentPromoterID']);
-            $parentCommissionAmount = convertCommissionToInt($directPromoter['ParentCommission']);
 
-            if ($parentCommissionAmount > 0) {
-                $pCheckStmt = $conn->prepare("
-                    SELECT COUNT(*) as parent_already_credited 
-                    FROM WalletLogs 
-                    WHERE TRIM(PromoterUniqueID) = ? 
-                      AND (Message LIKE ? OR Message LIKE ?)
-                ");
-                $pCheckStmt->execute([
-                    $parentPromoterID,
-                    "%" . $customerUniqueID . "%",
-                    "%" . $customerDetails['Name'] . "%"
-                ]);
+            $stmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, Commission, Name FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
+            $stmt->execute([$parentPromoterID]);
+            $parentPromoter = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                if ($pCheckStmt->fetch(PDO::FETCH_ASSOC)['parent_already_credited'] == 0) {
-                    $stmt = $conn->prepare("SELECT PromoterID FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
-                    $stmt->execute([$parentPromoterID]);
-                    $parentPromoter = $stmt->fetch(PDO::FETCH_ASSOC);
+            if ($parentPromoter) {
+                // Calculate gap commission: Parent Commission - Child Commission
+                $parentCommissionAmount = 0;
+                if (!empty($directPromoter['ParentCommission']) && convertCommissionToInt($directPromoter['ParentCommission']) > 0) {
+                    $parentCommissionAmount = convertCommissionToInt($directPromoter['ParentCommission']);
+                } else {
+                    $parentActual = convertCommissionToInt($parentPromoter['Commission']);
+                    $childActual = convertCommissionToInt($directPromoter['Commission']);
+                    if ($parentActual > $childActual) {
+                        $parentCommissionAmount = $parentActual - $childActual;
+                    }
+                }
 
-                    if ($parentPromoter) {
+                if ($parentCommissionAmount > 0) {
+                    $pCheckStmt = $conn->prepare("
+                        SELECT COUNT(*) as parent_already_credited 
+                        FROM WalletLogs 
+                        WHERE TRIM(PromoterUniqueID) = ? 
+                          AND (Message LIKE ? OR Message LIKE ?)
+                    ");
+                    $pCheckStmt->execute([
+                        $parentPromoterID,
+                        "%" . $customerUniqueID . "%",
+                        "%" . $customerDetails['Name'] . "%"
+                    ]);
+
+                    if ($pCheckStmt->fetch(PDO::FETCH_ASSOC)['parent_already_credited'] == 0) {
                         $stmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ?");
                         $stmt->execute([$parentPromoterID]);
                         $parentWallet = $stmt->fetch(PDO::FETCH_ASSOC);
