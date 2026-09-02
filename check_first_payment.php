@@ -1,23 +1,24 @@
 <?php
-require_once("./config/config.php");
+require_once("config/config.php");
+
 $database = new Database();
 $conn = $database->getConnection();
 
 header('Content-Type: application/json');
-//hh
+
 try {
     // Get the input data
     $input = json_decode(file_get_contents('php://input'), true);
     $paymentId = $input['payment_id'] ?? null;
 
     if (!$paymentId) {
-        echo json_encode(['message' => 'Payment ID is required.']);
+        echo json_encode(['status' => 'error', 'message' => 'Payment ID is required.']);
         exit;
     }
 
     // Get payment details
     $stmt = $conn->prepare("
-        SELECT CustomerID, SchemeID 
+        SELECT CustomerID, SchemeID, Status 
         FROM Payments 
         WHERE PaymentID = ?
     ");
@@ -25,24 +26,34 @@ try {
     $payment = $stmt->fetch(PDO::FETCH_ASSOC);
 
     if (!$payment) {
-        echo json_encode(['message' => 'Payment not found.']);
+        echo json_encode(['status' => 'error', 'message' => 'Payment not found.']);
         exit;
     }
 
-    // Check if this is the first verified payment for this customer for this scheme
+    // Check if OTHER verified payments exist for this customer & scheme
     $stmt = $conn->prepare("
-        SELECT COUNT(*) as payment_count 
+        SELECT COUNT(*) as prior_count 
         FROM Payments 
-        WHERE CustomerID = ? AND SchemeID = ? AND Status = 'Verified'
+        WHERE CustomerID = ? AND SchemeID = ? AND Status = 'Verified' AND PaymentID != ?
     ");
-    $stmt->execute([$payment['CustomerID'], $payment['SchemeID']]);
-    $paymentCount = $stmt->fetch(PDO::FETCH_ASSOC)['payment_count'];
+    $stmt->execute([$payment['CustomerID'], $payment['SchemeID'], $paymentId]);
+    $priorCount = (int)$stmt->fetch(PDO::FETCH_ASSOC)['prior_count'];
 
-    if ($paymentCount == 0) {
-        echo json_encode(['message' => 'This is the first verified payment for the scheme.']);
+    if ($priorCount === 0) {
+        echo json_encode([
+            'status' => 'success',
+            'is_first_payment' => true,
+            'message' => 'This is the first verified payment for the scheme.'
+        ]);
     } else {
-        echo json_encode(['message' => 'This is not the first verified payment for the scheme.']);
+        echo json_encode([
+            'status' => 'success',
+            'is_first_payment' => false,
+            'prior_verified_payments' => $priorCount,
+            'message' => "This is not the first verified payment. Found $priorCount prior verified payment(s)."
+        ]);
     }
 } catch (Exception $e) {
-    echo json_encode(['message' => 'Error checking payment: ' . $e->getMessage()]);
+    echo json_encode(['status' => 'error', 'message' => 'Error checking payment: ' . $e->getMessage()]);
 }
+?>
