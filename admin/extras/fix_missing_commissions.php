@@ -72,18 +72,15 @@ try {
 
         $commissionAmount = convertCommissionToInt($promoter['Commission']);
 
-        // Check if direct commission for this customer was ALREADY logged in WalletLogs
+        // Check if direct commission for this customer was ALREADY logged under ANY promoter in WalletLogs
         $checkStmt = $conn->prepare("
             SELECT COUNT(*) as already_credited 
             FROM WalletLogs 
-            WHERE TRIM(PromoterUniqueID) = ? 
-              AND (Message LIKE ? OR Message LIKE ?)
+            WHERE Message LIKE ? 
+              AND Message NOT LIKE 'Parent commission%'
+              AND TransactionType = 'Credit'
         ");
-        $checkStmt->execute([
-            $promoterUniqueID,
-            "%" . $custUniqueID . "%",
-            "%" . $custName . "%"
-        ]);
+        $checkStmt->execute(["%" . $custUniqueID . "%"]);
         $directAlreadyCredited = ($checkStmt->fetch(PDO::FETCH_ASSOC)['already_credited'] > 0);
 
         $actionTaken = false;
@@ -137,18 +134,15 @@ try {
                     }
 
                     if ($parentCommissionAmount > 0) {
-                        // Check if parent commission already logged
+                        // Check if parent commission already logged under ANY parent promoter for this customer
                         $pCheckStmt = $conn->prepare("
                             SELECT COUNT(*) as parent_already_credited 
                             FROM WalletLogs 
-                            WHERE TRIM(PromoterUniqueID) = ? 
-                              AND (Message LIKE ? OR Message LIKE ?)
+                            WHERE Message LIKE ? 
+                              AND Message LIKE 'Parent commission%'
+                              AND TransactionType = 'Credit'
                         ");
-                        $pCheckStmt->execute([
-                            $parentPromoterID,
-                            "%" . $custUniqueID . "%",
-                            "%" . $custName . "%"
-                        ]);
+                        $pCheckStmt->execute(["%" . $custUniqueID . "%"]);
                         $parentAlreadyCredited = ($pCheckStmt->fetch(PDO::FETCH_ASSOC)['parent_already_credited'] > 0);
 
                         if (!$parentAlreadyCredited) {
