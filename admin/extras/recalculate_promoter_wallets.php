@@ -1,6 +1,9 @@
 <?php
 // admin/extras/recalculate_promoter_wallets.php
 session_start();
+set_time_limit(300);
+ini_set('memory_limit', '256M');
+
 require_once(__DIR__ . "/../../config/config.php");
 
 $database = new Database();
@@ -17,66 +20,57 @@ if (!$isCli) {
 }
 
 echo "===================================================\n";
-echo " RECALCULATE PROMOTER WALLETS FROM WALLETLOGS\n";
+echo " RECALCULATE PROMOTER WALLETS FROM WALLETLOGS (ULTRA FAST)\n";
 echo "===================================================\n\n";
 
 try {
-    $conn->beginTransaction();
-
-    // Fetch all promoters
-    $stmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, Name FROM Promoters");
+    // 1. Calculate net balances for ALL promoters in a single high-speed SQL GROUP BY query
+    $stmt = $conn->prepare("
+        SELECT 
+            TRIM(PromoterUniqueID) AS PromoterUniqueID,
+            SUM(CASE WHEN TransactionType = 'Credit' OR TransactionType IS NULL OR TransactionType = '' THEN Amount ELSE 0 END) AS TotalCredit,
+            SUM(CASE WHEN TransactionType = 'Debit' THEN ABS(Amount) ELSE 0 END) AS TotalDebit
+        FROM WalletLogs
+        WHERE PromoterUniqueID IS NOT NULL AND TRIM(PromoterUniqueID) != ''
+        GROUP BY TRIM(PromoterUniqueID)
+    ");
     $stmt->execute();
-    $promoters = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $logTotals = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    echo "Synchronizing wallet balances for " . count($promoters) . " promoter(s)...\n\n";
+    echo "Found " . count($logTotals) . " promoter log summary record(s) to process...\n\n";
 
+    // Pre-load all current wallet balances
+    $wStmt = $conn->prepare("SELECT BalanceID, UserID, TRIM(PromoterUniqueID) AS PromoterUniqueID, BalanceAmount FROM PromoterWallet");
+    $wStmt->execute();
+    $wallets = $wStmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $currentWallets = [];
+    foreach ($wallets as $w) {
+        $uID = trim($w['PromoterUniqueID']);
+        if (!empty($uID)) {
+            $currentWallets[$uID] = $w;
+        }
+    }
+
+    $conn->beginTransaction();
     $updatedCount = 0;
 
-    foreach ($promoters as $p) {
-        $pID = $p['PromoterID'];
-        $uniqueID = trim($p['PromoterUniqueID']);
+    $upStmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = ?, LastUpdated = CURRENT_TIMESTAMP WHERE TRIM(PromoterUniqueID) = ?");
 
-        // Calculate Total Credits matching both string UniqueID and numeric PromoterID
-        $cStmt = $conn->prepare("
-            SELECT COALESCE(SUM(Amount), 0) AS total_credit 
-            FROM WalletLogs 
-            WHERE (TRIM(PromoterUniqueID) = ? OR TRIM(PromoterUniqueID) = ?)
-              AND (TransactionType = 'Credit' OR TransactionType IS NULL OR TransactionType = '')
-        ");
-        $cStmt->execute([$uniqueID, (string)$pID]);
-        $totalCredit = floatval($cStmt->fetch(PDO::FETCH_ASSOC)['total_credit']);
-
-        // Calculate Total Debits
-        $dStmt = $conn->prepare("
-            SELECT COALESCE(SUM(Amount), 0) AS total_debit 
-            FROM WalletLogs 
-            WHERE (TRIM(PromoterUniqueID) = ? OR TRIM(PromoterUniqueID) = ?)
-              AND TransactionType = 'Debit'
-        ");
-        $dStmt->execute([$uniqueID, (string)$pID]);
-        $totalDebit = floatval($dStmt->fetch(PDO::FETCH_ASSOC)['total_debit']);
-
+    foreach ($logTotals as $row) {
+        $promoterID = trim($row['PromoterUniqueID']);
+        $totalCredit = floatval($row['TotalCredit']);
+        $totalDebit = floatval($row['TotalDebit']);
         $netBalance = max(0, $totalCredit - $totalDebit);
 
-        // Fetch current wallet record
-        $wStmt = $conn->prepare("SELECT BalanceID, BalanceAmount FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ? OR UserID = ?");
-        $wStmt->execute([$uniqueID, $pID]);
-        $wallet = $wStmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($wallet) {
-            $oldBal = floatval($wallet['BalanceAmount']);
+        if (isset($currentWallets[$promoterID])) {
+            $oldBal = floatval($currentWallets[$promoterID]['BalanceAmount']);
             if (abs($oldBal - $netBalance) > 0.01) {
-                $uStmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = ?, LastUpdated = CURRENT_TIMESTAMP WHERE TRIM(PromoterUniqueID) = ? OR UserID = ?");
-                $uStmt->execute([$netBalance, $uniqueID, $pID]);
-                echo "✅ Synchronized {$p['Name']} [$uniqueID]: Old Balance = ₹" . number_format($oldBal, 2) . " ➔ New Balance = ₹" . number_format($netBalance, 2) . "\n";
+                $upStmt->execute([$netBalance, $promoterID]);
+                echo "✅ Synchronized [$promoterID]: Stored = ₹" . number_format($oldBal, 2) . " ➔ Correct Net Balance = ₹" . number_format($netBalance, 2) . " (Credits: ₹" . number_format($totalCredit, 2) . " - Debits: ₹" . number_format($totalDebit, 2) . ")\n";
                 $updatedCount++;
-            }
-        } else {
-            if ($netBalance > 0) {
-                $inStmt = $conn->prepare("INSERT INTO PromoterWallet (UserID, PromoterUniqueID, BalanceAmount, Message) VALUES (?, ?, ?, 'Wallet synced from logs')");
-                $inStmt->execute([$pID, $uniqueID, $netBalance]);
-                echo "✅ Created Wallet {$p['Name']} [$uniqueID]: Balance = ₹" . number_format($netBalance, 2) . "\n";
-                $updatedCount++;
+            } else {
+                echo "ℹ️ Promoter [$promoterID]: Balance matches net total (₹" . number_format($netBalance, 2) . ").\n";
             }
         }
     }
@@ -84,7 +78,7 @@ try {
     $conn->commit();
 
     echo "\n===================================================\n";
-    echo " SYNCHRONIZATION COMPLETE: Updated $updatedCount promoter wallet(s).\n";
+    echo " SYNCHRONIZATION COMPLETE: Updated $updatedCount promoter wallet(s) in DB.\n";
     echo "===================================================\n";
 
 } catch (Exception $e) {
