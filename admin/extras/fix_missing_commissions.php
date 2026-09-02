@@ -32,7 +32,7 @@ try {
             c.CustomerID, 
             c.CustomerUniqueID, 
             c.Name AS CustomerName, 
-            TRIM(c.PromoterID) AS PromoterUniqueID,
+            TRIM(c.PromoterID) AS DirectPromoterID,
             p.SchemeID,
             s.SchemeName
         FROM Customers c
@@ -56,123 +56,123 @@ try {
         $custID = $cust['CustomerID'];
         $custUniqueID = $cust['CustomerUniqueID'];
         $custName = $cust['CustomerName'];
-        $promoterUniqueID = $cust['PromoterUniqueID'];
+        $directPromoterID = $cust['DirectPromoterID'];
         $schemeName = !empty($cust['SchemeName']) ? $cust['SchemeName'] : 'Gold Savings Plan';
 
-        // Fetch Direct Promoter details
-        $pStmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission, Name FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
-        $pStmt->execute([$promoterUniqueID]);
-        $promoter = $pStmt->fetch(PDO::FETCH_ASSOC);
+        // Fetch full promoter hierarchy chain (Direct -> Parent -> Grandparent ...)
+        $hierarchy = [];
+        $currID = $directPromoterID;
+        while ($currID) {
+            $pStmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission, Name FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
+            $pStmt->execute([$currID]);
+            $pData = $pStmt->fetch(PDO::FETCH_ASSOC);
+            if (!$pData) {
+                break;
+            }
+            $hierarchy[] = $pData;
+            $currID = !empty($pData['ParentPromoterID']) ? trim($pData['ParentPromoterID']) : null;
+        }
 
-        if (!$promoter) {
-            echo "⚠️ Promoter [$promoterUniqueID] not found for customer $custName ($custUniqueID). Skipping.\n";
+        if (empty($hierarchy)) {
             $skippedCount++;
             continue;
         }
-
-        $commissionAmount = convertCommissionToInt($promoter['Commission']);
-
-        // Check if direct commission for this customer was ALREADY logged in WalletLogs
-        $checkStmt = $conn->prepare("
-            SELECT COUNT(*) as already_credited 
-            FROM WalletLogs 
-            WHERE TRIM(PromoterUniqueID) = ? 
-              AND (Message LIKE ? OR Message LIKE ?)
-        ");
-        $checkStmt->execute([
-            $promoterUniqueID,
-            "%" . $custUniqueID . "%",
-            "%" . $custName . "%"
-        ]);
-        $directAlreadyCredited = ($checkStmt->fetch(PDO::FETCH_ASSOC)['already_credited'] > 0);
 
         $actionTaken = false;
 
         try {
             $conn->beginTransaction();
 
-            // 1. Process Direct Promoter Commission if missing
-            if (!$directAlreadyCredited && $commissionAmount > 0) {
-                $wStmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ?");
-                $wStmt->execute([$promoterUniqueID]);
-                $walletRecord = $wStmt->fetch(PDO::FETCH_ASSOC);
+            // 1. Process Direct Promoter (hierarchy[0])
+            $directPromoter = $hierarchy[0];
+            $directID = $directPromoter['PromoterUniqueID'];
+            $directCommission = convertCommissionToInt($directPromoter['Commission']);
 
-                if ($walletRecord) {
-                    $upStmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = BalanceAmount + ?, LastUpdated = CURRENT_TIMESTAMP WHERE TRIM(PromoterUniqueID) = ?");
-                    $upStmt->execute([$commissionAmount, $promoterUniqueID]);
-                } else {
-                    $inStmt = $conn->prepare("INSERT INTO PromoterWallet (UserID, PromoterUniqueID, BalanceAmount, Message) VALUES (?, ?, ?, ?)");
-                    $inStmt->execute([$promoter['PromoterID'], $promoterUniqueID, $commissionAmount, "Commission from payment"]);
-                }
+            if ($directCommission > 0) {
+                $checkStmt = $conn->prepare("
+                    SELECT COUNT(*) as already_credited 
+                    FROM WalletLogs 
+                    WHERE TRIM(PromoterUniqueID) = ? 
+                      AND (Message LIKE ? OR Message LIKE ?)
+                ");
+                $checkStmt->execute([
+                    $directID,
+                    "%" . $custUniqueID . "%",
+                    "%" . $custName . "%"
+                ]);
+                $directAlreadyCredited = ($checkStmt->fetch(PDO::FETCH_ASSOC)['already_credited'] > 0);
 
-                $logMsg = "Commission earned from customer $custName ($custUniqueID) for $schemeName scheme";
-                $logStmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message, TransactionType) VALUES (?, ?, ?, 'Credit')");
-                $logStmt->execute([$promoterUniqueID, $commissionAmount, $logMsg]);
+                if (!$directAlreadyCredited) {
+                    $wStmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ?");
+                    $wStmt->execute([$directID]);
+                    $walletRecord = $wStmt->fetch(PDO::FETCH_ASSOC);
 
-                echo "✅ Credited ₹$commissionAmount to Direct Promoter {$promoter['Name']} ($promoterUniqueID) for customer $custName ($custUniqueID).\n";
-                $actionTaken = true;
-            } else {
-                echo "ℹ️ Direct Commission (₹$commissionAmount) already credited for customer $custName ($custUniqueID) to promoter {$promoter['Name']} ($promoterUniqueID).\n";
-            }
-
-            // 2. Process Parent Promoter Commission (Dynamically calculated if ParentCommission column is empty)
-            if (!empty($promoter['ParentPromoterID'])) {
-                $parentPromoterID = trim($promoter['ParentPromoterID']);
-
-                $parentStmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, Commission, Name FROM Promoters WHERE TRIM(PromoterUniqueID) = ?");
-                $parentStmt->execute([$parentPromoterID]);
-                $parentPromoter = $parentStmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($parentPromoter) {
-                    // Calculate Parent Commission gap: Parent's Commission minus Child's Commission
-                    $parentCommissionAmount = 0;
-                    if (!empty($promoter['ParentCommission']) && convertCommissionToInt($promoter['ParentCommission']) > 0) {
-                        $parentCommissionAmount = convertCommissionToInt($promoter['ParentCommission']);
+                    if ($walletRecord) {
+                        $upStmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = BalanceAmount + ?, LastUpdated = CURRENT_TIMESTAMP WHERE TRIM(PromoterUniqueID) = ?");
+                        $upStmt->execute([$directCommission, $directID]);
                     } else {
-                        $parentActual = convertCommissionToInt($parentPromoter['Commission']);
-                        $childActual = convertCommissionToInt($promoter['Commission']);
-                        if ($parentActual > $childActual) {
-                            $parentCommissionAmount = $parentActual - $childActual;
-                        }
+                        $inStmt = $conn->prepare("INSERT INTO PromoterWallet (UserID, PromoterUniqueID, BalanceAmount, Message) VALUES (?, ?, ?, ?)");
+                        $inStmt->execute([$directPromoter['PromoterID'], $directID, $directCommission, "Commission from payment"]);
                     }
 
-                    if ($parentCommissionAmount > 0) {
-                        // Check if parent commission already logged
-                        $pCheckStmt = $conn->prepare("
-                            SELECT COUNT(*) as parent_already_credited 
-                            FROM WalletLogs 
-                            WHERE TRIM(PromoterUniqueID) = ? 
-                              AND (Message LIKE ? OR Message LIKE ?)
-                        ");
-                        $pCheckStmt->execute([
-                            $parentPromoterID,
-                            "%" . $custUniqueID . "%",
-                            "%" . $custName . "%"
-                        ]);
-                        $parentAlreadyCredited = ($pCheckStmt->fetch(PDO::FETCH_ASSOC)['parent_already_credited'] > 0);
+                    $logMsg = "Commission earned from customer $custName ($custUniqueID) for $schemeName scheme";
+                    $logStmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message, TransactionType) VALUES (?, ?, ?, 'Credit')");
+                    $logStmt->execute([$directID, $directCommission, $logMsg]);
 
-                        if (!$parentAlreadyCredited) {
-                            $pwStmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ?");
-                            $pwStmt->execute([$parentPromoterID]);
-                            $parentWalletRecord = $pwStmt->fetch(PDO::FETCH_ASSOC);
+                    echo "✅ Direct Commission ₹$directCommission to {$directPromoter['Name']} ($directID) for customer $custName ($custUniqueID).\n";
+                    $actionTaken = true;
+                }
+            }
 
-                            if ($parentWalletRecord) {
-                                $pupStmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = BalanceAmount + ?, LastUpdated = CURRENT_TIMESTAMP WHERE TRIM(PromoterUniqueID) = ?");
-                                $pupStmt->execute([$parentCommissionAmount, $parentPromoterID]);
-                            } else {
-                                $pinStmt = $conn->prepare("INSERT INTO PromoterWallet (UserID, PromoterUniqueID, BalanceAmount, Message) VALUES (?, ?, ?, ?)");
-                                $pinStmt->execute([$parentPromoter['PromoterID'], $parentPromoterID, $parentCommissionAmount, "Parent commission from payment"]);
-                            }
+            // 2. Process All Parent / Multi-level Promoters in Hierarchy
+            for ($i = 0; $i < count($hierarchy) - 1; $i++) {
+                $childPromoter = $hierarchy[$i];
+                $parentPromoter = $hierarchy[$i + 1];
 
-                            $pLogMsg = "Parent commission earned from customer $custName ($custUniqueID) for $schemeName scheme";
-                            $pLogStmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message, TransactionType) VALUES (?, ?, ?, 'Credit')");
-                            $pLogStmt->execute([$parentPromoterID, $parentCommissionAmount, $pLogMsg]);
+                $parentID = $parentPromoter['PromoterUniqueID'];
+                $childCommission = convertCommissionToInt($childPromoter['Commission']);
+                $parentCommission = convertCommissionToInt($parentPromoter['Commission']);
 
-                            echo "   └─ ✅ Credited Parent Commission ₹$parentCommissionAmount to Parent Promoter {$parentPromoter['Name']} ($parentPromoterID) for customer $custName ($custUniqueID).\n";
-                            $actionTaken = true;
+                $gapAmount = 0;
+                if (!empty($childPromoter['ParentCommission']) && convertCommissionToInt($childPromoter['ParentCommission']) > 0) {
+                    $gapAmount = convertCommissionToInt($childPromoter['ParentCommission']);
+                } else if ($parentCommission > $childCommission) {
+                    $gapAmount = $parentCommission - $childCommission;
+                }
+
+                if ($gapAmount > 0) {
+                    $pCheckStmt = $conn->prepare("
+                        SELECT COUNT(*) as parent_already_credited 
+                        FROM WalletLogs 
+                        WHERE TRIM(PromoterUniqueID) = ? 
+                          AND (Message LIKE ? OR Message LIKE ?)
+                    ");
+                    $pCheckStmt->execute([
+                        $parentID,
+                        "%" . $custUniqueID . "%",
+                        "%" . $custName . "%"
+                    ]);
+                    $parentAlreadyCredited = ($pCheckStmt->fetch(PDO::FETCH_ASSOC)['parent_already_credited'] > 0);
+
+                    if (!$parentAlreadyCredited) {
+                        $pwStmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ?");
+                        $pwStmt->execute([$parentID]);
+                        $parentWalletRecord = $pwStmt->fetch(PDO::FETCH_ASSOC);
+
+                        if ($parentWalletRecord) {
+                            $pupStmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = BalanceAmount + ?, LastUpdated = CURRENT_TIMESTAMP WHERE TRIM(PromoterUniqueID) = ?");
+                            $pupStmt->execute([$gapAmount, $parentID]);
                         } else {
-                            echo "   └─ ℹ️ Parent Commission (₹$parentCommissionAmount) already credited for customer $custName ($custUniqueID) to parent promoter {$parentPromoter['Name']} ($parentPromoterID).\n";
+                            $pinStmt = $conn->prepare("INSERT INTO PromoterWallet (UserID, PromoterUniqueID, BalanceAmount, Message) VALUES (?, ?, ?, ?)");
+                            $pinStmt->execute([$parentPromoter['PromoterID'], $parentID, $gapAmount, "Parent commission from payment"]);
                         }
+
+                        $pLogMsg = "Parent commission earned from customer $custName ($custUniqueID) for $schemeName scheme";
+                        $pLogStmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message, TransactionType) VALUES (?, ?, ?, 'Credit')");
+                        $pLogStmt->execute([$parentID, $gapAmount, $pLogMsg]);
+
+                        echo "   └─ ✅ Parent Commission ₹$gapAmount to {$parentPromoter['Name']} ($parentID) for customer $custName ($custUniqueID).\n";
+                        $actionTaken = true;
                     }
                 }
             }
