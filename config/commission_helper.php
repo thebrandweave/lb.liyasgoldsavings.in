@@ -67,7 +67,7 @@ function processPromoterCommission($customerUniqueID, $conn)
 
             if ($walletRecord) {
                 $stmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = BalanceAmount + ?, LastUpdated = CURRENT_TIMESTAMP WHERE TRIM(PromoterUniqueID) = ?");
-                $stmt->execute([$directPromoterID]);
+                $stmt->execute([$commissionAmount, $directPromoterID]);
             } else {
                 $stmt = $conn->prepare("INSERT INTO PromoterWallet (UserID, PromoterUniqueID, BalanceAmount, Message) VALUES (?, ?, ?, ?)");
                 $stmt->execute([$directPromoter['PromoterID'], $directPromoterID, $commissionAmount, "Commission from payment"]);
@@ -78,7 +78,7 @@ function processPromoterCommission($customerUniqueID, $conn)
             $stmt->execute([$directPromoterID, $commissionAmount, $logMessage]);
         }
 
-        // Process Parent Promoter Commission (Dynamically calculate gap if ParentCommission is empty)
+        // Process Parent Promoter Commission
         if (!empty($directPromoter['ParentPromoterID'])) {
             $parentPromoterID = trim($directPromoter['ParentPromoterID']);
 
@@ -87,7 +87,6 @@ function processPromoterCommission($customerUniqueID, $conn)
             $parentPromoter = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($parentPromoter) {
-                // Calculate gap commission: Parent Commission - Child Commission
                 $parentCommissionAmount = 0;
                 if (!empty($directPromoter['ParentCommission']) && convertCommissionToInt($directPromoter['ParentCommission']) > 0) {
                     $parentCommissionAmount = convertCommissionToInt($directPromoter['ParentCommission']);
