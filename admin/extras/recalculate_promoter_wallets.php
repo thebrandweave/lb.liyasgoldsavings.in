@@ -20,16 +20,16 @@ if (!$isCli) {
 }
 
 echo "===================================================\n";
-echo " RECALCULATE PROMOTER WALLETS FROM WALLETLOGS (ULTRA FAST)\n";
+echo " RECALCULATE PROMOTER WALLETS (APPROVED WITHDRAWALS ONLY)\n";
 echo "===================================================\n\n";
 
 try {
-    // 1. Calculate net balances for ALL promoters in a single high-speed SQL GROUP BY query
+    // 1. Calculate net balances: Total Credits MINUS ONLY APPROVED WITHDRAWALS ('Withdrawal approved' / 'Debit' matching approved)
     $stmt = $conn->prepare("
         SELECT 
             TRIM(PromoterUniqueID) AS PromoterUniqueID,
             SUM(CASE WHEN TransactionType = 'Credit' OR TransactionType IS NULL OR TransactionType = '' THEN Amount ELSE 0 END) AS TotalCredit,
-            SUM(CASE WHEN TransactionType = 'Debit' THEN ABS(Amount) ELSE 0 END) AS TotalDebit
+            SUM(CASE WHEN TransactionType = 'Debit' AND (Message LIKE '%approved%' OR Message LIKE '%Withdrawal%') THEN ABS(Amount) ELSE 0 END) AS TotalApprovedDebit
         FROM WalletLogs
         WHERE PromoterUniqueID IS NOT NULL AND TRIM(PromoterUniqueID) != ''
         GROUP BY TRIM(PromoterUniqueID)
@@ -60,14 +60,14 @@ try {
     foreach ($logTotals as $row) {
         $promoterID = trim($row['PromoterUniqueID']);
         $totalCredit = floatval($row['TotalCredit']);
-        $totalDebit = floatval($row['TotalDebit']);
+        $totalDebit = floatval($row['TotalApprovedDebit']);
         $netBalance = max(0, $totalCredit - $totalDebit);
 
         if (isset($currentWallets[$promoterID])) {
             $oldBal = floatval($currentWallets[$promoterID]['BalanceAmount']);
             if (abs($oldBal - $netBalance) > 0.01) {
                 $upStmt->execute([$netBalance, $promoterID]);
-                echo "✅ Synchronized [$promoterID]: Stored = ₹" . number_format($oldBal, 2) . " ➔ Correct Net Balance = ₹" . number_format($netBalance, 2) . " (Credits: ₹" . number_format($totalCredit, 2) . " - Debits: ₹" . number_format($totalDebit, 2) . ")\n";
+                echo "✅ Synchronized [$promoterID]: Stored = ₹" . number_format($oldBal, 2) . " ➔ Correct Net Balance = ₹" . number_format($netBalance, 2) . " (Credits: ₹" . number_format($totalCredit, 2) . " - Approved Withdrawals: ₹" . number_format($totalDebit, 2) . ")\n";
                 $updatedCount++;
             } else {
                 echo "ℹ️ Promoter [$promoterID]: Balance matches net total (₹" . number_format($netBalance, 2) . ").\n";
