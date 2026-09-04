@@ -123,19 +123,12 @@ $stmt->execute($params);
 $totalRecords = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
 $totalPages = ceil($totalRecords / $recordsPerPage);
 
-// Get promoters with actual net wallet balance (Credits minus Debits)
+// Get promoters with wallet information directly from PromoterWallet table
 $query = "SELECT p.*, 
-                 COALESCE(wl.NetBalance, pw.BalanceAmount, 0) as BalanceAmount, 
+                 COALESCE(pw.BalanceAmount, 0) as BalanceAmount, 
                  pw.LastUpdated as WalletLastUpdated 
           FROM Promoters p 
-          LEFT JOIN PromoterWallet pw ON (TRIM(p.PromoterUniqueID) = TRIM(pw.PromoterUniqueID) OR p.PromoterID = pw.UserID)
-          LEFT JOIN (
-              SELECT 
-                  TRIM(PromoterUniqueID) AS pID,
-                  SUM(CASE WHEN TRIM(UPPER(TransactionType)) = 'DEBIT' OR Amount < 0 THEN -ABS(Amount) ELSE ABS(Amount) END) AS NetBalance
-              FROM WalletLogs
-              GROUP BY TRIM(PromoterUniqueID)
-          ) wl ON (TRIM(p.PromoterUniqueID) = wl.pID OR CAST(p.PromoterID AS CHAR) = wl.pID)" .
+          LEFT JOIN PromoterWallet pw ON (TRIM(p.PromoterUniqueID) = TRIM(pw.PromoterUniqueID) OR p.PromoterID = pw.UserID)" .
     $whereClause .
     " ORDER BY p.Name ASC LIMIT :offset, :limit";
 
