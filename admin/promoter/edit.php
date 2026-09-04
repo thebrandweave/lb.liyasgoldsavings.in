@@ -60,9 +60,9 @@ $parentCommission = null;
 $parentPromoterID = null;
 if (!empty($promoter['ParentPromoterID'])) {
     try {
-        // Simple query to get parent promoter by PromoterUniqueID
-        $stmt = $conn->prepare("SELECT * FROM Promoters WHERE PromoterUniqueID = ?");
-        $stmt->execute([$promoter['ParentPromoterID']]);
+        // Simple query to get parent promoter by PromoterUniqueID or numeric PromoterID
+        $stmt = $conn->prepare("SELECT * FROM Promoters WHERE TRIM(PromoterUniqueID) = TRIM(?) OR CAST(PromoterID AS CHAR) = TRIM(?)");
+        $stmt->execute([$promoter['ParentPromoterID'], $promoter['ParentPromoterID']]);
         $parentPromoter = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if ($parentPromoter) {

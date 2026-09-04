@@ -60,9 +60,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $teamName = null; // Will be set based on parent promoter
             $commission = trim($_POST['commission']);
 
-            // Get parent promoter details
-            $stmt = $conn->prepare("SELECT Commission, TeamName FROM mp_promoters WHERE PromoterUniqueID = ?");
-            $stmt->execute([$parentPromoterID]);
+            // Get parent promoter details matching both string UniqueID and numeric PromoterID
+            $stmt = $conn->prepare("SELECT Commission, TeamName FROM mp_promoters WHERE TRIM(PromoterUniqueID) = TRIM(?) OR CAST(PromoterID AS CHAR) = TRIM(?)");
+            $stmt->execute([$parentPromoterID, $parentPromoterID]);
             $parentPromoter = $stmt->fetch(PDO::FETCH_ASSOC);
 
             if ($parentPromoter) {

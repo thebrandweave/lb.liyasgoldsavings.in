@@ -95,73 +95,16 @@ function updatePromoterWallet($promoters, $conn, $paymentAmount, $customerDetail
 try {
     $database = new Database();
     $conn = $database->getConnection();
-    $conn->beginTransaction();
 
     $customerUniqueID = base64_decode($_GET['ref']) ?? '';
     if (empty($customerUniqueID)) {
         throw new Exception("Customer unique ID is required");
     }
 
-    // Fetch customer details
-    $stmt = $conn->prepare("SELECT c.*, s.SchemeName, p.Amount 
-                           FROM Customers c 
-                           LEFT JOIN Payments p ON c.CustomerID = p.CustomerID 
-                           LEFT JOIN Schemes s ON p.SchemeID = s.SchemeID 
-                           WHERE c.CustomerUniqueID = ? 
-                           ORDER BY p.SubmittedAt DESC LIMIT 1");
-    $stmt->execute([$customerUniqueID]);
-    $customerDetails = $stmt->fetch(PDO::FETCH_ASSOC);
+    require_once("../../config/commission_helper.php");
+    processPromoterCommission($customerUniqueID, $conn);
 
-    $paymentAmount = $customerDetails['Amount'] ?? 850;
-    $promoters = fetchPromotersOfCustomer($customerUniqueID, $conn);
-    $walletUpdates = [];
-
-    if (!empty($promoters)) {
-        $directPromoterUpdate = updatePromoterWallet($promoters, $conn, $paymentAmount, $customerDetails);
-        $walletUpdates[] = $directPromoterUpdate;
-
-        for ($i = 0; $i < count($promoters) - 1; $i++) {
-            $currentPromoter = $promoters[$i];
-            $parentPromoter = $promoters[$i + 1];
-
-            if (!empty($currentPromoter['ParentCommission'])) {
-                $parentCommissionAmount = convertCommissionToInt($currentPromoter['ParentCommission']);
-
-                $stmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE PromoterUniqueID = ?");
-                $stmt->execute([$parentPromoter['PromoterUniqueID']]);
-                $parentWalletRecord = $stmt->fetch(PDO::FETCH_ASSOC);
-
-                if ($parentWalletRecord) {
-                    $stmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = BalanceAmount + ?, LastUpdated = CURRENT_TIMESTAMP WHERE PromoterUniqueID = ?");
-                    $stmt->execute([$parentCommissionAmount, $parentPromoter['PromoterUniqueID']]);
-
-                    // Add wallet log for parent commission
-                    $logMessage = "Parent commission earned from customer " . $customerDetails['Name'] . " (" . $customerDetails['CustomerUniqueID'] . ") for " . $customerDetails['SchemeName'] . " scheme";
-                    $stmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message) VALUES (?, ?, ?)");
-                    $stmt->execute([$parentPromoter['PromoterUniqueID'], $parentCommissionAmount, $logMessage]);
-
-                    
-
-                    $walletUpdates[] = ["type" => "update", "promoter" => $parentPromoter, "amount" => $parentCommissionAmount];
-                } else {
-                    $stmt = $conn->prepare("INSERT INTO PromoterWallet (UserID, PromoterUniqueID, BalanceAmount, Message) VALUES (?, ?, ?, ?)");
-                    $message = "Parent commission from payment";
-                    $stmt->execute([$parentPromoter['PromoterID'], $parentPromoter['PromoterUniqueID'], $parentCommissionAmount, $message]);
-
-                    // Add wallet log for new parent wallet
-                    $logMessage = "Initial wallet creation with parent commission from customer " . $customerDetails['Name'] . " (" . $customerDetails['CustomerUniqueID'] . ") for " . $customerDetails['SchemeName'] . " scheme";
-                    $stmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message) VALUES (?, ?, ?)");
-                    $stmt->execute([$parentPromoter['PromoterUniqueID'], $parentCommissionAmount, $logMessage]);
-
-                    
-
-                    $walletUpdates[] = ["type" => "create", "promoter" => $parentPromoter, "amount" => $parentCommissionAmount];
-                }
-            }
-        }
-    }
-
-    $conn->commit();
+    $_SESSION['commission_processed'] = true;
 
     // Set the commission processed flag
     $_SESSION['commission_processed'] = true;
