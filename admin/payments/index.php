@@ -570,19 +570,19 @@ include("../components/topbar.php");
 
         .confirmation-dialog {
             background: white;
-            border-radius: 10px;
-            padding: 25px;
-            width: 400px;
-            max-width: 90%;
+            border-radius: 14px;
+            padding: 32px 35px;
+            width: 580px;
+            max-width: 95%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.25);
             text-align: center;
             animation: slideIn 0.3s ease;
         }
 
         .duplicate-utr-container {
-            max-height: 200px;
+            max-height: 350px;
             overflow-y: auto;
             text-align: left;
         }
@@ -600,7 +600,7 @@ include("../components/topbar.php");
         }
 
         .confirmation-icon {
-            font-size: 48px;
+            font-size: 56px;
             margin-bottom: 15px;
         }
 
@@ -613,15 +613,15 @@ include("../components/topbar.php");
         }
 
         .confirmation-title {
-            font-size: 18px;
-            font-weight: 600;
+            font-size: 22px;
+            font-weight: 700;
             margin-bottom: 10px;
             color: #2c3e50;
         }
 
         .confirmation-message {
-            font-size: 14px;
-            color: #7f8c8d;
+            font-size: 16px;
+            color: #555;
             margin-bottom: 20px;
         }
 
@@ -629,13 +629,14 @@ include("../components/topbar.php");
             display: flex;
             justify-content: center;
             gap: 15px;
+            margin-top: 20px;
         }
 
         .confirmation-btn {
-            padding: 10px 20px;
-            border-radius: 6px;
-            font-size: 14px;
-            font-weight: 500;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
             cursor: pointer;
             border: none;
             transition: all 0.3s ease;

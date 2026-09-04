@@ -128,25 +128,26 @@ if (!empty($utr)) {
 ?>
 
 <!-- Promoter Commission Information Card -->
-<div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:12px;margin-top:12px;text-align:left;">
-    <strong style="color:#2e7d32;font-size:13px;display:block;margin-bottom:6px;">
-        <i class="fas fa-coins me-1"></i> Promoter Commissions Allocation:
+<div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:10px;padding:16px 18px;margin-top:15px;text-align:left;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
+    <strong style="color:#1b5e20;font-size:15px;display:block;margin-bottom:10px;letter-spacing:0.3px;">
+        <i class="fas fa-coins me-2"></i> Promoter Commissions Allocation:
     </strong>
     <?php if (!empty($commissionItems)): ?>
-        <div style="display:flex;flex-direction:column;gap:6px;">
+        <div style="display:flex;flex-direction:column;gap:9px;">
             <?php foreach ($commissionItems as $item): ?>
-                <div style="display:flex;justify-content:space-between;align-items:center;background:#ffffff;padding:6px 10px;border-radius:6px;border-left:3px solid #2e7d32;font-size:13px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;background:#ffffff;padding:10px 14px;border-radius:8px;border-left:4px solid #2e7d32;font-size:15px;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
                     <div>
-                        <strong><?php echo htmlspecialchars($item['role']); ?>:</strong> <?php echo htmlspecialchars($item['name']); ?> 
-                        <span style="color:#666;font-size:12px;">(<?php echo htmlspecialchars($item['id']); ?>)</span>
+                        <strong style="color:#212529;"><?php echo htmlspecialchars($item['role']); ?>:</strong> 
+                        <span style="color:#2c3e50;font-weight:600;"><?php echo htmlspecialchars($item['name']); ?></span> 
+                        <span style="color:#6c757d;font-size:13px;margin-left:2px;">(<?php echo htmlspecialchars($item['id']); ?>)</span>
                     </div>
-                    <span style="color:#2e7d32;font-weight:700;">+ ₹<?php echo number_format($item['amount'], 2); ?></span>
+                    <span style="color:#2e7d32;font-weight:700;font-size:16px;background:#d1e7dd;padding:3px 10px;border-radius:12px;">+ ₹<?php echo number_format($item['amount'], 2); ?></span>
                 </div>
             <?php endforeach; ?>
         </div>
     <?php else: ?>
-        <div style="font-size:12px;color:#555;background:#fff;padding:6px 10px;border-radius:6px;">
-            No promoter associated with this customer record.
+        <div style="font-size:14px;color:#555;background:#fff;padding:10px 14px;border-radius:8px;">
+            <i class="fas fa-info-circle me-1"></i> No promoter associated with this customer record.
         </div>
     <?php endif; ?>
 </div>
