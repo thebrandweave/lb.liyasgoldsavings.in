@@ -10,7 +10,7 @@ require_once("../../config/config.php");
 header('Content-Type: text/html; charset=utf-8');
 
 if (!isset($_GET['payment_id']) || !ctype_digit($_GET['payment_id'])) {
-    echo '';
+    echo '<div style="background:#f8f9fa;border:1px solid #dee2e6;border-radius:6px;padding:10px;margin-top:10px;text-align:left;font-size:13px;color:#666;"><i class="fas fa-info-circle me-1"></i> Invalid Payment ID.</div>';
     exit;
 }
 
@@ -19,7 +19,7 @@ $database = new Database();
 $conn = $database->getConnection();
 
 if (!$conn) {
-    echo '';
+    echo '<div style="background:#f8f9fa;border:1px solid #dee2e6;border-radius:6px;padding:10px;margin-top:10px;text-align:left;font-size:13px;color:#666;"><i class="fas fa-info-circle me-1"></i> Database connection error.</div>';
     exit;
 }
 
@@ -27,22 +27,22 @@ function convertCommissionToIntLocal($commission) {
     return intval(preg_replace('/[^0-9]/', '', (string)$commission));
 }
 
-// Get payment and customer info
+// Fetch payment and customer details using LEFT JOIN
 $pStmt = $conn->prepare("
     SELECT p.PaymentID, p.Amount, p.UTRNumber, c.CustomerID, c.CustomerUniqueID, c.Name as CustomerName, TRIM(c.PromoterID) as DirectPromoterRef
     FROM Payments p
-    JOIN Customers c ON p.CustomerID = c.CustomerID
+    LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
     WHERE p.PaymentID = ?
 ");
 $pStmt->execute([$paymentId]);
 $paymentData = $pStmt->fetch(PDO::FETCH_ASSOC);
 
 if (!$paymentData) {
-    echo '';
+    echo '<div style="background:#f8f9fa;border:1px solid #dee2e6;border-radius:6px;padding:10px;margin-top:10px;text-align:left;font-size:13px;color:#666;"><i class="fas fa-info-circle me-1"></i> Payment record not found.</div>';
     exit;
 }
 
-// Fetch promoter tree details
+// Pre-load all promoters (from both Promoters and mp_promoters if available)
 $allPStmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission, Name FROM Promoters");
 $allPStmt->execute();
 $allPromoters = $allPStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -55,7 +55,7 @@ foreach ($allPromoters as $p) {
     if (!empty($pID)) $promoterByRef[$pID] = $p;
 }
 
-$directRef = $paymentData['DirectPromoterRef'];
+$directRef = trim($paymentData['DirectPromoterRef'] ?? '');
 $hierarchy = [];
 $currRef = $directRef;
 $visited = [];
@@ -74,14 +74,12 @@ if (!empty($hierarchy)) {
     $directPromoter = $hierarchy[0];
     $directID = trim($directPromoter['PromoterUniqueID']);
     $directComm = convertCommissionToIntLocal($directPromoter['Commission']);
-    if ($directComm > 0) {
-        $commissionItems[] = [
-            'role' => 'Direct Promoter',
-            'name' => $directPromoter['Name'],
-            'id' => $directID,
-            'amount' => $directComm
-        ];
-    }
+    $commissionItems[] = [
+        'role' => 'Direct Promoter',
+        'name' => $directPromoter['Name'],
+        'id' => $directID,
+        'amount' => $directComm
+    ];
 
     // Parent Promoters
     for ($i = 0; $i < count($hierarchy) - 1; $i++) {
@@ -98,15 +96,13 @@ if (!empty($hierarchy)) {
             $gap = $parentComm - $childComm;
         }
 
-        if ($gap > 0) {
-            $roleLabel = ($i === 0) ? 'Parent Promoter' : 'Grandparent Promoter';
-            $commissionItems[] = [
-                'role' => $roleLabel,
-                'name' => $parent['Name'],
-                'id' => $parentID,
-                'amount' => $gap
-            ];
-        }
+        $roleLabel = ($i === 0) ? 'Parent Promoter' : 'Grandparent Promoter';
+        $commissionItems[] = [
+            'role' => $roleLabel,
+            'name' => $parent['Name'],
+            'id' => $parentID,
+            'amount' => $gap
+        ];
     }
 }
 
@@ -131,11 +127,12 @@ if (!empty($utr)) {
 }
 ?>
 
-<?php if (!empty($commissionItems)): ?>
-    <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:12px;margin-top:12px;text-align:left;">
-        <strong style="color:#2e7d32;font-size:13px;display:block;margin-bottom:6px;">
-            <i class="fas fa-coins me-1"></i> Commissions to be credited upon confirmation:
-        </strong>
+<!-- Promoter Commission Information Card -->
+<div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:8px;padding:12px;margin-top:12px;text-align:left;">
+    <strong style="color:#2e7d32;font-size:13px;display:block;margin-bottom:6px;">
+        <i class="fas fa-coins me-1"></i> Promoter Commissions Allocation:
+    </strong>
+    <?php if (!empty($commissionItems)): ?>
         <div style="display:flex;flex-direction:column;gap:6px;">
             <?php foreach ($commissionItems as $item): ?>
                 <div style="display:flex;justify-content:space-between;align-items:center;background:#ffffff;padding:6px 10px;border-radius:6px;border-left:3px solid #2e7d32;font-size:13px;">
@@ -147,8 +144,12 @@ if (!empty($utr)) {
                 </div>
             <?php endforeach; ?>
         </div>
-    </div>
-<?php endif; ?>
+    <?php else: ?>
+        <div style="font-size:12px;color:#555;background:#fff;padding:6px 10px;border-radius:6px;">
+            No promoter associated with this customer record.
+        </div>
+    <?php endif; ?>
+</div>
 
 <?php if (!empty($dupes)): ?>
     <div class="duplicate-utr-list" style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:10px 12px;margin-top:12px;text-align:left;">
@@ -184,6 +185,5 @@ if (!empty($utr)) {
                 <?php endforeach; ?>
             </tbody>
         </table>
-        <p style="margin:6px 0 0;font-size:11px;color:#856404;">You can still approve or reject this payment.</p>
     </div>
 <?php endif; ?>
