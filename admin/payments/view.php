@@ -87,6 +87,84 @@ try {
         $utrStmt->execute([trim($payment['UTRNumber']), $paymentId]);
         $duplicateUtrPayments = $utrStmt->fetchAll(PDO::FETCH_ASSOC);
     }
+
+    // Check if this is the customer's first verified payment for this scheme
+    $isFirstPayment = true;
+    $viewCommissionItems = [];
+    if (!empty($payment['CustomerID']) && !empty($payment['SchemeID'])) {
+        $vCountStmt = $conn->prepare("
+            SELECT COUNT(*) as v_count 
+            FROM Payments 
+            WHERE CustomerID = ? 
+              AND SchemeID = ? 
+              AND Status = 'Verified'
+              AND PaymentID != ?
+        ");
+        $vCountStmt->execute([$payment['CustomerID'], $payment['SchemeID'], $paymentId]);
+        $existingVerifiedCount = intval($vCountStmt->fetch(PDO::FETCH_ASSOC)['v_count'] ?? 0);
+        if ($existingVerifiedCount > 0) {
+            $isFirstPayment = false;
+        }
+    }
+
+    if ($isFirstPayment && !empty($payment['PromoterID'])) {
+        $pStmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission, Name FROM Promoters");
+        $pStmt->execute();
+        $allPromoters = $pStmt->fetchAll(PDO::FETCH_ASSOC);
+
+        $promoterByRef = [];
+        foreach ($allPromoters as $p) {
+            $pID = (string)$p['PromoterID'];
+            $uID = trim($p['PromoterUniqueID']);
+            if (!empty($uID)) $promoterByRef[$uID] = $p;
+            if (!empty($pID)) $promoterByRef[$pID] = $p;
+        }
+
+        $currRef = trim($payment['PromoterID']);
+        $hierarchy = [];
+        $visited = [];
+        while (!empty($currRef) && !isset($visited[$currRef])) {
+            $visited[$currRef] = true;
+            if (!isset($promoterByRef[$currRef])) break;
+            $pData = $promoterByRef[$currRef];
+            $hierarchy[] = $pData;
+            $currRef = !empty($pData['ParentPromoterID']) ? trim($pData['ParentPromoterID']) : null;
+        }
+
+        if (!empty($hierarchy)) {
+            $convInt = function($val) {
+                return intval(preg_replace('/[^0-9]/', '', (string)$val));
+            };
+
+            $directPromoter = $hierarchy[0];
+            $viewCommissionItems[] = [
+                'role' => 'Direct Promoter',
+                'name' => $directPromoter['Name'],
+                'id' => trim($directPromoter['PromoterUniqueID']),
+                'amount' => $convInt($directPromoter['Commission'])
+            ];
+
+            for ($i = 0; $i < count($hierarchy) - 1; $i++) {
+                $child = $hierarchy[$i];
+                $parent = $hierarchy[$i + 1];
+                $childComm = $convInt($child['Commission']);
+                $parentComm = $convInt($parent['Commission']);
+                $gap = 0;
+                if (!empty($child['ParentCommission']) && $convInt($child['ParentCommission']) > 0) {
+                    $gap = $convInt($child['ParentCommission']);
+                } else if ($parentComm > $childComm) {
+                    $gap = $parentComm - $childComm;
+                }
+                $roleLabel = ($i === 0) ? 'Parent Promoter' : 'Grandparent Promoter';
+                $viewCommissionItems[] = [
+                    'role' => $roleLabel,
+                    'name' => $parent['Name'],
+                    'id' => trim($parent['PromoterUniqueID']),
+                    'amount' => $gap
+                ];
+            }
+        }
+    }
 } catch (PDOException $e) {
     $_SESSION['error_message'] = "Error fetching payment details: " . $e->getMessage();
     header("Location: index.php");
@@ -613,30 +691,26 @@ include("../components/topbar.php");
                       Payment #<strong><?php echo htmlspecialchars($popupData['payment_id']); ?></strong> for customer <strong><?php echo htmlspecialchars($popupData['customer_name']); ?></strong> (<code><?php echo htmlspecialchars($popupData['customer_id']); ?></code>) has been verified.
                     </p>
                     
+                    <?php if (!empty($popupData['credited'])): ?>
                     <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 16px;">
                       <h6 style="color: #198754; font-weight: 700; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
                         <i class="fas fa-coins me-1"></i> Commission Allocation
                       </h6>
-                      <?php if (!empty($popupData['credited'])): ?>
-                        <div style="display: flex; flex-direction: column; gap: 10px;">
-                          <?php foreach ($popupData['credited'] as $item): ?>
-                            <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px 14px; border-radius: 8px; border-left: 4px solid #198754; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                              <div>
-                                <div style="font-weight: 600; color: #212529; font-size: 14px;"><?php echo htmlspecialchars($item['role']); ?>: <?php echo htmlspecialchars($item['name']); ?></div>
-                                <div style="font-size: 12px; color: #6c757d;">ID: <?php echo htmlspecialchars($item['id']); ?></div>
-                              </div>
-                              <span style="background: #d1e7dd; color: #0f5132; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 14px;">
-                                + ₹<?php echo number_format($item['amount'], 2); ?>
-                              </span>
+                      <div style="display: flex; flex-direction: column; gap: 10px;">
+                        <?php foreach ($popupData['credited'] as $item): ?>
+                          <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px 14px; border-radius: 8px; border-left: 4px solid #198754; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                            <div>
+                              <div style="font-weight: 600; color: #212529; font-size: 14px;"><?php echo htmlspecialchars($item['role']); ?>: <?php echo htmlspecialchars($item['name']); ?></div>
+                              <div style="font-size: 12px; color: #6c757d;">ID: <?php echo htmlspecialchars($item['id']); ?></div>
                             </div>
-                          <?php endforeach; ?>
-                        </div>
-                      <?php else: ?>
-                        <p style="color: #6c757d; margin: 0; font-size: 13px;">
-                          <i class="fas fa-info-circle me-1"></i> Commissions were already credited previously for this customer payment.
-                        </p>
-                      <?php endif; ?>
+                            <span style="background: #d1e7dd; color: #0f5132; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 14px;">
+                              + ₹<?php echo number_format($item['amount'], 2); ?>
+                            </span>
+                          </div>
+                        <?php endforeach; ?>
+                      </div>
                     </div>
+                    <?php endif; ?>
                   </div>
                   <div class="modal-footer" style="background: #f8f9fa; border-top: 1px solid #eee; padding: 12px 24px;">
                     <button type="button" class="btn btn-success px-4" style="border-radius: 8px; font-weight: 600;" onclick="document.getElementById('commissionSuccessModal').remove()">OK / Close</button>
@@ -932,9 +1006,28 @@ include("../components/topbar.php");
 
     <!-- Action Modal -->
     <div class="action-modal" id="actionModal">
-        <div class="action-modal-content">
+        <div class="action-modal-content" style="max-width: 520px;">
             <div class="action-modal-title" id="actionModalTitle">Verify Payment</div>
             <div class="action-modal-body">
+                <?php if ($isFirstPayment && !empty($viewCommissionItems)): ?>
+                    <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:10px;padding:14px 16px;margin-bottom:15px;text-align:left;">
+                        <strong style="color:#1b5e20;font-size:14px;display:block;margin-bottom:8px;letter-spacing:0.3px;">
+                            <i class="fas fa-coins me-2"></i> Promoter Commissions Allocation:
+                        </strong>
+                        <div style="display:flex;flex-direction:column;gap:8px;">
+                            <?php foreach ($viewCommissionItems as $item): ?>
+                                <div style="display:flex;justify-content:space-between;align-items:center;background:#ffffff;padding:8px 12px;border-radius:6px;border-left:3px solid #2e7d32;font-size:14px;box-shadow:0 1px 3px rgba(0,0,0,0.05);">
+                                    <div>
+                                        <strong style="color:#212529;"><?php echo htmlspecialchars($item['role']); ?>:</strong> 
+                                        <span style="color:#2c3e50;font-weight:600;"><?php echo htmlspecialchars($item['name']); ?></span> 
+                                        <span style="color:#6c757d;font-size:12px;">(<?php echo htmlspecialchars($item['id']); ?>)</span>
+                                    </div>
+                                    <span style="color:#2e7d32;font-weight:700;font-size:14px;background:#d1e7dd;padding:2px 8px;border-radius:10px;">+ ₹<?php echo number_format($item['amount'], 2); ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                    </div>
+                <?php endif; ?>
                 <form id="actionForm" method="POST">
                     <input type="hidden" name="payment_id" value="<?php echo $paymentId; ?>">
                     <input type="hidden" name="action" id="actionType" value="">

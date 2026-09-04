@@ -29,7 +29,7 @@ function convertCommissionToIntLocal($commission) {
 
 // Fetch payment and customer details using LEFT JOIN
 $pStmt = $conn->prepare("
-    SELECT p.PaymentID, p.Amount, p.UTRNumber, c.CustomerID, c.CustomerUniqueID, c.Name as CustomerName, TRIM(c.PromoterID) as DirectPromoterRef
+    SELECT p.PaymentID, p.Amount, p.UTRNumber, p.SchemeID, c.CustomerID, c.CustomerUniqueID, c.Name as CustomerName, TRIM(c.PromoterID) as DirectPromoterRef
     FROM Payments p
     LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
     WHERE p.PaymentID = ?
@@ -40,6 +40,24 @@ $paymentData = $pStmt->fetch(PDO::FETCH_ASSOC);
 if (!$paymentData) {
     echo '<div style="background:#f8f9fa;border:1px solid #dee2e6;border-radius:6px;padding:10px;margin-top:10px;text-align:left;font-size:13px;color:#666;"><i class="fas fa-info-circle me-1"></i> Payment record not found.</div>';
     exit;
+}
+
+// Check if this is the customer's first verified payment for this scheme
+$isFirstPayment = true;
+if (!empty($paymentData['CustomerID']) && !empty($paymentData['SchemeID'])) {
+    $vCountStmt = $conn->prepare("
+        SELECT COUNT(*) as v_count 
+        FROM Payments 
+        WHERE CustomerID = ? 
+          AND SchemeID = ? 
+          AND Status = 'Verified'
+          AND PaymentID != ?
+    ");
+    $vCountStmt->execute([$paymentData['CustomerID'], $paymentData['SchemeID'], $paymentId]);
+    $existingVerifiedCount = intval($vCountStmt->fetch(PDO::FETCH_ASSOC)['v_count'] ?? 0);
+    if ($existingVerifiedCount > 0) {
+        $isFirstPayment = false;
+    }
 }
 
 // Pre-load all promoters (from both Promoters and mp_promoters if available)
@@ -127,6 +145,7 @@ if (!empty($utr)) {
 }
 ?>
 
+<?php if ($isFirstPayment): ?>
 <!-- Promoter Commission Information Card -->
 <div style="background:#e8f5e9;border:1px solid #a5d6a7;border-radius:10px;padding:16px 18px;margin-top:15px;text-align:left;box-shadow:0 2px 6px rgba(0,0,0,0.04);">
     <strong style="color:#1b5e20;font-size:15px;display:block;margin-bottom:10px;letter-spacing:0.3px;">
@@ -151,6 +170,7 @@ if (!empty($utr)) {
         </div>
     <?php endif; ?>
 </div>
+<?php endif; ?>
 
 <?php if (!empty($dupes)): ?>
     <div class="duplicate-utr-list" style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:10px 12px;margin-top:12px;text-align:left;">
