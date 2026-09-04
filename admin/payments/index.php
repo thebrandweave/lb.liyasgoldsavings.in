@@ -1649,10 +1649,40 @@ include("../components/topbar.php");
                     loading.style.display = 'block';
                 }
 
-                // Submit the form
-                setTimeout(() => {
+                // Submit form via fetch AJAX and pop up success modal instantly
+                const formData = new FormData(form);
+                fetch(window.location.href, {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(function(response) { return response.text(); })
+                .then(function(html) {
+                    const parser = new DOMParser();
+                    const doc = parser.parseFromString(html, 'text/html');
+                    const modal = doc.getElementById('commissionSuccessModal');
+
+                    if (modal) {
+                        // Remove existing modal if any
+                        const existing = document.getElementById('commissionSuccessModal');
+                        if (existing) existing.remove();
+
+                        // Append new modal and make it closeable with reload
+                        document.body.appendChild(modal);
+                        
+                        // Add reload trigger when user closes modal
+                        const closeBtns = modal.querySelectorAll('.btn-close, .btn-success');
+                        closeBtns.forEach(btn => {
+                            btn.onclick = function() {
+                                window.location.reload();
+                            };
+                        });
+                    } else {
+                        window.location.reload();
+                    }
+                })
+                .catch(function() {
                     form.submit();
-                }, 500);
+                });
             };
 
             // Show overlay
