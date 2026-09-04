@@ -117,7 +117,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
         if (!empty($errors)) {
             $_SESSION['error_message'] = implode("<br>", $errors);
-            $conn->rollBack();
+            if ($conn->inTransaction()) {
+                $conn->rollBack();
+            }
+            header("Location: add.php");
+            exit();
         } else {
             // Generate unique promoter ID
             // Get the latest PromoterID from the Promoters table
