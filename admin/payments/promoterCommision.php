@@ -1,20 +1,11 @@
 <?php
+// admin/payments/promoterCommision.php
 $menuPath = "../";
 require_once("../../config/config.php");
 
-// Start session if not already started
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
-
-// Check if commission was already processed
-if (isset($_SESSION['commission_processed']) && $_SESSION['commission_processed'] === true) {
-    $_SESSION['info_message'] = "Commission has already been processed for this payment.";
-    header("Location: index.php");
-    exit();
-}
-
-// WhatsApp messaging feature removed
 
 function fetchPromotersOfCustomer($customerUniqueID, $conn)
 {
@@ -25,23 +16,34 @@ function fetchPromotersOfCustomer($customerUniqueID, $conn)
         $stmt->execute([$customerUniqueID]);
         $customer = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        if (!$customer) {
-            throw new Exception("No promoter found for the customer.");
+        if (!$customer || empty($customer['PromoterID'])) {
+            return [];
         }
 
-        $currentPromoterID = $customer['PromoterID'];
+        $currentPromoterID = trim($customer['PromoterID']);
 
-        while ($currentPromoterID) {
-            $stmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission, Name, Contact FROM Promoters WHERE PromoterUniqueID = ?");
-            $stmt->execute([$currentPromoterID]);
-            $promoter = $stmt->fetch(PDO::FETCH_ASSOC);
+        // Pre-load all promoters to build hierarchy matching string and numeric IDs
+        $pStmt = $conn->prepare("SELECT PromoterID, PromoterUniqueID, ParentPromoterID, Commission, ParentCommission, Name, Contact FROM Promoters");
+        $pStmt->execute();
+        $allPromoters = $pStmt->fetchAll(PDO::FETCH_ASSOC);
 
-            if (!$promoter) {
-                break;
-            }
+        $promoterByRef = [];
+        foreach ($allPromoters as $p) {
+            $pID = (string)$p['PromoterID'];
+            $uID = trim($p['PromoterUniqueID']);
+            if (!empty($uID)) $promoterByRef[$uID] = $p;
+            if (!empty($pID)) $promoterByRef[$pID] = $p;
+        }
 
-            $promoters[] = $promoter;
-            $currentPromoterID = $promoter['ParentPromoterID'];
+        $currRef = $currentPromoterID;
+        $visited = [];
+
+        while (!empty($currRef) && !isset($visited[$currRef])) {
+            $visited[$currRef] = true;
+            if (!isset($promoterByRef[$currRef])) break;
+            $pData = $promoterByRef[$currRef];
+            $promoters[] = $pData;
+            $currRef = !empty($pData['ParentPromoterID']) ? trim($pData['ParentPromoterID']) : null;
         }
     } catch (Exception $e) {
         error_log("Error fetching promoters: " . $e->getMessage());
@@ -52,67 +54,86 @@ function fetchPromotersOfCustomer($customerUniqueID, $conn)
 
 function convertCommissionToInt($commission)
 {
-    return intval(preg_replace('/[^0-9]/', '', $commission));
+    return intval(preg_replace('/[^0-9]/', '', (string)$commission));
 }
 
-function updatePromoterWallet($promoters, $conn, $paymentAmount, $customerDetails)
-{
-    $directPromoter = $promoters[0];
-    $commissionAmount = convertCommissionToInt($directPromoter['Commission']);
-
-    $stmt = $conn->prepare("SELECT BalanceID FROM PromoterWallet WHERE PromoterUniqueID = ?");
-    $stmt->execute([$directPromoter['PromoterUniqueID']]);
-    $walletRecord = $stmt->fetch(PDO::FETCH_ASSOC);
-
-    if ($walletRecord) {
-        $stmt = $conn->prepare("UPDATE PromoterWallet SET BalanceAmount = BalanceAmount + ?, LastUpdated = CURRENT_TIMESTAMP WHERE PromoterUniqueID = ?");
-        $stmt->execute([$commissionAmount, $directPromoter['PromoterUniqueID']]);
-
-        // Add wallet log for direct commission
-        $logMessage = "Commission earned from customer " . $customerDetails['Name'] . " (" . $customerDetails['CustomerUniqueID'] . ") for " . $customerDetails['SchemeName'] . " scheme";
-        $stmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message) VALUES (?, ?, ?)");
-        $stmt->execute([$directPromoter['PromoterUniqueID'], $commissionAmount, $logMessage]);
-
-        
-
-        return ["type" => "update", "promoter" => $directPromoter, "amount" => $commissionAmount];
-    } else {
-        $stmt = $conn->prepare("INSERT INTO PromoterWallet (UserID, PromoterUniqueID, BalanceAmount, Message) VALUES (?, ?, ?, ?)");
-        $message = "Commission from payment";
-        $stmt->execute([$directPromoter['PromoterID'], $directPromoter['PromoterUniqueID'], $commissionAmount, $message]);
-
-        // Add wallet log for new wallet creation
-        $logMessage = "Initial wallet creation with commission from customer " . $customerDetails['Name'] . " (" . $customerDetails['CustomerUniqueID'] . ") for " . $customerDetails['SchemeName'] . " scheme";
-        $stmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message) VALUES (?, ?, ?)");
-        $stmt->execute([$directPromoter['PromoterUniqueID'], $commissionAmount, $logMessage]);
-
-        
-
-        return ["type" => "create", "promoter" => $directPromoter, "amount" => $commissionAmount];
-    }
-}
+$error = null;
+$customerDetails = null;
+$promoterBreakdown = [];
+$paymentAmount = 0;
 
 try {
     $database = new Database();
     $conn = $database->getConnection();
 
-    $customerUniqueID = base64_decode($_GET['ref']) ?? '';
+    $customerUniqueID = isset($_GET['ref']) ? base64_decode($_GET['ref']) : '';
     if (empty($customerUniqueID)) {
-        throw new Exception("Customer unique ID is required");
+        throw new Exception("Customer unique ID reference is required.");
     }
 
     require_once("../../config/commission_helper.php");
     processPromoterCommission($customerUniqueID, $conn);
 
-    $_SESSION['commission_processed'] = true;
+    // Fetch customer details and payment info
+    $stmt = $conn->prepare("
+        SELECT c.*, s.SchemeName, p.Amount, p.PaymentID, p.VerifiedAt
+        FROM Customers c 
+        LEFT JOIN Payments p ON c.CustomerID = p.CustomerID 
+        LEFT JOIN Schemes s ON p.SchemeID = s.SchemeID 
+        WHERE c.CustomerUniqueID = ? 
+        ORDER BY p.SubmittedAt DESC LIMIT 1
+    ");
+    $stmt->execute([$customerUniqueID]);
+    $customerDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    // Set the commission processed flag
-    $_SESSION['commission_processed'] = true;
-} catch (Exception $e) {
-    if (isset($conn)) {
-        $conn->rollBack();
+    if (!$customerDetails) {
+        throw new Exception("Customer details not found for ID: " . htmlspecialchars($customerUniqueID));
     }
-    error_log("Error during promoter fetching or wallet update: " . $e->getMessage());
+
+    $paymentAmount = $customerDetails['Amount'] ?? 0;
+    $promoters = fetchPromotersOfCustomer($customerUniqueID, $conn);
+
+    if (!empty($promoters)) {
+        for ($i = 0; $i < count($promoters); $i++) {
+            $p = $promoters[$i];
+            $uID = trim($p['PromoterUniqueID']);
+            $numID = (string)$p['PromoterID'];
+
+            // Get live wallet balance from PromoterWallet table
+            $wStmt = $conn->prepare("SELECT BalanceAmount FROM PromoterWallet WHERE TRIM(PromoterUniqueID) = ? OR UserID = ?");
+            $wStmt->execute([$uID, $numID]);
+            $wRow = $wStmt->fetch(PDO::FETCH_ASSOC);
+            $liveBal = floatval($wRow['BalanceAmount'] ?? 0);
+
+            // Role label
+            $role = ($i === 0) ? 'Direct Promoter' : (($i === 1) ? 'Parent Promoter' : 'Grandparent Promoter');
+
+            // Commission credited for this payment
+            $comm = 0;
+            if ($i === 0) {
+                $comm = convertCommissionToInt($p['Commission']);
+            } else {
+                $childComm = convertCommissionToInt($promoters[$i - 1]['Commission']);
+                $parentComm = convertCommissionToInt($p['Commission']);
+                if (!empty($promoters[$i - 1]['ParentCommission']) && convertCommissionToInt($promoters[$i - 1]['ParentCommission']) > 0) {
+                    $comm = convertCommissionToInt($promoters[$i - 1]['ParentCommission']);
+                } else if ($parentComm > $childComm) {
+                    $comm = $parentComm - $childComm;
+                }
+            }
+
+            $promoterBreakdown[] = [
+                'role' => $role,
+                'name' => $p['Name'],
+                'id' => $uID,
+                'contact' => $p['Contact'] ?? '',
+                'commission_rate' => convertCommissionToInt($p['Commission']),
+                'credited_amount' => $comm,
+                'wallet_balance' => $liveBal
+            ];
+        }
+    }
+} catch (Exception $e) {
     $error = $e->getMessage();
 }
 
@@ -125,87 +146,16 @@ include("../components/sidebar.php");
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Promoter Commission Management</title>
+    <title>Promoter Commission Summary</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../assets/css/admin.css">
     <style>
         .content-wrapper {
-            padding: 20px;
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .page-header {
-            margin-bottom: 30px;
-        }
-
-        .page-title {
-            font-size: 24px;
-            font-weight: 600;
-            color: #2c3e50;
-            margin: 0;
-        }
-
-        .commission-card {
-            background: white;
-            border-radius: 12px;
             padding: 25px;
-            margin-bottom: 25px;
-            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
-        }
-
-        .commission-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-        }
-
-        .wallet-update {
-            background: #e8f5e9;
-            border-left: 4px solid #2ecc71;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-
-        .wallet-update.create {
-            background: #e3f2fd;
-            border-left-color: #3498db;
-        }
-
-        .wallet-update.update {
-            background: #e8f5e9;
-            border-left-color: #2ecc71;
-        }
-
-        .wallet-message {
-            font-size: 14px;
-            color: #2c3e50;
-        }
-
-        .wallet-amount {
-            font-weight: 600;
-            color: #27ae60;
-            margin-top: 5px;
-        }
-
-        .error-message {
-            background: #fee2e2;
-            border-left: 4px solid #e74c3c;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            color: #c0392b;
-        }
-
-        .success-message {
-            background: #e8f5e9;
-            border-left: 4px solid #2ecc71;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            color: #27ae60;
+            max-width: 1100px;
+            margin: 0 auto;
+            font-family: 'Poppins', sans-serif;
         }
 
         .back-button {
@@ -213,7 +163,7 @@ include("../components/sidebar.php");
             align-items: center;
             gap: 8px;
             padding: 10px 20px;
-            background: #3498db;
+            background: #2c3e50;
             color: white;
             border-radius: 8px;
             text-decoration: none;
@@ -223,55 +173,113 @@ include("../components/sidebar.php");
         }
 
         .back-button:hover {
-            background: #2980b9;
+            background: #1a252f;
             transform: translateY(-2px);
         }
 
-        .payment-info {
-            background: #f8f9fa;
-            border-radius: 8px;
+        .summary-card {
+            background: white;
+            border-radius: 14px;
+            padding: 25px;
+            margin-bottom: 25px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.06);
+        }
+
+        .payment-banner {
+            background: #e8f5e9;
+            border-left: 5px solid #2ecc71;
+            border-radius: 10px;
             padding: 20px;
             margin-bottom: 25px;
-            border-left: 4px solid #3498db;
         }
 
-        .payment-info h3 {
-            color: #2c3e50;
-            margin-bottom: 15px;
+        .payment-banner h3 {
+            color: #27ae60;
+            margin: 0 0 10px 0;
+            font-size: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .promoter-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .promoter-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+            border-top: 4px solid #3498db;
+            transition: all 0.3s ease;
+        }
+
+        .promoter-card.direct {
+            border-top-color: #2ecc71;
+        }
+
+        .promoter-card.parent {
+            border-top-color: #f39c12;
+        }
+
+        .promoter-role {
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+            color: #7f8c8d;
+            margin-bottom: 6px;
+        }
+
+        .promoter-name {
             font-size: 18px;
-        }
-
-        .payment-info p {
-            color: #34495e;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        .total-amount {
             font-weight: 600;
             color: #2c3e50;
-            margin-top: 10px;
+            margin-bottom: 12px;
         }
 
-        .info-message {
-            background: #e3f2fd;
-            border-left: 4px solid #3498db;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 20px;
-            color: #2980b9;
-        }
-
-        .auto-redirect {
-            text-align: center;
-            margin-top: 20px;
-            color: #7f8c8d;
+        .info-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px dashed #edf2f7;
             font-size: 14px;
         }
 
-        .countdown {
+        .info-row:last-child {
+            border-bottom: none;
+        }
+
+        .info-label {
+            color: #718096;
+        }
+
+        .info-value {
             font-weight: 600;
-            color: #3498db;
+            color: #2d3748;
+        }
+
+        .wallet-badge {
+            background: #d1e7dd;
+            color: #0f5132;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 16px;
+        }
+
+        .error-box {
+            background: #fee2e2;
+            border-left: 4px solid #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            color: #c0392b;
+            margin-bottom: 20px;
         }
     </style>
 </head>
@@ -282,77 +290,62 @@ include("../components/sidebar.php");
             <i class="fas fa-arrow-left"></i> Back to Payments
         </a>
 
-        <div class="page-header">
-            <h1 class="page-title">Promoter Commission Management</h1>
-        </div>
-
-        <?php if (isset($error)): ?>
-            <div class="error-message">
-                <i class="fas fa-exclamation-circle"></i> <?php echo htmlspecialchars($error); ?>
+        <?php if (!empty($error)): ?>
+            <div class="error-box">
+                <i class="fas fa-exclamation-circle me-2"></i> <?php echo htmlspecialchars($error); ?>
             </div>
         <?php endif; ?>
 
-        <?php if (empty($promoters)): ?>
-            <div class="commission-card">
-                <div class="error-message">
-                    <i class="fas fa-exclamation-circle"></i> No promoters found for this customer.
-                </div>
-            </div>
-        <?php else: ?>
-            <div class="payment-info">
-                <h3>Payment Information</h3>
-                <p>
-                    Customer <strong><?php echo htmlspecialchars($customerDetails['CustomerUniqueID']); ?> - <?php echo htmlspecialchars($customerDetails['Name']); ?></strong>
-                    has made their first payment to the <strong><?php echo htmlspecialchars($customerDetails['SchemeName']); ?></strong> scheme.
-                </p>
-                <p class="total-amount">
-                    Total Payment Amount: ₹<?php echo number_format($paymentAmount, 2); ?>
+        <?php if ($customerDetails): ?>
+            <div class="payment-banner">
+                <h3><i class="fas fa-check-circle"></i> Payment Verified & Commissions Updated</h3>
+                <p style="margin: 0; color: #2c3e50; font-size: 15px;">
+                    Customer: <strong><?php echo htmlspecialchars($customerDetails['Name']); ?></strong> 
+                    (<code><?php echo htmlspecialchars($customerDetails['CustomerUniqueID']); ?></code>) | 
+                    Scheme: <strong><?php echo htmlspecialchars($customerDetails['SchemeName']); ?></strong> | 
+                    Amount Paid: <strong>₹<?php echo number_format($paymentAmount, 2); ?></strong>
                 </p>
             </div>
 
-            <?php if (!empty($walletUpdates)): ?>
-                <div class="commission-card">
-                    <h2 style="margin-bottom: 20px; color: #2c3e50;">Wallet Updates</h2>
-                    <?php foreach ($walletUpdates as $update): ?>
-                        <div class="wallet-update <?php echo $update['type']; ?>">
-                            <div class="wallet-message">
-                                <?php if ($update['type'] === 'create'): ?>
-                                    <i class="fas fa-plus-circle"></i> Created new wallet for Promoter: <?php echo htmlspecialchars($update['promoter']['Name']); ?> (ID: <?php echo htmlspecialchars($update['promoter']['PromoterUniqueID']); ?>)
-                                <?php else: ?>
-                                    <i class="fas fa-sync-alt"></i> Updated wallet for Promoter: <?php echo htmlspecialchars($update['promoter']['Name']); ?> (ID: <?php echo htmlspecialchars($update['promoter']['PromoterUniqueID']); ?>)
-                                <?php endif; ?>
-                            </div>
-                            <div class="wallet-amount">
-                                Amount: ₹<?php echo number_format($update['amount'], 2); ?>
-                            </div>
-                        </div>
-                    <?php endforeach; ?>
-                </div>
+            <div class="summary-card">
+                <h2 style="font-size: 20px; color: #2c3e50; margin: 0 0 15px 0;">
+                    <i class="fas fa-wallet me-2"></i> Promoters Updated Wallet Summary
+                </h2>
 
-                <!-- <div class="auto-redirect">
-                    <p>You will be redirected to the payments page in <span class="countdown">15</span> seconds...</p>
-                </div> -->
-            <?php endif; ?>
+                <?php if (!empty($promoterBreakdown)): ?>
+                    <div class="promoter-grid">
+                        <?php foreach ($promoterBreakdown as $idx => $p): ?>
+                            <div class="promoter-card <?php echo ($idx === 0) ? 'direct' : 'parent'; ?>">
+                                <div class="promoter-role"><?php echo htmlspecialchars($p['role']); ?></div>
+                                <div class="promoter-name"><?php echo htmlspecialchars($p['name']); ?></div>
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Promoter Unique ID:</span>
+                                    <span class="info-value"><code><?php echo htmlspecialchars($p['id']); ?></code></span>
+                                </div>
+                                
+                                <div class="info-row">
+                                    <span class="info-label">Base Commission Rate:</span>
+                                    <span class="info-value">₹<?php echo number_format($p['commission_rate'], 2); ?></span>
+                                </div>
+
+                                <div class="info-row">
+                                    <span class="info-label">Commission Credited:</span>
+                                    <span class="info-value text-success" style="color: #27ae60;">+ ₹<?php echo number_format($p['credited_amount'], 2); ?></span>
+                                </div>
+
+                                <div class="info-row" style="margin-top: 10px; padding-top: 12px; border-top: 2px solid #e2e8f0;">
+                                    <span class="info-label" style="font-weight: 600; color: #2c3e50;">Updated Wallet Balance:</span>
+                                    <span class="wallet-badge">₹<?php echo number_format($p['wallet_balance'], 2); ?></span>
+                                </div>
+                            </div>
+                        <?php endforeach; ?>
+                    </div>
+                <?php else: ?>
+                    <p style="color: #7f8c8d; margin: 0;">No promoter associated with this customer record.</p>
+                <?php endif; ?>
+            </div>
         <?php endif; ?>
     </div>
-
-    <!-- <script>
-        // Auto redirect after 5 seconds
-        let countdown = 15;
-        const countdownElement = document.querySelector('.countdown');
-
-        if (countdownElement) {
-            const timer = setInterval(() => {
-                countdown--;
-                countdownElement.textContent = countdown;
-
-                if (countdown <= 0) {
-                    clearInterval(timer);
-                    window.location.href = 'index.php';
-                }
-            }, 1000);
-        }
-    </script> -->
 </body>
-
 </html>
