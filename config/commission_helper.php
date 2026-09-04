@@ -19,7 +19,7 @@ function processPromoterCommission($customerUniqueID, $conn)
     try {
         // Fetch customer details and latest payment
         $stmt = $conn->prepare("
-            SELECT c.*, s.SchemeName, p.Amount 
+            SELECT c.*, s.SchemeName, p.PaymentID, p.SchemeID, p.Amount 
             FROM Customers c 
             LEFT JOIN Payments p ON c.CustomerID = p.CustomerID 
             LEFT JOIN Schemes s ON p.SchemeID = s.SchemeID 
@@ -31,6 +31,24 @@ function processPromoterCommission($customerUniqueID, $conn)
 
         if (!$customerDetails || empty($customerDetails['PromoterID'])) {
             return ['success' => false, 'credited' => []];
+        }
+
+        // STRICT RULE: Commissions (both direct and parent differential) are awarded ONLY on the FIRST VERIFIED PAYMENT for a scheme
+        if (!empty($customerDetails['CustomerID']) && !empty($customerDetails['SchemeID'])) {
+            $verifiedCountStmt = $conn->prepare("
+                SELECT COUNT(*) as v_count 
+                FROM Payments 
+                WHERE CustomerID = ? 
+                  AND SchemeID = ? 
+                  AND Status = 'Verified'
+            ");
+            $verifiedCountStmt->execute([$customerDetails['CustomerID'], $customerDetails['SchemeID']]);
+            $vCount = intval($verifiedCountStmt->fetch(PDO::FETCH_ASSOC)['v_count'] ?? 0);
+
+            // If there is already more than 1 verified payment for this scheme, skip commission processing
+            if ($vCount > 1) {
+                return ['success' => true, 'credited' => [], 'reason' => 'First installment only rule'];
+            }
         }
 
         $directPromoterRef = trim($customerDetails['PromoterID']);
