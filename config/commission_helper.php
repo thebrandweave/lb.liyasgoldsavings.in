@@ -11,8 +11,10 @@ if (!function_exists('convertCommissionToInt')) {
 function processPromoterCommission($customerUniqueID, $conn)
 {
     if (empty($customerUniqueID)) {
-        return false;
+        return ['success' => false, 'credited' => []];
     }
+
+    $creditedSummary = [];
 
     try {
         // Fetch customer details and latest payment
@@ -28,7 +30,7 @@ function processPromoterCommission($customerUniqueID, $conn)
         $customerDetails = $stmt->fetch(PDO::FETCH_ASSOC);
 
         if (!$customerDetails || empty($customerDetails['PromoterID'])) {
-            return false;
+            return ['success' => false, 'credited' => []];
         }
 
         $directPromoterRef = trim($customerDetails['PromoterID']);
@@ -68,7 +70,7 @@ function processPromoterCommission($customerUniqueID, $conn)
         }
 
         if (empty($hierarchy)) {
-            return false;
+            return ['success' => false, 'credited' => []];
         }
 
         // 1. Process Direct Promoter (Index 0)
@@ -108,6 +110,13 @@ function processPromoterCommission($customerUniqueID, $conn)
                 $logMsg = "Commission earned from customer " . $custName . " (" . $customerUniqueID . ") for " . $schemeName . " scheme";
                 $lStmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message, TransactionType) VALUES (?, ?, ?, 'Credit')");
                 $lStmt->execute([$directID, $directCommission, $logMsg]);
+
+                $creditedSummary[] = [
+                    'role' => 'Direct Promoter',
+                    'name' => $directPromoter['Name'],
+                    'id' => $directID,
+                    'amount' => $directCommission
+                ];
             }
         }
 
@@ -160,13 +169,21 @@ function processPromoterCommission($customerUniqueID, $conn)
                     $pLogMsg = "Parent commission earned from customer " . $custName . " (" . $customerUniqueID . ") for " . $schemeName . " scheme";
                     $plStmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message, TransactionType) VALUES (?, ?, ?, 'Credit')");
                     $plStmt->execute([$parentID, $gapAmount, $pLogMsg]);
+
+                    $roleLabel = ($i === 0) ? 'Parent Promoter' : 'Grandparent Promoter';
+                    $creditedSummary[] = [
+                        'role' => $roleLabel,
+                        'name' => $parentPromoter['Name'],
+                        'id' => $parentID,
+                        'amount' => $gapAmount
+                    ];
                 }
             }
         }
 
-        return true;
+        return ['success' => true, 'credited' => $creditedSummary];
     } catch (Exception $e) {
         error_log("Error in processPromoterCommission: " . $e->getMessage());
-        return false;
+        return ['success' => false, 'credited' => []];
     }
 }

@@ -111,7 +111,14 @@ if (isset($_POST['action']) && isset($_POST['payment_id'])) {
 
         if ($newStatus === 'Verified') {
             require_once("../../config/commission_helper.php");
-            processPromoterCommission($payment['CustomerUniqueID'], $conn);
+            $commResult = processPromoterCommission($payment['CustomerUniqueID'], $conn);
+
+            $_SESSION['verification_popup'] = [
+                'customer_name' => $payment['CustomerName'],
+                'customer_id' => $payment['CustomerUniqueID'],
+                'payment_id' => $paymentId,
+                'credited' => $commResult['credited'] ?? []
+            ];
         }
 
         $_SESSION['success_message'] = "Payment has been $newStatus successfully.";
@@ -1151,6 +1158,57 @@ include("../components/topbar.php");
                 echo $_SESSION['success_message'];
                 unset($_SESSION['success_message']);
                 ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (isset($_SESSION['verification_popup'])): 
+            $popupData = $_SESSION['verification_popup'];
+            unset($_SESSION['verification_popup']);
+        ?>
+            <div class="modal fade show" id="commissionSuccessModal" tabindex="-1" style="display: block; background: rgba(0,0,0,0.55); z-index: 9999;" aria-modal="true" role="dialog">
+              <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content" style="border-radius: 14px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;">
+                  <div class="modal-header" style="background: #198754; color: white; border-bottom: none; padding: 18px 24px;">
+                    <h5 class="modal-title font-weight-bold" style="margin: 0; font-size: 18px;">
+                      <i class="fas fa-check-circle me-2"></i> Payment Verified Successfully
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" style="cursor: pointer;" onclick="document.getElementById('commissionSuccessModal').remove()"></button>
+                  </div>
+                  <div class="modal-body" style="padding: 24px; font-size: 15px; color: #333;">
+                    <p style="margin-bottom: 16px;">
+                      Payment #<strong><?php echo htmlspecialchars($popupData['payment_id']); ?></strong> for customer <strong><?php echo htmlspecialchars($popupData['customer_name']); ?></strong> (<code><?php echo htmlspecialchars($popupData['customer_id']); ?></code>) has been verified.
+                    </p>
+                    
+                    <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 16px;">
+                      <h6 style="color: #198754; font-weight: 700; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
+                        <i class="fas fa-coins me-1"></i> Commission Allocation
+                      </h6>
+                      <?php if (!empty($popupData['credited'])): ?>
+                        <div style="display: flex; flex-direction: column; gap: 10px;">
+                          <?php foreach ($popupData['credited'] as $item): ?>
+                            <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px 14px; border-radius: 8px; border-left: 4px solid #198754; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                              <div>
+                                <div style="font-weight: 600; color: #212529; font-size: 14px;"><?php echo htmlspecialchars($item['role']); ?>: <?php echo htmlspecialchars($item['name']); ?></div>
+                                <div style="font-size: 12px; color: #6c757d;">ID: <?php echo htmlspecialchars($item['id']); ?></div>
+                              </div>
+                              <span style="background: #d1e7dd; color: #0f5132; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 14px;">
+                                + ₹<?php echo number_format($item['amount'], 2); ?>
+                              </span>
+                            </div>
+                          <?php endforeach; ?>
+                        </div>
+                      <?php else: ?>
+                        <p style="color: #6c757d; margin: 0; font-size: 13px;">
+                          <i class="fas fa-info-circle me-1"></i> Commissions were already credited previously for this customer payment.
+                        </p>
+                      <?php endif; ?>
+                    </div>
+                  </div>
+                  <div class="modal-footer" style="background: #f8f9fa; border-top: 1px solid #eee; padding: 12px 24px;">
+                    <button type="button" class="btn btn-success px-4" style="border-radius: 8px; font-weight: 600;" onclick="document.getElementById('commissionSuccessModal').remove()">OK / Close</button>
+                  </div>
+                </div>
+              </div>
             </div>
         <?php endif; ?>
 
