@@ -22,7 +22,7 @@ class Database
 
         if ($isLocalhost) {
             $this->host = "localhost";
-            $this->db_name = "liyaslb"; 
+            $this->db_name = "lbnew"; 
             $this->username = "root";
             $this->password = "";
         } else {

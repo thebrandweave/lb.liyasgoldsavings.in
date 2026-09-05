@@ -552,7 +552,23 @@ include("../components/topbar.php");
         .card-body::-webkit-scrollbar-thumb:hover {
             background: var(--pr_text-light);
         }
+        .withdrawal-request {
+    border-left: 4px solid #dc2626;
+    background-color: #fef2f2;
+}
 
+.withdrawal-request .transaction-amount {
+    color: #dc2626 !important;
+}
+
+.withdrawal-request .transaction-message {
+    color: #dc2626 !important;
+    font-weight: 600;
+}
+.transaction-amount {
+    white-space: nowrap;
+    display: inline-block;
+}
         /* Responsive styles */
         @media (max-width: 992px) {
             .grid-container {
@@ -1034,13 +1050,28 @@ include("../components/topbar.php");
                     <div class="card-body">
                         <?php if (count($walletLogs) > 0): ?>
                             <?php foreach ($walletLogs as $log): ?>
-                                <div class="activity-item <?php echo $log['TransactionType'] === 'Debit' ? 'debit-transaction' : 'credit-transaction'; ?>">
-                                    <div class="transaction-info">
-                                        <span class="transaction-amount <?php echo $log['TransactionType'] === 'Debit' ? 'debit' : 'credit'; ?>">
-                                            <?php echo $log['TransactionType'] === 'Debit' ? '-' : '+'; ?>₹<?php echo number_format(abs($log['Amount']), 2); ?>
-                                        </span>
-                                        <span class="transaction-message"><?php echo htmlspecialchars($log['Message']); ?></span>
-                                    </div>
+                               <div class="activity-item 
+    <?php 
+        if (stripos($log['Message'], 'Withdrawal request') !== false) {
+            echo 'withdrawal-request';
+        } elseif ($log['TransactionType'] === 'Debit') {
+            echo 'debit-transaction';
+        } else {
+            echo 'credit-transaction';
+        }
+    ?>">
+                                   <div class="transaction-info"> 
+  <span class="transaction-amount <?php echo $log['TransactionType'] === 'Debit' ? 'debit' : 'credit'; ?>">
+    <?php echo (
+        $log['TransactionType'] === 'Debit' || 
+        stripos($log['Message'], 'Withdrawal request') !== false
+    ) ? '-' : '+'; ?>₹<?php echo number_format(abs($log['Amount']), 2); ?>
+</span>
+
+    <span class="transaction-message">
+        <?php echo htmlspecialchars($log['Message']); ?>
+    </span> 
+</div>
                                     <div class="activity-time">
                                         <?php echo date('M d, Y h:i A', strtotime($log['CreatedAt'])); ?>
                                     </div>
