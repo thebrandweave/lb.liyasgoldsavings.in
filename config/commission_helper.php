@@ -102,14 +102,13 @@ function processPromoterCommission($customerUniqueID, $conn)
                 SELECT COUNT(*) as already_credited 
                 FROM WalletLogs 
                 WHERE (TRIM(PromoterUniqueID) = ? OR TRIM(PromoterUniqueID) = ?) 
-                  AND (Message LIKE ? OR Message LIKE ?)
+                  AND Message LIKE ?
                   AND (TransactionType = 'Credit' OR TransactionType IS NULL OR TransactionType = '')
             ");
             $checkStmt->execute([
                 $directID,
                 $directNumID,
-                "%" . $customerUniqueID . "%",
-                "%" . $custName . "%"
+                "%" . $customerUniqueID . "%"
             ]);
 
             if ($checkStmt->fetch(PDO::FETCH_ASSOC)['already_credited'] == 0) {
@@ -161,14 +160,13 @@ function processPromoterCommission($customerUniqueID, $conn)
                     SELECT COUNT(*) as parent_already_credited 
                     FROM WalletLogs 
                     WHERE (TRIM(PromoterUniqueID) = ? OR TRIM(PromoterUniqueID) = ?) 
-                      AND (Message LIKE ? OR Message LIKE ?)
+                      AND Message LIKE ?
                       AND (TransactionType = 'Credit' OR TransactionType IS NULL OR TransactionType = '')
                 ");
                 $pCheckStmt->execute([
                     $parentID,
                     $parentNumID,
-                    "%" . $customerUniqueID . "%",
-                    "%" . $custName . "%"
+                    "%" . $customerUniqueID . "%"
                 ]);
 
                 if ($pCheckStmt->fetch(PDO::FETCH_ASSOC)['parent_already_credited'] == 0) {
