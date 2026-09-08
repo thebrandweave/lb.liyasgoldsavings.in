@@ -124,13 +124,6 @@ include($menuPath . "components/topbar.php");
                     <div class="extra-desc">Download monthly payments data in Excel format for reconciliation and reporting.</div>
                     <a href="./get_repayment_excel.php" class="extra-action">Open</a>
                 </div>
-                <!-- Fix Missing Commissions -->
-                <div class="extra-card">
-                    <div class="extra-icon"><i class="fas fa-sync-alt"></i></div>
-                    <div class="extra-title">Fix Missing Commissions</div>
-                    <div class="extra-desc">Recalculate and backfill missing promoter commissions across the system.</div>
-                    <a href="./fix_missing_commissions.php" class="extra-action">Run Repair</a>
-                </div>
                 <!-- Promoter Commission Excel Download -->
                 <!-- <div class="extra-card">
                     <div class="extra-icon"><i class="fas fa-coins"></i></div>
