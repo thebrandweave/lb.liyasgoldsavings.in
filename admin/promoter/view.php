@@ -86,6 +86,25 @@ try {
                            ORDER BY CreatedAt DESC LIMIT 10");
     $stmt->execute([$promoterId]);
     $activityLogs = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Get direct child promoters
+$stmt = $conn->prepare("
+    SELECT 
+        PromoterID,
+        PromoterUniqueID,
+        Name,
+        Contact,
+        Commission,
+        Status,
+        CreatedAt
+    FROM Promoters
+    WHERE TRIM(ParentPromoterID) = TRIM(?)
+    ORDER BY Name ASC
+");
+
+$stmt->execute([$promoter['PromoterUniqueID']]);
+$childPromoters = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
     $_SESSION['error_message'] = "Error retrieving promoter details: " . $e->getMessage();
     header("Location: index.php");
@@ -981,6 +1000,108 @@ include("../components/topbar.php");
                         <?php endif; ?>
                     </div>
                 </div>
+
+                <!-- Child Promoters -->
+<div class="card">
+    <div class="card-header">
+        <h3>
+            <i class="fas fa-user-friends"></i>
+            Child Promoters
+            <span style="
+                background:#f1f5f9;
+                padding:3px 9px;
+                border-radius:20px;
+                font-size:12px;
+                margin-left:5px;
+            ">
+                <?php echo count($childPromoters); ?>
+            </span>
+        </h3>
+    </div>
+
+    <div class="card-body">
+
+        <?php if (!empty($childPromoters)): ?>
+
+            <table class="table-clean">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Promoter ID</th>
+                        <th>Commission</th>
+                        <th>Status</th>
+                        <th>View</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+
+                <?php foreach ($childPromoters as $child): ?>
+
+                    <tr>
+
+                        <td>
+                            <strong>
+                                <?php echo htmlspecialchars($child['Name']); ?>
+                            </strong>
+                        </td>
+
+                        <td>
+                            <?php echo htmlspecialchars($child['PromoterUniqueID']); ?>
+                        </td>
+
+                        <td>
+                            ₹<?php echo number_format((float)$child['Commission'], 2); ?>
+                        </td>
+
+                        <td>
+                            <span class="badge badge-<?php
+                                echo $child['Status'] === 'Active'
+                                    ? 'success'
+                                    : 'danger';
+                            ?>">
+                                <?php echo htmlspecialchars($child['Status']); ?>
+                            </span>
+                        </td>
+
+                        <td>
+                            <a
+                                href="view.php?id=<?php echo urlencode($child['PromoterID']); ?>"
+                                class="parent-promoter-link"
+                            >
+                                <i class="fas fa-eye"></i>
+                                View
+                            </a>
+                        </td>
+
+                    </tr>
+
+                <?php endforeach; ?>
+
+                </tbody>
+            </table>
+
+        <?php else: ?>
+
+            <div style="
+                text-align:center;
+                padding:25px;
+                color:#7f8c8d;
+            ">
+                <i
+                    class="fas fa-users"
+                    style="font-size:30px;margin-bottom:10px;"
+                ></i>
+
+                <p style="margin:0;">
+                    No child promoters found.
+                </p>
+            </div>
+
+        <?php endif; ?>
+
+    </div>
+</div>
 
                 <!-- Recent Payments -->
                 <div class="card">
