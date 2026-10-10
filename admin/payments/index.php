@@ -1682,7 +1682,7 @@ include("../components/topbar.php");
                 });
             };
 
-            // Show overlay
+            // Show overlays
             overlay.style.display = 'flex';
         }
 
