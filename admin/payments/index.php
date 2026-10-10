@@ -4,7 +4,7 @@ session_start();
 // verifyAuth();
 
 $menuPath = "../";
-$currentPage = "payments";
+$currentPage = "payments/index.php";
 require_once("../../config/config.php");
 require_once("../../config/NotificationService.php");
 $database = new Database();
