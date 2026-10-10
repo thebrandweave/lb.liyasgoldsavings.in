@@ -57,3 +57,90 @@ class EmailConfig {
     public static $fromEmail = "info@liyasgoldsavings.in";
     public static $fromName = "Liyas Gold Savings Careers";
 }
+
+
+
+// Global Date & Time Formatter with IST (+5:30) Offset
+if (!function_exists('formatDateTime')) {
+    function formatDateTime($datetime, $format = 'M d, Y h:i A')
+    {
+        if (empty($datetime)) {
+            return '-';
+        }
+        try {
+            $date = new DateTime($datetime);
+            $date->modify('+5 hours +30 minutes');
+            return $date->format($format);
+        } catch (Exception $e) {
+            return $datetime;
+        }
+    }
+}
+
+if (!function_exists('formatTime')) {
+    function formatTime($datetime, $format = 'h:i A')
+    {
+        if (empty($datetime)) {
+            return '-';
+        }
+        try {
+            $date = new DateTime($datetime);
+            $date->modify('+5 hours +30 minutes');
+            return $date->format($format);
+        } catch (Exception $e) {
+            return $datetime;
+        }
+    }
+}
+
+if (!function_exists('formatDate')) {
+    function formatDate($date, $format = 'M d, Y')
+    {
+        if (empty($date)) {
+            return '-';
+        }
+        try {
+            $datetime = new DateTime($date);
+            $datetime->modify('+5 hours +30 minutes');
+            return $datetime->format($format);
+        } catch (Exception $e) {
+            return $date;
+        }
+    }
+}
+
+if (!function_exists('timeAgo')) {
+    function timeAgo($datetime)
+    {
+        if (empty($datetime)) {
+            return '-';
+        }
+        try {
+            $now = new DateTime();
+            $ago = new DateTime($datetime);
+            $ago->modify('+5 hours +30 minutes');
+            $diff = $now->diff($ago);
+
+            if ($diff->y > 0) {
+                return $diff->y . ' year' . ($diff->y > 1 ? 's' : '') . ' ago';
+            } elseif ($diff->m > 0) {
+                return $diff->m . ' month' . ($diff->m > 1 ? 's' : '') . ' ago';
+            } elseif ($diff->d > 0) {
+                if ($diff->d == 1) {
+                    return 'Yesterday';
+                }
+                return $diff->d . ' days ago';
+            } elseif ($diff->h > 0) {
+                return $diff->h . ' hour' . ($diff->h > 1 ? 's' : '') . ' ago';
+            } elseif ($diff->i > 0) {
+                return $diff->i . ' minute' . ($diff->i > 1 ? 's' : '') . ' ago';
+            } else {
+                return 'Just now';
+            }
+        } catch (Exception $e) {
+            return $datetime;
+        }
+    }
+}
+
+?>

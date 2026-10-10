@@ -173,8 +173,8 @@ try {
         $sheet->setCellValue('I' . $row, $payment['PaymentCodeValue']);
         $sheet->setCellValue('J' . $row, $payment['ScreenshotURL']);
         $sheet->setCellValue('K' . $row, $payment['Status']);
-        $sheet->setCellValue('L' . $row, date('Y-m-d H:i:s', strtotime($payment['SubmittedAt'])));
-        $sheet->setCellValue('M' . $row, $payment['VerifiedAt'] ? date('Y-m-d H:i:s', strtotime($payment['VerifiedAt'])) : '');
+        $sheet->setCellValue('L' . $row, formatDateTime($payment['SubmittedAt'], 'Y-m-d H:i:s'));
+        $sheet->setCellValue('M' . $row, $payment['VerifiedAt'] ? formatDateTime($payment['VerifiedAt'], 'Y-m-d H:i:s') : '');
         $sheet->setCellValue('N' . $row, $payment['PromoterUniqueID']);
         $sheet->setCellValue('O' . $row, $payment['PromoterName']);
         $sheet->setCellValue('P' . $row, $payment['VerifierName']);

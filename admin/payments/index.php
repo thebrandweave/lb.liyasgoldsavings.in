@@ -1316,7 +1316,7 @@ include("../components/topbar.php");
                                             <i class="fas fa-times"></i> Reject
                                         </button>
                                     <?php endif; ?>
-                                    <button class="action-btn view-btn" onclick="quickView(<?php echo $payment['PaymentID']; ?>, '<?php echo htmlspecialchars($payment['CustomerName']); ?>', '<?php echo htmlspecialchars($payment['SchemeName']); ?>', '<?php echo number_format($payment['Amount'], 2); ?>', '<?php echo htmlspecialchars($payment['ScreenshotURL']); ?>', '<?php echo date('M d, Y H:i', strtotime($payment['SubmittedAt'])); ?>', '<?php echo $payment['Status']; ?>')">
+                                    <button class="action-btn view-btn" onclick="quickView(<?php echo $payment['PaymentID']; ?>, '<?php echo htmlspecialchars($payment['CustomerName']); ?>', '<?php echo htmlspecialchars($payment['SchemeName']); ?>', '<?php echo number_format($payment['Amount'], 2); ?>', '<?php echo htmlspecialchars($payment['ScreenshotURL']); ?>', '<?php echo date formatDateTime($payment['SubmittedAt']); ?>', '<?php echo $payment['Status']; ?>')">
                                         <i class="fas fa-eye"></i> View
                                     </button>
                                 </div>
@@ -1340,7 +1340,7 @@ include("../components/topbar.php");
 
                                 <div class="detail-item">
                                     <span class="detail-label">Submitted At</span>
-                                    <span class="detail-value"><?php echo date('M d, Y H:i', strtotime($payment['SubmittedAt'])); ?></span>
+                                    <span class="detail-value"><?php echo formatDateTime($payment['SubmittedAt']); ?></span>
                                 </div>
 
                                 <div class="detail-item">
@@ -1375,7 +1375,7 @@ include("../components/topbar.php");
                             <?php if ($payment['Status'] !== 'Pending' && $payment['VerifierName']): ?>
                                 <div class="verifier-info">
                                     <?php echo $payment['Status']; ?> by <?php echo htmlspecialchars($payment['VerifierName']); ?>
-                                    on <?php echo date('M d, Y H:i', strtotime($payment['VerifiedAt'])); ?>
+                                    on <?php echo formatDateTime($payment['VerifiedAt']); ?>
                                     <?php if (!empty($payment['VerifierRemark'])): ?>
                                         <div class="verifier-remark">
                                             <strong>Verifier Remarks:</strong> <?php echo htmlspecialchars($payment['VerifierRemark']); ?>

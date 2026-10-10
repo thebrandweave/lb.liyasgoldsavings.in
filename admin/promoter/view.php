@@ -816,7 +816,7 @@ include("../components/topbar.php");
                     <?php endif; ?>
                     <div class="contact-item">
                         <i class="fas fa-calendar"></i>
-                        Joined: <?php echo date('M d, Y', strtotime($promoter['CreatedAt'])); ?>
+                        Joined: <?php echo formatDate($promoter['CreatedAt']); ?>
                     </div>
                 </div>
 
@@ -896,7 +896,7 @@ include("../components/topbar.php");
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Registration Date</span>
-                                <span class="info-value"><?php echo date('F d, Y', strtotime($promoter['CreatedAt'])); ?></span>
+                                <span class="info-value"><?php echo formatDate($promoter['CreatedAt'], 'F d, Y'); ?></span>
                             </div>
                             <div class="info-item">
                                 <span class="info-label">Commission</span>
@@ -990,7 +990,7 @@ include("../components/topbar.php");
                                                     <?php echo $customer['Status']; ?>
                                                 </span>
                                             </td>
-                                            <td><?php echo date('M d, Y', strtotime($customer['CreatedAt'])); ?></td>
+                                            <td><?php echo formatDate($customer['CreatedAt']); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -1137,7 +1137,7 @@ include("../components/topbar.php");
                                                     <?php echo $payment['Status']; ?>
                                                 </span>
                                             </td>
-                                            <td><?php echo date('M d, Y', strtotime($payment['SubmittedAt'])); ?></td>
+                                            <td><?php echo formatDateTime($payment['SubmittedAt']); ?></td>
                                         </tr>
                                     <?php endforeach; ?>
                                 </tbody>
@@ -1194,7 +1194,7 @@ include("../components/topbar.php");
     </span> 
 </div>
                                     <div class="activity-time">
-                                        <?php echo date('M d, Y h:i A', strtotime($log['CreatedAt'])); ?>
+                                        <?php echo formatDateTime($log['CreatedAt']); ?>
                                     </div>
                                 </div>
                             <?php endforeach; ?>
@@ -1215,7 +1215,7 @@ include("../components/topbar.php");
                                 <div class="activity-item">
                                     <div><?php echo htmlspecialchars($log['Action']); ?></div>
                                     <div class="activity-time">
-                                        <i class="fas fa-clock"></i> <?php echo date('M d, Y h:i A', strtotime($log['CreatedAt'])); ?>
+                                        <i class="fas fa-clock"></i> <?php echo formatDateTime($log['CreatedAt']); ?>
                                         <i class="fas fa-globe"></i> <?php echo htmlspecialchars($log['IPAddress']); ?>
                                     </div>
                                 </div>

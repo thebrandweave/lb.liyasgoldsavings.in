@@ -309,12 +309,13 @@ function getInitials($name)
     return $initials;
 }
 
-// Format date for display
-function formatDate($date)
-{
-    $datetime = new DateTime($date);
-    $datetime->modify('+5 hours +30 minutes');
-    return $datetime->format('M d, Y');
+if (!function_exists('formatDate')) {
+    function formatDate($date)
+    {
+        $datetime = new DateTime($date);
+        $datetime->modify('+5 hours +30 minutes');
+        return $datetime->format('M d, Y');
+    }
 }
 
 // Format activity message
@@ -342,45 +343,51 @@ function formatActivity($action, $userName)
 }
 
 // Convert time to "X time ago" format
-function timeAgo($datetime)
-{
-    $now = new DateTime();
-    $ago = new DateTime($datetime);
-    $ago->modify('+5 hours +30 minutes');
-    $diff = $now->diff($ago);
+if (!function_exists('timeAgo')) {
+    function timeAgo($datetime)
+    {
+        $now = new DateTime();
+        $ago = new DateTime($datetime);
+        $ago->modify('+5 hours +30 minutes');
+        $diff = $now->diff($ago);
 
-    if ($diff->y > 0) {
-        return $diff->y . ' year' . ($diff->y > 1 ? 's' : '') . ' ago';
-    } elseif ($diff->m > 0) {
-        return $diff->m . ' month' . ($diff->m > 1 ? 's' : '') . ' ago';
-    } elseif ($diff->d > 0) {
-        if ($diff->d == 1) {
-            return 'Yesterday';
+        if ($diff->y > 0) {
+            return $diff->y . ' year' . ($diff->y > 1 ? 's' : '') . ' ago';
+        } elseif ($diff->m > 0) {
+            return $diff->m . ' month' . ($diff->m > 1 ? 's' : '') . ' ago';
+        } elseif ($diff->d > 0) {
+            if ($diff->d == 1) {
+                return 'Yesterday';
+            }
+            return $diff->d . ' days ago';
+        } elseif ($diff->h > 0) {
+            return $diff->h . ' hour' . ($diff->h > 1 ? 's' : '') . ' ago';
+        } elseif ($diff->i > 0) {
+            return $diff->i . ' minute' . ($diff->i > 1 ? 's' : '') . ' ago';
+        } else {
+            return 'Just now';
         }
-        return $diff->d . ' days ago';
-    } elseif ($diff->h > 0) {
-        return $diff->h . ' hour' . ($diff->h > 1 ? 's' : '') . ' ago';
-    } elseif ($diff->i > 0) {
-        return $diff->i . ' minute' . ($diff->i > 1 ? 's' : '') . ' ago';
-    } else {
-        return 'Just now';
     }
 }
 
 // Add a new function to format time with IST
-function formatTime($datetime)
-{
-    $date = new DateTime($datetime);
-    $date->modify('+5 hours +30 minutes');
-    return $date->format('h:i A');
+if (!function_exists('formatTime')) {
+    function formatTime($datetime)
+    {
+        $date = new DateTime($datetime);
+        $date->modify('+5 hours +30 minutes');
+        return $date->format('h:i A');
+    }
 }
 
 // Add a new function to format datetime with IST
-function formatDateTime($datetime)
-{
-    $date = new DateTime($datetime);
-    $date->modify('+5 hours +30 minutes');
-    return $date->format('M d, Y h:i A');
+if (!function_exists('formatDateTime')) {
+    function formatDateTime($datetime)
+    {
+        $date = new DateTime($datetime);
+        $date->modify('+5 hours +30 minutes');
+        return $date->format('M d, Y h:i A');
+    }
 }
 
 // Get the current month range for display
