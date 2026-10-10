@@ -385,7 +385,7 @@ verifyAuth();
             <div class="section-divider"><span>Finance</span></div>
 
             <li class="<?php echo ($currentPage == 'payments') ? 'active' : ''; ?>">
-                <a href="<?php echo $menuPath; ?>payments" data-title="Payments">
+                <a href="<?php echo $menuPath; ?>payments/index.php" data-title="Payments">
                     <i class="fas fa-credit-card"></i>
                     <span class="link-text">Payments</span>
                 </a>
