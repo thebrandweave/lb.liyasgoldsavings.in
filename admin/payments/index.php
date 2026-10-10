@@ -5,7 +5,6 @@ session_start();
 
 $menuPath = "../";
 $currentPage = "payments";
-require_once("./clearSession.php");
 require_once("../../config/config.php");
 require_once("../../config/NotificationService.php");
 $database = new Database();
