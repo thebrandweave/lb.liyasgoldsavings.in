@@ -4,8 +4,6 @@ RewriteEngine On
 # Set the base directory
 RewriteBase /
 
-# Set the default file for directory URLs
-DirectoryIndex index.php index.html
 
 # Handle 404 errors
 ErrorDocument 404 /404.html
