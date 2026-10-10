@@ -4,6 +4,9 @@ RewriteEngine On
 # Set the base directory
 RewriteBase /
 
+# Set the default file for directory URLs
+DirectoryIndex index.php index.html
+
 # Handle 404 errors
 ErrorDocument 404 /404.html
 
@@ -53,11 +56,15 @@ Options -Indexes
     ExpiresByType application/x-javascript "access plus 1 month"
 </IfModule>
 
-# Disable caching for dynamic PHP files
+# Disable caching for dynamic PHP files and admin area
 <IfModule mod_headers.c>
     <FilesMatch "\.(php)$">
-        Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-        Header set Pragma "no-cache"
-        Header set Expires "0"
+        Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+        Header always set Pragma "no-cache"
+        Header always set Expires "0"
     </FilesMatch>
+    SetEnvIf Request_URI "^/admin" NO_CACHE
+    Header always set Cache-Control "no-store, no-cache, must-revalidate, max-age=0" env=NO_CACHE
+    Header always set Pragma "no-cache" env=NO_CACHE
+    Header always set Expires "0" env=NO_CACHE
 </IfModule> 
