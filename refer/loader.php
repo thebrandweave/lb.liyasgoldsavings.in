@@ -17,10 +17,11 @@
     align-items: center;
     background-color: rgba(255, 255, 255, 0.9);
     z-index: 999999;
-    transition: opacity 0.2s ease;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 .loader-overlay.hide {
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
 }
 .simple-spinner {
@@ -45,22 +46,39 @@
 </style>
 
 <script>
-    // Hide loader after page fully loads
-    window.addEventListener('load', () => {
-        setTimeout(() => {
-            document.getElementById('globalLoader').classList.add('hide');
-        }, 100); // Small delay to ensure smooth transition
-    });
+    (function() {
+        const loader = document.getElementById('globalLoader');
+        if (!loader) return;
 
-    // Show loader immediately before navigating to another page
-    document.querySelectorAll('a[href]:not([target])').forEach(link => {
-        link.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
-                document.getElementById('globalLoader').classList.remove('hide');
-            }
+        function hideLoader() {
+            loader.classList.add('hide');
+        }
+
+        // Hide as soon as DOM is ready or if already ready
+        if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            hideLoader();
+        } else {
+            document.addEventListener('DOMContentLoaded', hideLoader);
+        }
+
+        // Fallbacks: window load and pageshow (back/forward cache)
+        window.addEventListener('load', hideLoader);
+        window.addEventListener('pageshow', hideLoader);
+
+        // Safety fallback: never keep user waiting more than 250ms
+        setTimeout(hideLoader, 250);
+
+        // Show loader before navigating to another page (ignore new-tab, anchors, downloads, scripts)
+        document.querySelectorAll('a[href]:not([target])').forEach(link => {
+            link.addEventListener('click', function (e) {
+                if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+                const href = this.getAttribute('href');
+                if (href && !href.startsWith('#') && !href.startsWith('javascript:') && !href.startsWith('tel:') && !href.startsWith('mailto:') && !this.hasAttribute('download')) {
+                    loader.classList.remove('hide');
+                    setTimeout(hideLoader, 3000);
+                }
+            });
         });
-    });
 
     // Optimized form submission with better feedback
     document.querySelectorAll('form').forEach(form => {
@@ -104,4 +122,5 @@
     window.addEventListener('beforeunload', () => {
         document.getElementById('globalLoader').classList.remove('hide');
     });
+    })();
 </script>

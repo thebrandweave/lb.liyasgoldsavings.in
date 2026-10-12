@@ -26,7 +26,7 @@ try {
               parent.Name as ParentName, 
               parent.PromoterUniqueID as ParentUniqueID 
               FROM Promoters p 
-              LEFT JOIN Promoters parent ON TRIM(p.ParentPromoterID) = TRIM(parent.PromoterUniqueID) 
+              LEFT JOIN Promoters parent ON p.ParentPromoterID = parent.PromoterUniqueID 
               WHERE p.PromoterID = ?";
 
     $stmt = $conn->prepare($query);
@@ -40,8 +40,8 @@ try {
         exit();
     }
 
-    // Get customer count (TRIM so stored PromoterID with spaces still matches)
-    $stmt = $conn->prepare("SELECT COUNT(*) as customer_count FROM Customers WHERE TRIM(PromoterID) = ? AND Status = 'Active'");
+    // Get customer count
+    $stmt = $conn->prepare("SELECT COUNT(*) as customer_count FROM Customers WHERE PromoterID = ? AND Status = 'Active'");
     $stmt->execute([$promoter['PromoterUniqueID']]);
     $customerCount = $stmt->fetch(PDO::FETCH_ASSOC)['customer_count'];
 
@@ -98,7 +98,7 @@ $stmt = $conn->prepare("
         Status,
         CreatedAt
     FROM Promoters
-    WHERE TRIM(ParentPromoterID) = TRIM(?)
+    WHERE ParentPromoterID = ?
     ORDER BY Name ASC
 ");
 

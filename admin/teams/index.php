@@ -41,35 +41,45 @@ try {
     }
 
     $query .= "),
-    TeamStats AS (
+    PromoterStats AS (
+        SELECT TeamName, COUNT(*) as promoter_count, MAX(CreatedAt) as max_prom_activity
+        FROM Promoters 
+        WHERE TeamName IS NOT NULL AND TeamName != ''
+        GROUP BY TeamName
+    ),
+    CustomerStats AS (
+        SELECT TeamName, COUNT(*) as customer_count, MAX(CreatedAt) as max_cust_activity
+        FROM Customers 
+        WHERE TeamName IS NOT NULL AND TeamName != ''
+        GROUP BY TeamName
+    ),
+    PaymentStats AS (
         SELECT 
-            t.TeamName,
-            COUNT(DISTINCT p.PromoterID) as promoter_count,
-            COUNT(DISTINCT c.CustomerID) as customer_count,
-            MAX(GREATEST(COALESCE(p.CreatedAt, '1970-01-01'), COALESCE(c.CreatedAt, '1970-01-01'))) as last_activity,
-            COALESCE(ps.total_payments, 0) as total_payments,
-            COALESCE(ps.total_amount, 0) as total_amount,
-            COALESCE(ps.verified_payments, 0) as verified_payments,
-            COALESCE(ps.pending_payments, 0) as pending_payments,
-            COALESCE(ps.rejected_payments, 0) as rejected_payments
-        FROM TeamBase t
-        LEFT JOIN Promoters p ON p.TeamName = t.TeamName
-        LEFT JOIN Customers c ON c.TeamName = t.TeamName
-        LEFT JOIN (
-            SELECT 
-                cu.TeamName,
-                COUNT(*) as total_payments,
-                COALESCE(SUM(Amount), 0) as total_amount,
-                COUNT(CASE WHEN py.Status = 'Verified' THEN 1 END) as verified_payments,
-                COUNT(CASE WHEN py.Status = 'Pending' THEN 1 END) as pending_payments,
-                COUNT(CASE WHEN py.Status = 'Rejected' THEN 1 END) as rejected_payments
-            FROM Payments py 
-            JOIN Customers cu ON py.CustomerID = cu.CustomerID 
-            GROUP BY cu.TeamName
-        ) ps ON ps.TeamName = t.TeamName
-        GROUP BY t.TeamName
+            cu.TeamName,
+            COUNT(*) as total_payments,
+            COALESCE(SUM(py.Amount), 0) as total_amount,
+            COUNT(CASE WHEN py.Status = 'Verified' THEN 1 END) as verified_payments,
+            COUNT(CASE WHEN py.Status = 'Pending' THEN 1 END) as pending_payments,
+            COUNT(CASE WHEN py.Status = 'Rejected' THEN 1 END) as rejected_payments
+        FROM Payments py 
+        JOIN Customers cu ON py.CustomerID = cu.CustomerID 
+        WHERE cu.TeamName IS NOT NULL AND cu.TeamName != ''
+        GROUP BY cu.TeamName
     )
-    SELECT * FROM TeamStats
+    SELECT 
+        t.TeamName,
+        COALESCE(p.promoter_count, 0) as promoter_count,
+        COALESCE(c.customer_count, 0) as customer_count,
+        GREATEST(COALESCE(p.max_prom_activity, '1970-01-01'), COALESCE(c.max_cust_activity, '1970-01-01')) as last_activity,
+        COALESCE(ps.total_payments, 0) as total_payments,
+        COALESCE(ps.total_amount, 0) as total_amount,
+        COALESCE(ps.verified_payments, 0) as verified_payments,
+        COALESCE(ps.pending_payments, 0) as pending_payments,
+        COALESCE(ps.rejected_payments, 0) as rejected_payments
+    FROM TeamBase t
+    LEFT JOIN PromoterStats p ON p.TeamName = t.TeamName
+    LEFT JOIN CustomerStats c ON c.TeamName = t.TeamName
+    LEFT JOIN PaymentStats ps ON ps.TeamName = t.TeamName
     ORDER BY last_activity DESC
     LIMIT :offset, :limit";
 

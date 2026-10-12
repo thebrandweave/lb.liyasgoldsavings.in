@@ -43,7 +43,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
     $exportQuery = "SELECT p.PromoterUniqueID, p.Name, p.Contact, p.Email, 
                     parent.Name as ParentName, p.Status, p.PaymentCodeCounter,
                     p.CreatedAt, 
-                    (SELECT COUNT(*) FROM Customers WHERE TRIM(PromoterID) = TRIM(p.PromoterUniqueID) AND Status = 'Active') as CustomerCount
+                    (SELECT COUNT(*) FROM Customers WHERE PromoterID = p.PromoterUniqueID AND Status = 'Active') as CustomerCount
                     FROM Promoters p 
                     LEFT JOIN Promoters parent ON p.ParentPromoterID = parent.PromoterUniqueID"
         . $whereClause .
@@ -226,7 +226,7 @@ $totalPages = ceil($totalRecords / $recordsPerPage);
 $query = "SELECT p.PromoterID, p.PromoterUniqueID, p.Name, p.Contact, p.Email, 
           p.Status, p.CreatedAt, p.PaymentCodeCounter, parent.Name as ParentName,
           parent.PromoterUniqueID as ParentPromoterID,
-          (SELECT COUNT(*) FROM Customers WHERE TRIM(PromoterID) = TRIM(p.PromoterUniqueID) AND Status = 'Active') as CustomerCount
+          (SELECT COUNT(*) FROM Customers WHERE PromoterID = p.PromoterUniqueID AND Status = 'Active') as CustomerCount
           FROM Promoters p 
           LEFT JOIN Promoters parent ON p.ParentPromoterID = parent.PromoterUniqueID"
     . $whereClause .

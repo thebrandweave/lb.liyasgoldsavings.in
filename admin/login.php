@@ -3,7 +3,6 @@ session_start();
 $menuPath = "./";
 // Include the auth middleware to check if user is already authenticated
 require("./middleware/auth.php");
-require_once("./components/loader.php");
 
 // Check if user is already authenticated via JWT token
 if (isset($_COOKIE['admin_token'])) {
@@ -472,6 +471,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 
 <body>
+    <?php require_once("./components/loader.php"); ?>
     <div class="login-container">
         <div class="login-header">
             <div class="logo">

@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Kolkata');
 
 class Database
 {
@@ -21,8 +22,8 @@ class Database
                        strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
         if ($isLocalhost) {
-            $this->host = "localhost";
-            $this->db_name = "liyaslb"; 
+            $this->host = "127.0.0.1";
+            $this->db_name = "lbnew"; 
             $this->username = "root";
             $this->password = "";
         } else {

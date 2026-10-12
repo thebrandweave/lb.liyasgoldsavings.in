@@ -28,7 +28,7 @@ if (isset($_GET['search_customer'])) {
         $searchStmt = $conn->prepare("
             SELECT c.*, p.Name as PromoterName, p.PromoterUniqueID 
             FROM Customers c 
-            LEFT JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID) 
+            LEFT JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID 
             WHERE c.CustomerUniqueID = ? OR c.Contact = ? OR c.Email = ?
         ");
         $searchStmt->execute([$searchTerm, $searchTerm, $searchTerm]);
@@ -392,7 +392,7 @@ include("../components/topbar.php");
                         <option value="">Select Promoter</option>
                         <?php foreach ($promoters as $promoter): ?>
                             <option value="<?php echo htmlspecialchars($promoter['PromoterUniqueID']); ?>"
-                                <?php echo (isset($customerData) && trim($customerData['PromoterID'] ?? '') === $promoter['PromoterUniqueID']) ? 'selected' : (isset($_POST['promoter_id']) && $_POST['promoter_id'] === $promoter['PromoterUniqueID']) ? 'selected' : ''; ?>>
+                                <?php echo ((isset($customerData) && trim($customerData['PromoterID'] ?? '') === $promoter['PromoterUniqueID']) || (isset($_POST['promoter_id']) && $_POST['promoter_id'] === $promoter['PromoterUniqueID'])) ? 'selected' : ''; ?>>
                                 <?php echo htmlspecialchars($promoter['Name']); ?>
                                 (<?php echo $promoter['PromoterUniqueID']; ?>)
                             </option>

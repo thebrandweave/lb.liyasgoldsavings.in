@@ -216,7 +216,7 @@ if (isset($_GET['export']) && $_GET['export'] == 'excel') {
             COUNT(py.PaymentID) as total_payments,
             COALESCE(SUM(CASE WHEN py.Status = 'Verified' THEN py.Amount ELSE 0 END), 0) as total_amount
         FROM Customers c 
-        LEFT JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID)
+        LEFT JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID
         LEFT JOIN Payments py ON c.CustomerID = py.CustomerID" .
         $whereClause .
         " GROUP BY c.CustomerID
@@ -317,7 +317,7 @@ $totalPages = ceil($totalRecords / $recordsPerPage);
 // Get customers with pagination (COALESCE: show stored PromoterID when JOIN fails e.g. collation/whitespace)
 $query = "SELECT c.*, COALESCE(NULLIF(TRIM(CONCAT(p.PromoterUniqueID, ' - ', p.Name)), ''), c.PromoterID) as PromoterName 
           FROM Customers c 
-          LEFT JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID)" .
+          LEFT JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID" .
     $whereClause .
     " ORDER BY c.JoinedDate DESC LIMIT :offset, :limit";
 

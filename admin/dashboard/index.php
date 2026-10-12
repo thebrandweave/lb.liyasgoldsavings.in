@@ -240,6 +240,13 @@ function getTodayPaymentsTotals($conn, $date = null)
     return $stmt->fetch(PDO::FETCH_ASSOC);
 }
 
+// Add date filtering variables
+$selectedMonth = isset($_GET['month']) ? $_GET['month'] : date('Y-m');
+$currentDate = new DateTime($selectedMonth . '-01');
+$prevMonth = (clone $currentDate)->modify('-1 month')->format('Y-m');
+$nextMonth = (clone $currentDate)->modify('+1 month')->format('Y-m');
+$dateRangeText = $currentDate->format('F Y');
+
 // Try to fetch stats with date range
 try {
     $startDate = $selectedMonth . '-01';
@@ -395,12 +402,7 @@ $currentMonthStart = date('F 1');
 $currentMonthEnd = date('F t');
 $dateRangeText = $currentMonthStart . ' - ' . $currentMonthEnd;
 
-// Add date filtering variables
-$selectedMonth = isset($_GET['month']) ? $_GET['month'] : date('Y-m');
-$currentDate = new DateTime($selectedMonth . '-01');
-$prevMonth = (clone $currentDate)->modify('-1 month')->format('Y-m');
-$nextMonth = (clone $currentDate)->modify('+1 month')->format('Y-m');
-$dateRangeText = $currentDate->format('F Y');
+
 
 // Get Admin info (normally would come from session)
 $adminName = $_SESSION['admin_name'] ?? 'Admin User';

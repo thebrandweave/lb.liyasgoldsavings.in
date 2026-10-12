@@ -128,7 +128,7 @@ $query = "SELECT p.*,
                  COALESCE(pw.BalanceAmount, 0) as BalanceAmount, 
                  pw.LastUpdated as WalletLastUpdated 
           FROM Promoters p 
-          LEFT JOIN PromoterWallet pw ON (TRIM(p.PromoterUniqueID) = TRIM(pw.PromoterUniqueID) OR p.PromoterID = pw.UserID)" .
+          LEFT JOIN PromoterWallet pw ON (p.PromoterUniqueID = pw.PromoterUniqueID OR p.PromoterID = pw.UserID)" .
     $whereClause .
     " ORDER BY p.Name ASC LIMIT :offset, :limit";
 

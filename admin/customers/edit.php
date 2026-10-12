@@ -35,7 +35,7 @@ try {
 try {
     $query = "SELECT c.*, p.Name as PromoterName, p.PromoterUniqueID as PromoterUniqueID 
               FROM Customers c 
-              LEFT JOIN Promoters p ON TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID) 
+              LEFT JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID 
               WHERE c.CustomerID = ?";
     $stmt = $conn->prepare($query);
     $stmt->execute([$customerId]);

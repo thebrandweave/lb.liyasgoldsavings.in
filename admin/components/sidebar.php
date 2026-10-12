@@ -1,10 +1,10 @@
 <?php
-include($menuPath . "components/loader.php");
 require_once($menuPath . "middleware/auth.php");
 verifyAuth();
+include($menuPath . "components/loader.php");
 
 ?>
-<li class="<?php echo ($currentPage == 'index') ? 'active' : ''; ?>" nk rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         .sidebar::-webkit-scrollbar {
             width: 0;

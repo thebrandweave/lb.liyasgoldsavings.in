@@ -249,13 +249,13 @@ include("../components/topbar.php");
         }
 
         .form-control:focus {
-            border-color: #3498db;
+            border-color: #283136;
             outline: none;
             box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
         }
 
         .btn-submit {
-            background: #3498db;
+             background: linear-gradient(135deg, #000000, #878b8b);
             color: white;
             padding: 12px 24px;
             border: none;
@@ -266,7 +266,7 @@ include("../components/topbar.php");
         }
 
         .btn-submit:hover {
-            background: #2980b9;
+            background: #202426;
         }
 
         .alert {

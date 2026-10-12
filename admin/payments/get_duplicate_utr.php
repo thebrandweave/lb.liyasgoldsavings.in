@@ -201,7 +201,7 @@ if (!empty($utr)) {
                         <td style="padding:4px 6px;"><?php echo htmlspecialchars($d['SchemeName'] ?? '-'); ?></td>
                         <td style="padding:4px 6px;"><?php echo htmlspecialchars($instLabel); ?></td>
                         <td style="padding:4px 6px;">₹<?php echo number_format($d['Amount'], 2); ?></td>
-                        <td style="padding:4px 6px;"><?php echo $d['VerifiedAt'] ? date('M d, Y H:i', strtotime($d['VerifiedAt'])) : '-'; ?></td>
+                        <td style="padding:4px 6px;"><?php echo $d['VerifiedAt'] ? date('M d, Y h:i A', strtotime($d['VerifiedAt'])) : '-'; ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

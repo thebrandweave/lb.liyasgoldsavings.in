@@ -765,7 +765,7 @@ include("../components/topbar.php");
                                     <td><?php echo htmlspecialchars($dup['SchemeName'] ?? '-'); ?></td>
                                     <td><?php echo htmlspecialchars($instLabel); ?></td>
                                     <td>₹<?php echo number_format($dup['Amount'], 2); ?></td>
-                                    <td><?php echo $dup['VerifiedAt'] ? date('M d, Y H:i', strtotime($dup['VerifiedAt'])) : '-'; ?></td>
+                                    <td><?php echo $dup['VerifiedAt'] ? date('M d, Y h:i A', strtotime($dup['VerifiedAt'])) : '-'; ?></td>
                                     <td><a href="view.php?id=<?php echo $dup['PaymentID']; ?>" class="action-btn view-btn" style="padding:4px 8px;font-size:12px;"><i class="fas fa-eye"></i> View</a></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -843,13 +843,13 @@ include("../components/topbar.php");
 
                         <div class="detail-item">
                             <div class="detail-label">Submitted Date</div>
-                            <div class="detail-value"><?php echo date('M d, Y H:i', strtotime($payment['SubmittedAt'])); ?></div>
+                            <div class="detail-value"><?php echo date('M d, Y h:i A', strtotime($payment['SubmittedAt'])); ?></div>
                         </div>
 
                         <?php if ($payment['Status'] !== 'Pending' && $payment['VerifiedAt']): ?>
                             <div class="detail-item">
                                 <div class="detail-label">Verified/Rejected Date</div>
-                                <div class="detail-value"><?php echo date('M d, Y H:i', strtotime($payment['VerifiedAt'])); ?></div>
+                                <div class="detail-value"><?php echo date('M d, Y h:i A', strtotime($payment['VerifiedAt'])); ?></div>
                             </div>
                         <?php endif; ?>
                     </div>

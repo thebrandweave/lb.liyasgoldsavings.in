@@ -531,11 +531,7 @@ include("../components/topbar.php");
 
                                 <div class="timestamp">
                                     <i class="far fa-clock"></i>
-                                    <?php
-                                    $timestamp = strtotime($log['CreatedAt']);
-                                    $istTimestamp = $timestamp + (5 * 3600) + (30 * 60); // Add 5 hours and 30 minutes
-                                    echo date('M d, Y h:i:s A', $istTimestamp);
-                                    ?>
+                                    <?php echo date('M d, Y h:i A', strtotime($log['CreatedAt'])); ?>
                                 </div>
                             </div>
 

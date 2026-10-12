@@ -21,10 +21,11 @@
     background-color: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(5px);
     z-index: 999999;
-    transition: opacity 0.3s ease;
+    transition: opacity 0.15s ease, visibility 0.15s ease;
 }
 .loader-overlay.hide {
     opacity: 0;
+    visibility: hidden;
     pointer-events: none;
 }
 .loader {
@@ -54,30 +55,47 @@
 </style>
 
 <script>
-    // Hide loader after page fully loads
-    window.addEventListener('load', () => {
-        document.getElementById('globalLoader').classList.add('hide');
-    });
+    (function () {
+        const loader = document.getElementById('globalLoader');
+        if (!loader) return;
 
-    // Show loader immediately before navigating to another page
-    document.querySelectorAll('a[href]:not([target])').forEach(link => {
-        link.addEventListener('click', function (e) {
-            const href = this.getAttribute('href');
-            if (href && !href.startsWith('#') && !href.startsWith('javascript:')) {
-                document.getElementById('globalLoader').classList.remove('hide');
-            }
+        function hideLoader() {
+            loader.classList.add('hide');
+        }
+
+        // Hide as soon as DOM is ready or if already ready
+        if (document.readyState === 'interactive' || document.readyState === 'complete') {
+            hideLoader();
+        } else {
+            document.addEventListener('DOMContentLoaded', hideLoader);
+        }
+
+        // Fallbacks: window load and pageshow (back/forward cache)
+        window.addEventListener('load', hideLoader);
+        window.addEventListener('pageshow', hideLoader);
+
+        // Safety fallback: never keep user waiting more than 250ms
+        setTimeout(hideLoader, 250);
+
+        // Show loader before navigating to another page (ignore new-tab, anchors, downloads, scripts)
+        document.querySelectorAll('a[href]:not([target])').forEach(link => {
+            link.addEventListener('click', function (e) {
+                if (e.defaultPrevented || e.button !== 0 || e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
+                const href = this.getAttribute('href');
+                if (href && !href.startsWith('#') && !href.startsWith('javascript:') && !href.startsWith('tel:') && !href.startsWith('mailto:') && !this.hasAttribute('download')) {
+                    loader.classList.remove('hide');
+                    setTimeout(hideLoader, 3000);
+                }
+            });
         });
-    });
 
-    // Show loader immediately before form submission
-    document.querySelectorAll('form').forEach(form => {
-        form.addEventListener('submit', () => {
-            document.getElementById('globalLoader').classList.remove('hide');
+        // Show loader before form submission
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function (e) {
+                if (e.defaultPrevented) return;
+                loader.classList.remove('hide');
+                setTimeout(hideLoader, 4000);
+            });
         });
-    });
-
-    // Optional: also trigger loader for manual navigation
-    window.addEventListener('beforeunload', () => {
-        document.getElementById('globalLoader').classList.remove('hide');
-    });
+    })();
 </script>

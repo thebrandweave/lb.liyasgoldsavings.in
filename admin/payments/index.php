@@ -212,11 +212,13 @@ if (!empty($promoterId)) {
 $whereClause = !empty($conditions) ? " WHERE " . implode(" AND ", $conditions) : "";
 
 // Get total payments count
-$countQuery = "
-SELECT COUNT(*) as total 
-FROM Payments p
-LEFT JOIN Customers c ON p.CustomerID = c.CustomerID
-LEFT JOIN Installments i ON p.InstallmentID = i.InstallmentID" . $whereClause;
+$needCustomers = (!empty($search) || !empty($promoterId));
+$needInstallments = (!empty($installment));
+
+$countQuery = "SELECT COUNT(*) as total FROM Payments p" .
+    ($needCustomers ? " LEFT JOIN Customers c ON p.CustomerID = c.CustomerID" : "") .
+    ($needInstallments ? " LEFT JOIN Installments i ON p.InstallmentID = i.InstallmentID" : "") .
+    $whereClause;
 $stmt = $conn->prepare($countQuery);
 $stmt->execute($params);
 $totalRecords = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
@@ -466,11 +468,11 @@ include("../components/topbar.php");
 
         .payment-screenshot:hover {
             transform: scale(1.05);
-            border-color: #3498db;
+            border-color: #303537;
         }
 
         .page-header .btn {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #000000, #878b8b);
             color: #fff;
             border: none;
             padding: 10px 16px;
@@ -486,7 +488,7 @@ include("../components/topbar.php");
         }
 
         .page-header .btn:hover {
-            background-color: #0056b3;
+            background-color: #000000;
             color: #fff;
         }
 
@@ -1161,61 +1163,118 @@ include("../components/topbar.php");
             </div>
         <?php endif; ?>
 
-        <?php if (isset($_SESSION['verification_popup'])): 
-            $popupData = $_SESSION['verification_popup'];
-            unset($_SESSION['verification_popup']);
-        ?>
-            <div class="modal fade show" id="commissionSuccessModal" tabindex="-1" style="display: block; background: rgba(0,0,0,0.55); z-index: 9999;" aria-modal="true" role="dialog">
-              <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content" style="border-radius: 14px; border: none; box-shadow: 0 10px 30px rgba(0,0,0,0.3); overflow: hidden;">
-                  <div class="modal-header" style="background: #198754; color: white; border-bottom: none; padding: 18px 24px;">
-                    <h5 class="modal-title font-weight-bold" style="margin: 0; font-size: 18px;">
-                      <i class="fas fa-check-circle me-2"></i> Payment Verified Successfully
-                    </h5>
-                    <button type="button" class="btn-close btn-close-white" style="cursor: pointer;" onclick="document.getElementById('commissionSuccessModal').remove()"></button>
-                  </div>
-                  <div class="modal-body" style="padding: 24px; font-size: 15px; color: #333;">
-                    <p style="margin-bottom: 16px;">
-                      Payment #<strong><?php echo htmlspecialchars($popupData['payment_id']); ?></strong> for customer <strong><?php echo htmlspecialchars($popupData['customer_name']); ?></strong> (<code><?php echo htmlspecialchars($popupData['customer_id']); ?></code>) has been verified.
-                    </p>
-                    
-                    <?php if (!empty($popupData['credited'])): ?>
-                    <div style="background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 10px; padding: 16px;">
-                      <h6 style="color: #198754; font-weight: 700; margin-bottom: 12px; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">
-                        <i class="fas fa-coins me-1"></i> Commission Allocation
-                      </h6>
-                      <div style="display: flex; flex-direction: column; gap: 10px;">
-                        <?php foreach ($popupData['credited'] as $item): ?>
-                          <div style="display: flex; justify-content: space-between; align-items: center; background: white; padding: 10px 14px; border-radius: 8px; border-left: 4px solid #198754; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
-                            <div>
-                              <div style="font-weight: 600; color: #212529; font-size: 14px;"><?php echo htmlspecialchars($item['role']); ?>: <?php echo htmlspecialchars($item['name']); ?></div>
-                              <div style="font-size: 12px; color: #6c757d;">ID: <?php echo htmlspecialchars($item['id']); ?></div>
-                            </div>
-                            <span style="background: #d1e7dd; color: #0f5132; font-weight: 700; padding: 4px 10px; border-radius: 20px; font-size: 14px;">
-                              + ₹<?php echo number_format($item['amount'], 2); ?>
-                            </span>
-                          </div>
-                        <?php endforeach; ?>
-                      </div>
-                    </div>
-                    <?php endif; ?>
-                  </div>
-                  <div class="modal-footer" style="background: #f8f9fa; border-top: 1px solid #eee; padding: 12px 24px;">
-                    <button type="button" class="btn btn-success px-4" style="border-radius: 8px; font-weight: 600;" onclick="document.getElementById('commissionSuccessModal').remove()">OK / Close</button>
-                  </div>
-                </div>
-              </div>
-            </div>
-        <?php endif; ?>
 
-        <?php if (isset($_SESSION['error_message'])): ?>
-            <div class="alert alert-danger">
-                <?php
-                echo $_SESSION['error_message'];
-                unset($_SESSION['error_message']);
-                ?>
+<?php if (isset($_SESSION['verification_popup'])):
+    $popupData = $_SESSION['verification_popup'];
+    unset($_SESSION['verification_popup']);
+?>
+<div class="modal fade show" id="commissionSuccessModal"
+     tabindex="-1"
+     style="display:block; background:rgba(0,0,0,0.35); z-index:9999;"
+     aria-modal="true" role="dialog">
+
+    <div class="modal-dialog modal-dialog-centered"
+         style="max-width:350px; margin:1rem auto;">
+
+        <div class="modal-content"
+             style="border:none; border-radius:18px;
+                    box-shadow:0 10px 35px rgba(0,0,0,0.15);
+                    overflow:hidden; text-align:center;">
+
+            <div class="modal-body" style="padding:25px 20px 22px; background:white;">
+
+                <button type="button"
+                        class="btn-close"
+                        aria-label="Close"
+                        style="position:absolute; right:14px; top:14px;"
+                        onclick="document.getElementById('commissionSuccessModal').remove()">
+                </button>
+
+                <div style="width:55px; height:55px; margin:0 auto 12px;
+                            background:#e8f7ee; border-radius:50%;
+                            display:flex; align-items:center;
+                            justify-content:center;">
+                    <i class="fas fa-check-circle"
+                       style="font-size:30px; color:#198754;"></i>
+                </div>
+
+                <h5 style="font-size:17px; font-weight:700;
+                           color:#198754; margin-bottom:10px;">
+                    Payment Verified Successfully!
+                </h5>
+
+                <p style="font-size:13px; color:#666; margin-bottom:14px;">
+                    Payment
+                    <strong style="color:#333;">
+                        #<?php echo htmlspecialchars($popupData['payment_id']); ?>
+                    </strong>
+                    for <strong><?php echo htmlspecialchars($popupData['customer_name']); ?></strong>
+                    (<code><?php echo htmlspecialchars($popupData['customer_id']); ?></code>)
+                    has been verified.
+                </p>
+
+                <?php if (!empty($popupData['credited'])): ?>
+                <div style="background:#f8fbf9; border:1px solid #ffffff;
+                            border-radius:12px; padding:12px; text-align:left;">
+
+                    <h6 style="color:#198754; font-size:12px;
+                               font-weight:700; margin-bottom:10px;">
+                        <i class="fas fa-coins me-1"></i> Commission Allocation
+                    </h6>
+
+                    <div style="display:flex; flex-direction:column; gap:8px;">
+                        <?php foreach ($popupData['credited'] as $item): ?>
+                        <div style="display:flex; justify-content:space-between;
+                                    align-items:center; gap:8px;
+                                    background:#fff; padding:9px 10px;
+                                    border-radius:8px; border:1px solid #edf1ee;">
+
+                            <div style="min-width:0;">
+                                <div style="font-weight:600; color:#212529;
+                                            font-size:12px;">
+                                    <?php echo htmlspecialchars($item['role']); ?>:
+                                    <?php echo htmlspecialchars($item['name']); ?>
+                                </div>
+                                <div style="font-size:11px; color:#6c757d;">
+                                    ID: <?php echo htmlspecialchars($item['id']); ?>
+                                </div>
+                            </div>
+
+                            <span style="background:#e8f7ee; color:#198754;
+                                         font-weight:700; padding:5px 8px;
+                                         border-radius:15px; font-size:12px;
+                                         white-space:nowrap;">
+                                + ₹<?php echo number_format($item['amount'], 2); ?>
+                            </span>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <?php endif; ?>
+
+                <button type="button"
+                        class="btn btn-success"
+                        style="margin-top:18px; border-radius:20px;
+                               padding:7px 28px; font-size:13px;
+                               font-weight:600;"
+                        onclick="document.getElementById('commissionSuccessModal').remove()">
+                    Done ✓
+                </button>
+
             </div>
-        <?php endif; ?>
+        </div>
+    </div>
+</div>
+<?php endif; ?>
+
+<?php if (isset($_SESSION['error_message'])): ?>
+    <div class="alert alert-danger">
+        <?php
+        echo $_SESSION['error_message'];
+        unset($_SESSION['error_message']);
+        ?>
+    </div>
+<?php endif; ?>
 
         <div class="content-card">
             <div class="card-body">

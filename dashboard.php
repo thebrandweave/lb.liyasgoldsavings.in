@@ -826,42 +826,32 @@ include("./components/topbar.php");
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Initialize charts after a small delay to ensure the DOM is ready
-        setTimeout(function() {
-            initRevenueChart();
-            initCustomersChart();
+        initRevenueChart();
+        initCustomersChart();
 
-            // Add click event for chart period buttons
-            const chartActions = document.querySelectorAll('.chart-action');
-            chartActions.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Get parent chart card
-                    const chartCard = this.closest('.chart-card');
-                    // Remove active class from all siblings
-                    chartCard.querySelectorAll('.chart-action').forEach(btn => {
-                        btn.classList.remove('active');
-                    });
-                    // Add active class to this button
-                    this.classList.add('active');
-
-                    // Update chart based on selected period
-                    // In a real application, you would fetch new data based on the period
-                    const period = this.getAttribute('data-period');
-                    const chartId = chartCard.querySelector('.chart-container').id;
-
-                    // Simulate chart update with loading state
-                    showLoading();
-                    setTimeout(() => {
-                        if (chartId === 'revenue-chart') {
-                            updateRevenueChart(period);
-                        } else if (chartId === 'customers-chart') {
-                            updateCustomersChart(period);
-                        }
-                        hideLoading();
-                    }, 800);
+        // Add click event for chart period buttons
+        const chartActions = document.querySelectorAll('.chart-action');
+        chartActions.forEach(button => {
+            button.addEventListener('click', function() {
+                // Get parent chart card
+                const chartCard = this.closest('.chart-card');
+                // Remove active class from all siblings
+                chartCard.querySelectorAll('.chart-action').forEach(btn => {
+                    btn.classList.remove('active');
                 });
+                // Add active class to this button
+                this.classList.add('active');
+
+                const period = this.getAttribute('data-period');
+                const chartId = chartCard.querySelector('.chart-container').id;
+
+                if (chartId === 'revenue-chart') {
+                    updateRevenueChart(period);
+                } else if (chartId === 'customers-chart') {
+                    updateCustomersChart(period);
+                }
             });
-        }, 300);
+        });
     });
 
     function showLoading() {
