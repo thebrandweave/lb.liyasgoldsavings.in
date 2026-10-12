@@ -701,7 +701,7 @@ include("../components/topbar.php");
 
                                 <div class="detail-item">
                                     <span class="detail-label">Requested At</span>
-                                    <span class="detail-value"><?php echo date('M d, Y H:i', strtotime($withdrawal['RequestedAt'])); ?></span>
+                                    <span class="detail-value"><?php echo date('M d, Y h:i A', strtotime($withdrawal['RequestedAt'])); ?></span>
                                 </div>
 
                                 <div class="detail-item">
@@ -720,7 +720,7 @@ include("../components/topbar.php");
                             <?php if ($withdrawal['Status'] !== 'Pending' && $withdrawal['AdminName']): ?>
                                 <div class="verifier-info">
                                     <?php echo $withdrawal['Status']; ?> by <?php echo htmlspecialchars($withdrawal['AdminName']); ?>
-                                    on <?php echo date('M d, Y H:i', strtotime($withdrawal['ProcessedAt'])); ?>
+                                    on <?php echo date('M d, Y h:i A', strtotime($withdrawal['ProcessedAt'])); ?>
                                     <?php if (!empty($withdrawal['Remarks'])): ?>
                                         <div class="verifier-remark">
                                             <strong>Remarks:</strong> <?php echo htmlspecialchars($withdrawal['Remarks']); ?>

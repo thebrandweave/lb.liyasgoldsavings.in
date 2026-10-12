@@ -44,8 +44,8 @@ $isExpired = $endDate < $today;
 // Format dates
 $startDate = date('d M Y', strtotime($subscription['StartDate']));
 $endDate = date('d M Y', strtotime($subscription['EndDate']));
-$createdAt = date('d M Y H:i', strtotime($subscription['CreatedAt']));
-$updatedAt = date('d M Y H:i', strtotime($subscription['UpdatedAt']));
+$createdAt = date('d M Y, h:i A', strtotime($subscription['CreatedAt']));
+$updatedAt = date('d M Y, h:i A', strtotime($subscription['UpdatedAt']));
 
 // Calculate duration in months
 $start = new DateTime($subscription['StartDate']);

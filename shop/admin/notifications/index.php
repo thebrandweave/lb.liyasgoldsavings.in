@@ -173,7 +173,7 @@ $notifications = $notifications->fetchAll(PDO::FETCH_ASSOC);
                     <?php echo htmlspecialchars($n['message']); ?>
                 </div>
                 <div class="notification-meta-row" style="display:flex;align-items:center;gap:16px;margin-top:4px;">
-                    <span class="notification-date"><?php echo date('d M Y, H:i', strtotime($n['created_at'])); ?></span>
+                    <span class="notification-date"><?php echo date('d M Y, h:i A', strtotime($n['created_at'])); ?></span>
                     <?php if ($n['related_id']): ?>
                         <span class="notification-related">Related: <?php echo htmlspecialchars($n['related_id']); ?></span>
                     <?php endif; ?>

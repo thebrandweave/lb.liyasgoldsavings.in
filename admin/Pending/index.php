@@ -694,7 +694,7 @@ include("../components/topbar.php");
                             </span>
                             <?php if ($payment['PaymentSubmittedAt']): ?>
                                 <span style="margin-left: 10px; color: #7f8c8d; font-size: 14px;">
-                                    Submitted on: <?php echo date('M d, Y H:i', strtotime($payment['PaymentSubmittedAt'])); ?>
+                                    Submitted on: <?php echo date('M d, Y h:i A', strtotime($payment['PaymentSubmittedAt'])); ?>
                                 </span>
                             <?php endif; ?>
                         </div>

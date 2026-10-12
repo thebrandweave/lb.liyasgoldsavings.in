@@ -810,7 +810,7 @@ include("../components/topbar.php");
                                     <span class="detail-value">
                                         <?php 
                                         if (!empty($winner['WinningDate']) && $winner['WinningDate'] !== '0000-00-00 00:00:00') {
-                                            echo date('M d, Y H:i', strtotime($winner['WinningDate']));
+                                            echo date('M d, Y h:i A', strtotime($winner['WinningDate']));
                                         } else {
                                             echo '<span style="color: #e74c3c;">Not set</span>';
                                         }

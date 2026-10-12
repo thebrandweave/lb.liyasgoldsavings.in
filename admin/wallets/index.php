@@ -643,7 +643,7 @@ include("../components/topbar.php");
                                 <?php if (isset($promoter['WalletLastUpdated'])): ?>
                                     <div class="detail-item">
                                         <span class="detail-label">Last Updated</span>
-                                        <span class="last-updated"><?php echo date('M d, Y H:i', strtotime($promoter['WalletLastUpdated'])); ?></span>
+                                        <span class="last-updated"><?php echo date('M d, Y h:i A', strtotime($promoter['WalletLastUpdated'])); ?></span>
                                     </div>
                                 <?php endif; ?>
                             </div>
