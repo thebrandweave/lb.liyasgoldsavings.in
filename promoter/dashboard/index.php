@@ -1429,7 +1429,7 @@ $currentPage = 'dashboard';
                                             <?php echo $transaction['TransactionType']; ?>
                                         </span>
                                         <span class="transaction-date">
-                                            <?php echo date('M d, Y h:i A', strtotime($transaction['CreatedAt'])); ?>
+                                            <?php echo date('M d, Y H:i', strtotime($transaction['CreatedAt'])); ?>
                                         </span>
                                     </div>
                                 </div>

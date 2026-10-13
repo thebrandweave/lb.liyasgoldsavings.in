@@ -687,11 +687,10 @@ include("../../components/topbar.php");
                 <div class="installment-meta" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 20px;">
                     <div class="meta-item">
                         <span class="meta-label">Created At</span>
-                        <span class="meta-value"><?php echo date('M d, Y h:i A', strtotime($installment['CreatedAt'])); ?></span>
-                    </div>
+                       <span class="meta-value"><?php echo date('M d, Y H:i', strtotime($installment['CreatedAt'])); ?></span>
                     <div class="meta-item">
                         <span class="meta-label">Updated At</span>
-                        <span class="meta-value"><?php echo isset($installment['UpdatedAt']) ? date('M d, Y h:i A', strtotime($installment['UpdatedAt'])) : 'Not available'; ?></span>
+                         <span class="meta-value"><?php echo isset($installment['UpdatedAt']) ? date('M d, Y H:i', strtotime($installment['UpdatedAt'])) : 'Not available'; ?></span>
                     </div>
                     <?php if (!empty($installment['Description'])): ?>
                         <div class="meta-item" style="grid-column: span 2;">
@@ -757,7 +756,7 @@ include("../../components/topbar.php");
                             <li class="activity-item">
                                 <div class="activity-header">
                                     <span class="activity-user"><?php echo htmlspecialchars($log['UserName'] ?? 'Unknown User'); ?></span>
-                                    <span class="activity-time"><?php echo date('M d, Y h:i A', strtotime($log['CreatedAt'])); ?></span>
+                                    <span class="activity-time"><?php echo date('M d, Y H:i', strtotime($log['CreatedAt'])); ?></span>
                                 </div>
                                 <div class="activity-action">
                                     <?php echo htmlspecialchars($log['Action']); ?>
