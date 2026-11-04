@@ -214,7 +214,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         .form-control:focus {
             border-color: var(--primary-color);
-            box-shadow: 0 0 0 3px rgba(13, 106, 80, 0.1);
+            box-shadow: 0 0 0 3px rgba(119, 98, 44, 0.1);
             outline: none;
         }
 

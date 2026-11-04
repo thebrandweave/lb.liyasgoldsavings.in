@@ -323,7 +323,7 @@ $stats = $stmt->fetch(PDO::FETCH_ASSOC);
         }
 
         .btn-view {
-            background: rgba(47, 155, 127, 0.1);
+            background: rgba(113, 110, 95, 0.1);
             color: var(--accent-green);
             border: 1px solid var(--accent-green);
         }

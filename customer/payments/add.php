@@ -156,7 +156,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $stmt->execute([$customerId, $schemeId, $installmentId]);
             if ($stmt->fetch()) {
                 $error_message = 'You already submitted a payment for this scheme and installment. Please wait for verification or contact support if you need help.';
-            } elseif (!isset($_FILES['screenshot']) || $_FILES['screenshot']['error'] !== UPLOAD_ERR_OK) {
+            } else {
+                // Check if UTR number has already been used for another pending or verified payment
+                $stmt = $db->prepare("
+                    SELECT 1 FROM Payments
+                    WHERE UTRNumber = ? AND Status IN ('Pending', 'Verified')
+                    LIMIT 1
+                ");
+                $stmt->execute([$utrNumber]);
+                if ($stmt->fetch()) {
+                    $error_message = 'This UTR / Reference number has already been used for another payment. Duplicate UTR is not allowed.';
+                } elseif (!isset($_FILES['screenshot']) || $_FILES['screenshot']['error'] !== UPLOAD_ERR_OK) {
                 $error_message = 'Please upload payment screenshot (online payment only).';
             } else {
                 $file = $_FILES['screenshot'];
@@ -210,7 +220,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 @unlink($targetPath);
                                 $error_message = 'You already submitted a payment for this scheme and installment. Please wait for verification or contact support if you need help.';
                             } else {
-                                // Insert payment
+                                // Re-check UTR inside transaction
+                                $stmt = $db->prepare("
+                                    SELECT 1 FROM Payments
+                                    WHERE UTRNumber = ? AND Status IN ('Pending', 'Verified')
+                                    LIMIT 1
+                                ");
+                                $stmt->execute([$utrNumber]);
+                                if ($stmt->fetch()) {
+                                    $db->rollBack();
+                                    @unlink($targetPath);
+                                    $error_message = 'This UTR / Reference number has already been used for another payment. Duplicate UTR is not allowed.';
+                                } else {
+                                    // Insert payment
                                 $screenshotUrl = 'uploads/payments/' . $fileName;
                                 $stmt = $db->prepare("
                                     INSERT INTO Payments (CustomerID, SchemeID, InstallmentID, Amount, UTRNumber, StaffName, ScreenshotURL, Status, PayerRemark, SubmittedAt)
@@ -231,6 +253,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                                 $_SESSION['success_message'] = 'Payment submitted successfully. It will be verified shortly.';
                                 header('Location: index.php');
                                 exit;
+                                }
                             }
                         } catch (Exception $e) {
                             $db->rollBack();
@@ -240,6 +263,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $error_message = 'Failed to upload screenshot.';
                     }
                 }
+                } // End UTR duplicate check
             }
         }
     }
@@ -308,9 +332,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             color: #1a1a1a;
         }
         .btn-add { background: var(--accent-green); color: white; border: none; padding: 12px 24px; border-radius: 8px; font-weight: 500; }
-        .btn-add:hover { background: #248c6f; color: white; transform: translateY(-2px); }
+        .btn-add:hover { background: #8d691d; color: white; transform: translateY(-2px); }
         .btn-back {
-            background: rgba(47, 155, 127, 0.15);
+            background: rgba(34, 41, 39, 0.15);
             color: var(--accent-green);
             border: 1px solid var(--accent-green);
             padding: 12px 24px;
@@ -323,7 +347,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
         .btn-back:hover { background: var(--accent-green); color: white; }
         .alert-custom { border-radius: 8px; padding: 12px 16px; margin-bottom: 20px; }
-        .alert-danger-custom { background: rgba(220, 53, 69, 0.15); border: 1px solid rgba(220, 53, 69, 0.3); color: #dc3545; }
+        .alert-danger-custom { background: rgb(247, 247, 247); border: 1px solid rgba(164, 22, 36, 0.78); color: #dc3545; }
         small.text-muted { color: var(--text-secondary) !important; }
         @media (max-width: 576px) {
             .add-payment-container {

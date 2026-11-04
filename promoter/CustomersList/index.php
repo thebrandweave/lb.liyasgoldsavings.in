@@ -38,13 +38,7 @@ try {
         SELECT 
             c.*,
             p.Name as PromoterName, 
-            p.PromoterUniqueID,
-            (SELECT COUNT(*) FROM Payments WHERE CustomerID = c.CustomerID) as total_payments,
-            (SELECT COUNT(*) FROM Payments WHERE CustomerID = c.CustomerID AND Status = 'Verified') as verified_payments,
-            (SELECT COUNT(*) FROM Payments WHERE CustomerID = c.CustomerID AND Status = 'Pending') as pending_payments,
-            (SELECT SUM(Amount) FROM Payments WHERE CustomerID = c.CustomerID AND Status = 'Verified') as total_paid_amount,
-            (SELECT COUNT(*) FROM Subscriptions WHERE CustomerID = c.CustomerID) as total_subscriptions,
-            (SELECT COUNT(*) FROM Subscriptions WHERE CustomerID = c.CustomerID AND RenewalStatus = 'Active') as active_subscriptions
+            p.PromoterUniqueID
         FROM Customers c
         JOIN Promoters p ON c.PromoterID = p.PromoterUniqueID
         WHERE c.PromoterID = ? 
@@ -53,39 +47,122 @@ try {
     $stmt->execute([$promoterUniqueID]);
     $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-    // Get installment-wise payment details for each customer
-    foreach ($customers as &$customer) {
-        $stmt = $conn->prepare("
-            SELECT 
-                i.InstallmentID,
-                i.InstallmentName,
-                i.InstallmentNumber,
-                i.DrawDate,
-                s.SchemeID,
-                s.SchemeName,
-                s.Status as SchemeStatus,
-                sub.SubscriptionID,
-                sub.RenewalStatus,
-                p.PaymentID,
-                p.Status as PaymentStatus,
-                p.Amount,
-                p.SubmittedAt,
-                p.VerifiedAt
-            FROM Installments i
-            JOIN Schemes s ON i.SchemeID = s.SchemeID
-            LEFT JOIN Subscriptions sub ON s.SchemeID = sub.SchemeID AND sub.CustomerID = ?
-            LEFT JOIN Payments p ON i.InstallmentID = p.InstallmentID AND p.CustomerID = ?
-            WHERE EXISTS (
-                SELECT 1 FROM Subscriptions sub2
-                WHERE sub2.CustomerID = ? 
-                  AND sub2.SchemeID = s.SchemeID
-            )
-            ORDER BY i.DrawDate ASC, i.InstallmentNumber ASC
-        ");
-        $stmt->execute([$customer['CustomerID'], $customer['CustomerID'], $customer['CustomerID']]);
-        $customer['installments'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Batch fetch all installments and payment statuses for this promoter's customers in a single query
+    $stmt = $conn->prepare("
+        SELECT 
+            sub.CustomerID,
+            i.InstallmentID,
+            i.InstallmentName,
+            i.InstallmentNumber,
+            i.DrawDate,
+            s.SchemeID,
+            s.SchemeName,
+            s.Status as SchemeStatus,
+            sub.SubscriptionID,
+            sub.RenewalStatus,
+            p.PaymentID,
+            p.Status as PaymentStatus,
+            p.Amount,
+            p.SubmittedAt,
+            p.VerifiedAt
+        FROM Subscriptions sub
+        JOIN Customers c ON sub.CustomerID = c.CustomerID
+        JOIN Schemes s ON sub.SchemeID = s.SchemeID
+        JOIN Installments i ON s.SchemeID = i.SchemeID
+        LEFT JOIN Payments p ON i.InstallmentID = p.InstallmentID AND p.CustomerID = sub.CustomerID
+        WHERE c.PromoterID = ?
+        ORDER BY i.DrawDate ASC, i.InstallmentNumber ASC
+    ");
+    $stmt->execute([$promoterUniqueID]);
+    $allInstallments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $installmentsByCustomer = [];
+    foreach ($allInstallments as $inst) {
+        $cid = $inst['CustomerID'];
+        unset($inst['CustomerID']);
+        $installmentsByCustomer[$cid][] = $inst;
     }
-    // Unset the reference to prevent issues with the last element
+
+    // Batch fetch payments breakdown and counts for all customers of this promoter
+    $stmt = $conn->prepare("
+        SELECT 
+            p.CustomerID,
+            p.Status,
+            COUNT(*) as count,
+            SUM(p.Amount) as total_amount
+        FROM Payments p
+        JOIN Customers c ON p.CustomerID = c.CustomerID
+        WHERE c.PromoterID = ?
+        GROUP BY p.CustomerID, p.Status
+    ");
+    $stmt->execute([$promoterUniqueID]);
+    $allPaymentStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    $paymentStatsByCustomer = [];
+    $totalPaymentsByCustomer = [];
+    foreach ($allPaymentStats as $stat) {
+        $cid = $stat['CustomerID'];
+        $st = strtolower($stat['Status']);
+        if (!isset($paymentStatsByCustomer[$cid])) {
+            $paymentStatsByCustomer[$cid] = [];
+            $totalPaymentsByCustomer[$cid] = 0;
+        }
+        $paymentStatsByCustomer[$cid][$st] = [
+            'count' => (int)$stat['count'],
+            'amount' => (float)$stat['total_amount']
+        ];
+        $totalPaymentsByCustomer[$cid] += (int)$stat['count'];
+    }
+
+    // Batch fetch subscription statistics for each customer
+    $stmt = $conn->prepare("
+        SELECT 
+            sub.CustomerID,
+            COUNT(*) as total_subscriptions,
+            SUM(CASE WHEN sub.RenewalStatus = 'Active' THEN 1 ELSE 0 END) as active_subscriptions
+        FROM Subscriptions sub
+        JOIN Customers c ON sub.CustomerID = c.CustomerID
+        WHERE c.PromoterID = ?
+        GROUP BY sub.CustomerID
+    ");
+    $stmt->execute([$promoterUniqueID]);
+    $allSubStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    $subStatsByCustomer = [];
+    foreach ($allSubStats as $sub) {
+        $subStatsByCustomer[$sub['CustomerID']] = $sub;
+    }
+
+    // Assemble customer properties in memory without additional queries
+    foreach ($customers as &$customer) {
+        $cid = $customer['CustomerID'];
+        $customer['installments'] = $installmentsByCustomer[$cid] ?? [];
+
+        // Statistics needed for filters and customer cards
+        $customer['total_payments'] = $totalPaymentsByCustomer[$cid] ?? 0;
+        $customer['total_subscriptions'] = (int)($subStatsByCustomer[$cid]['total_subscriptions'] ?? 0);
+        $customer['active_subscriptions'] = (int)($subStatsByCustomer[$cid]['active_subscriptions'] ?? 0);
+        $customer['verified_payments'] = (int)($paymentStatsByCustomer[$cid]['verified']['count'] ?? 0);
+        $customer['pending_payments'] = (int)($paymentStatsByCustomer[$cid]['pending']['count'] ?? 0);
+        $customer['total_paid_amount'] = (float)($paymentStatsByCustomer[$cid]['verified']['amount'] ?? 0);
+
+        $customer['payment_stats'] = [
+            'verified' => $paymentStatsByCustomer[$cid]['verified'] ?? ['count' => 0, 'amount' => 0],
+            'pending' => $paymentStatsByCustomer[$cid]['pending'] ?? ['count' => 0, 'amount' => 0],
+            'rejected' => $paymentStatsByCustomer[$cid]['rejected'] ?? ['count' => 0, 'amount' => 0],
+            'unpaid' => ['count' => 0, 'amount' => 0]
+        ];
+
+        // Calculate unpaid installments directly from installments list
+        $unpaidCount = 0;
+        if (!empty($customer['installments'])) {
+            foreach ($customer['installments'] as $inst) {
+                if (empty($inst['PaymentID']) || strtolower($inst['PaymentStatus'] ?? '') !== 'verified') {
+                    $unpaidCount++;
+                }
+            }
+        }
+        $customer['payment_stats']['unpaid']['count'] = $unpaidCount;
+    }
     unset($customer);
 } catch (PDOException $e) {
     $message = "Error fetching customer data";
@@ -162,62 +239,7 @@ try {
     $availableInstallments = [];
 }
 
-// Get payment status statistics for each customer
-try {
-    foreach ($customers as &$customer) {
-        // Get payment status breakdown for this customer
-        $stmt = $conn->prepare("
-            SELECT 
-                p.Status,
-                COUNT(*) as count,
-                SUM(p.Amount) as total_amount
-            FROM Payments p
-            WHERE p.CustomerID = ?
-            GROUP BY p.Status
-        ");
-        $stmt->execute([$customer['CustomerID']]);
-        $paymentStats = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        $customer['payment_stats'] = [
-            'verified' => ['count' => 0, 'amount' => 0],
-            'pending' => ['count' => 0, 'amount' => 0],
-            'rejected' => ['count' => 0, 'amount' => 0],
-            'unpaid' => ['count' => 0, 'amount' => 0]
-        ];
-        
-        foreach ($paymentStats as $stat) {
-            $status = strtolower($stat['Status']);
-            if (isset($customer['payment_stats'][$status])) {
-                $customer['payment_stats'][$status]['count'] = $stat['count'];
-                $customer['payment_stats'][$status]['amount'] = $stat['total_amount'];
-            }
-        }
-        
-        // Calculate unpaid installments
-        $stmt = $conn->prepare("
-            SELECT COUNT(*) as unpaid_count
-            FROM Installments i
-            JOIN Schemes s ON i.SchemeID = s.SchemeID
-            WHERE NOT EXISTS (
-                SELECT 1 FROM Payments p 
-                WHERE p.InstallmentID = i.InstallmentID 
-                AND p.CustomerID = ?
-                AND p.Status ='Verified'
-            )
-            AND EXISTS (
-                SELECT 1 FROM Subscriptions sub 
-                WHERE sub.CustomerID = ? 
-                AND sub.SchemeID = s.SchemeID
-            )
-        ");
-        $stmt->execute([$customer['CustomerID'], $customer['CustomerID']]);
-        $unpaidResult = $stmt->fetch(PDO::FETCH_ASSOC);
-        $customer['payment_stats']['unpaid']['count'] = (int)($unpaidResult['unpaid_count'] ?? 0);
-    }
-    unset($customer);
-} catch (PDOException $e) {
-    // Handle error silently
-}
+// Payment status statistics and unpaid counts were efficiently batched above
 
 // Handle search functionality
 $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';

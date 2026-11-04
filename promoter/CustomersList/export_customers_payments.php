@@ -40,43 +40,68 @@ $stmt = $conn->prepare("
 $stmt->execute([$promoterUniqueID]);
 $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-// For each customer, fetch their installments and payments
+// Batch fetch all installments and payments for this promoter's customers
+$stmt = $conn->prepare("
+    SELECT 
+        sub.CustomerID,
+        i.InstallmentID,
+        i.InstallmentName,
+        i.InstallmentNumber,
+        s.SchemeID,
+        s.SchemeName,
+        p.PaymentID,
+        p.Status as PaymentStatus,
+        p.Amount,
+        p.SubmittedAt,
+        p.VerifiedAt
+    FROM Subscriptions sub
+    JOIN Customers c ON sub.CustomerID = c.CustomerID
+    JOIN Schemes s ON sub.SchemeID = s.SchemeID
+    JOIN Installments i ON s.SchemeID = i.SchemeID
+    LEFT JOIN Payments p ON i.InstallmentID = p.InstallmentID AND p.CustomerID = sub.CustomerID
+    WHERE c.PromoterID = ? AND s.Status = 'Active'
+    ORDER BY s.SchemeName, i.InstallmentNumber
+");
+$stmt->execute([$promoterUniqueID]);
+$allInstallments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+$installmentsByCustomer = [];
+foreach ($allInstallments as $inst) {
+    $cid = $inst['CustomerID'];
+    unset($inst['CustomerID']);
+    $installmentsByCustomer[$cid][] = $inst;
+}
+
+$subCountsByCustomer = [];
+$payCountsByCustomer = [];
+if ($filterScheme === 'unsubscribed') {
+    $stmt = $conn->prepare("
+        SELECT sub.CustomerID, COUNT(*) as cnt
+        FROM Subscriptions sub
+        JOIN Customers c ON sub.CustomerID = c.CustomerID
+        WHERE c.PromoterID = ?
+        GROUP BY sub.CustomerID
+    ");
+    $stmt->execute([$promoterUniqueID]);
+    $subCountsByCustomer = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+
+    $stmt = $conn->prepare("
+        SELECT p.CustomerID, COUNT(*) as cnt
+        FROM Payments p
+        JOIN Customers c ON p.CustomerID = c.CustomerID
+        WHERE c.PromoterID = ?
+        GROUP BY p.CustomerID
+    ");
+    $stmt->execute([$promoterUniqueID]);
+    $payCountsByCustomer = $stmt->fetchAll(PDO::FETCH_KEY_PAIR);
+}
+
 foreach ($customers as &$customer) {
-    // Check if customer has any subscriptions
-    $stmt = $conn->prepare("SELECT COUNT(*) as sub_count FROM Subscriptions WHERE CustomerID = ?");
-    $stmt->execute([$customer['CustomerID']]);
-    $subCount = $stmt->fetch(PDO::FETCH_ASSOC)['sub_count'];
-    
-    if ($subCount > 0) {
-        // Customer has subscriptions, fetch their installments
-        $stmt = $conn->prepare("
-            SELECT 
-                i.InstallmentID,
-                i.InstallmentName,
-                i.InstallmentNumber,
-                s.SchemeID,
-                s.SchemeName,
-                p.PaymentID,
-                p.Status as PaymentStatus,
-                p.Amount,
-                p.SubmittedAt,
-                p.VerifiedAt
-            FROM Installments i
-            JOIN Schemes s ON i.SchemeID = s.SchemeID
-            LEFT JOIN Payments p ON i.InstallmentID = p.InstallmentID AND p.CustomerID = ?
-            WHERE s.Status = 'Active'
-            AND EXISTS (
-                SELECT 1 FROM Subscriptions sub
-                WHERE sub.CustomerID = ? 
-                AND sub.SchemeID = s.SchemeID
-            )
-            ORDER BY s.SchemeName, i.InstallmentNumber
-        ");
-        $stmt->execute([$customer['CustomerID'], $customer['CustomerID']]);
-        $customer['installments'] = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    } else {
-        // Customer has no subscriptions, set empty installments array
-        $customer['installments'] = [];
+    $cid = $customer['CustomerID'];
+    $customer['installments'] = $installmentsByCustomer[$cid] ?? [];
+    if ($filterScheme === 'unsubscribed') {
+        $customer['sub_count'] = (int)($subCountsByCustomer[$cid] ?? 0);
+        $customer['pay_count'] = (int)($payCountsByCustomer[$cid] ?? 0);
     }
 }
 unset($customer);
@@ -94,14 +119,7 @@ foreach ($customers as $customer) {
     $matchesScheme = empty($filterScheme);
     if (!empty($filterScheme)) {
         if ($filterScheme === 'unsubscribed') {
-            // Count subscriptions and payments for this customer
-            $stmt = $conn->prepare("SELECT 
-                (SELECT COUNT(*) FROM Subscriptions WHERE CustomerID = :cid) AS sub_count,
-                (SELECT COUNT(*) FROM Payments WHERE CustomerID = :cid) AS pay_count
-            ");
-            $stmt->execute([':cid' => $customer['CustomerID']]);
-            $row = $stmt->fetch(PDO::FETCH_ASSOC) ?: ['sub_count' => 0, 'pay_count' => 0];
-            $matchesScheme = ((int)$row['sub_count'] === 0) && ((int)$row['pay_count'] === 0);
+            $matchesScheme = ((int)($customer['sub_count'] ?? 0) === 0) && ((int)($customer['pay_count'] ?? 0) === 0);
         } else {
             foreach ($customer['installments'] as $installment) {
                 if (isset($installment['SchemeID']) && $installment['SchemeID'] == $filterScheme) {
