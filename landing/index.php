@@ -2647,16 +2647,16 @@ header {
         <div class="bento-grid">
 
             <div class="bento-card card-1">
-                <img src="./assets/colleagues-working-desk.jpg" alt="" loading="lazy">
+                <img src="./assets/gold.jpeg" alt="" loading="lazy">
                 <div class="overlay">
                     <h3>Liyas Gold & Diamonds</h3>
                 </div>
             </div>
 
             <div class="bento-card card-2">
-                <img src="./assets/delicious-products-arrangement-bakery.jpg" alt="" loading="lazy">
+                <img src="./assets/liyasin.png" alt="" loading="lazy">
                 <div class="overlay">
-                    <h3>Liyas Bakes & Cafe</h3>
+                       <h3>Liyas International</h3>
                 </div>
             </div>
 
@@ -2668,9 +2668,9 @@ header {
             </div>
 
             <div class="bento-card card-4">
-                <img src="./assets/colleagues-working-desk.jpg" alt="" loading="lazy">
+                <img src="./assets/liyas.png" alt="" loading="lazy">
                 <div class="overlay">
-                    <h3>Liyas Protein</h3>
+                    <h3>Liyas Electronics and Furniture</h3>
                 </div>
             </div>
 
