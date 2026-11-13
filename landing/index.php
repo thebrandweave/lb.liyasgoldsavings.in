@@ -2980,7 +2980,7 @@ header {
            <a href="https://liyasgoldanddiamonds.com/" target="__blank"> <img class="logo-img-1" src="landing_assets/images/gdlogo6.png" alt="Logo"></a>
          <a href="https://gdedutech.com/" target="__blank">   <img class="logo-img-1" src="landing_assets/images/gdlogo2.png" alt="Logo"></a>
        <a href="https://liyasinternational.com/" target="__blank">     <img class="logo-img-1" src="landing_assets/images/gdlogo3.webp" alt="Logo"></a>
-          <a href="https://shop.goldendream.in/" target="__blank">  <img class="logo-img-1" src="landing_assets/images/gdlogo1.png" alt="Logo"></a>
+          <a href="https://www.liyaselectronicsandfurniture.com/" target="__blank">  <img class="logo-img-1" src="./assets/liyaslogo.png" alt="Logo"></a>
             <a href="" target="__blank"><img class="logo-img-1" src="landing_assets/images/gdlogo4.png" alt="Logo"></a>
         </div>
 
