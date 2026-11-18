@@ -415,6 +415,26 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             margin-bottom: 30px;
             padding: 20px 0;
         }
+.disabled-option {
+    opacity: 0.6;
+    cursor: not-allowed !important;
+    pointer-events: none;
+    filter: grayscale(40%);
+    transform: none !important;
+}
+
+.disabled-option:hover {
+    transform: none !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.disabled-label {
+    display: inline-block;
+    color: #dc3545;
+    font-size: 12px;
+    font-weight: 600;
+    margin-top: 10px;
+}
 
         .logo {
             max-width: 200px;
@@ -781,21 +801,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <?php if (empty($registrationType)): ?>
                 <!-- Registration Type Selection -->
                 <div class="registration-options">
-                    <div class="option-card" onclick="selectRegistrationType('customer')">
-                        <div class="option-icon">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <h2>Register as Customer</h2>
-                        <p>Join as a customer to participate in our schemes and win exciting prizes.</p>
-                    </div>
+                  <div class="option-card disabled-option">
+    <div class="option-icon">
+        <i class="fas fa-user"></i>
+    </div>
+    <h2>Register as Customer</h2>
+    <p>Join as a customer to participate in our schemes and win exciting prizes.</p>
+    <small class="disabled-label">Registration Currently Unavailable</small>
+</div>
 
-                    <div class="option-card" onclick="selectRegistrationType('promoter')">
-                        <div class="option-icon">
-                            <i class="fas fa-handshake"></i>
-                        </div>
-                        <h2>Register as Promoter</h2>
-                        <p>Join as a promoter to earn commissions and build your network.</p>
-                    </div>
+                   <div class="option-card disabled-option">
+    <div class="option-icon">
+        <i class="fas fa-handshake"></i>
+    </div>
+    <h2>Register as Promoter</h2>
+    <p>Join as a promoter to earn commissions and build your network.</p>
+    <small class="disabled-label">Registration Currently Unavailable</small>
+</div>
                 </div>
 
                 <div class="info-text">
