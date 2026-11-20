@@ -65,14 +65,19 @@ function getStats($conn) {
                 pw.BalanceAmount,
                 pw.Message,
                 pw.LastUpdated,
-                COALESCE(SUM(wl.Amount), 0) as total_earnings
+                COALESCE(SUM(CASE WHEN wl.TransactionType != 'Debit' OR wl.TransactionType IS NULL THEN wl.Amount ELSE 0 END), 0) as total_earnings
             FROM PromoterWallet pw
-            LEFT JOIN WalletLogs wl ON pw.PromoterUniqueID = wl.PromoterUniqueID
+            LEFT JOIN WalletLogs wl ON (TRIM(pw.PromoterUniqueID) = TRIM(wl.PromoterUniqueID))
             WHERE pw.PromoterUniqueID = ?
             GROUP BY pw.PromoterUniqueID
         ");
         $stmt->execute([$promoter['PromoterUniqueID']]);
         $wallet = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $totalEarnings = floatval($wallet['total_earnings'] ?? 0);
+        if ($totalEarnings <= 0 && !empty($payments['total'])) {
+            $totalEarnings = floatval($payments['total']);
+        }
 
         // Get team statistics if promoter has team members
         $stmt = $conn->prepare("
@@ -91,12 +96,67 @@ function getStats($conn) {
         $stmt = $conn->prepare("
             SELECT Amount, Message, CreatedAt, TransactionType
             FROM WalletLogs 
-            WHERE PromoterUniqueID = ?
+            WHERE (TRIM(PromoterUniqueID) = TRIM(?) OR TRIM(PromoterUniqueID) = TRIM(?))
             ORDER BY CreatedAt DESC
             LIMIT 5
         ");
-        $stmt->execute([$promoter['PromoterUniqueID']]);
+        $stmt->execute([$promoter['PromoterUniqueID'], (string)$promoterId]);
         $walletTransactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Enrich Parent commission messages with customer's direct promoter name and ID
+        if (!empty($walletTransactions)) {
+            $custUniqueIDs = [];
+            foreach ($walletTransactions as $tx) {
+                $msg = $tx['Message'] ?? '';
+                if (stripos($msg, 'Parent commission') !== false && stripos($msg, ') from ') === false) {
+                    if (preg_match('/customer\s+.+?\s*\(([A-Za-z0-9_\s-]+)\)/i', $msg, $m)) {
+                        $custUniqueIDs[] = trim($m[1]);
+                    }
+                }
+            }
+
+            if (!empty($custUniqueIDs)) {
+                $custUniqueIDs = array_values(array_unique($custUniqueIDs));
+                $placeholders = implode(',', array_fill(0, count($custUniqueIDs), '?'));
+                $cStmt = $conn->prepare("
+                    SELECT c.CustomerUniqueID, p.Name as PromoterName, p.PromoterUniqueID
+                    FROM Customers c
+                    LEFT JOIN Promoters p ON (TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID) OR TRIM(c.PromoterID) = TRIM(p.PromoterID))
+                    WHERE TRIM(c.CustomerUniqueID) IN ($placeholders)
+                ");
+                $cStmt->execute($custUniqueIDs);
+                $custPromoters = [];
+                while ($row = $cStmt->fetch(PDO::FETCH_ASSOC)) {
+                    $uid = trim($row['CustomerUniqueID'] ?? '');
+                    $pName = trim($row['PromoterName'] ?? '');
+                    $pUID = trim($row['PromoterUniqueID'] ?? '');
+                    if ($uid !== '' && ($pName !== '' || $pUID !== '')) {
+                        $custPromoters[$uid] = [
+                            'name' => $pName,
+                            'id' => $pUID
+                        ];
+                    }
+                }
+
+                foreach ($walletTransactions as &$tx) {
+                    $msg = $tx['Message'] ?? '';
+                    if (stripos($msg, 'Parent commission') !== false && stripos($msg, ') from ') === false) {
+                        if (preg_match('/^(.*?customer\s+.+?\s*\(([A-Za-z0-9_\s-]+)\))(.*)$/i', $msg, $m)) {
+                            $custPart = $m[1];
+                            $cUID = trim($m[2]);
+                            $rest = $m[3];
+
+                            if (isset($custPromoters[$cUID])) {
+                                $pInfo = $custPromoters[$cUID];
+                                $promoterText = ' from ' . $pInfo['name'] . ($pInfo['id'] !== '' ? ' (' . $pInfo['id'] . ')' : '');
+                                $tx['Message'] = $custPart . $promoterText . $rest;
+                            }
+                        }
+                    }
+                }
+                unset($tx);
+            }
+        }
 
         return [
             'promoter' => $promoter,
@@ -105,14 +165,14 @@ function getStats($conn) {
                 'active' => $activeCustomers
             ],
             'earnings' => [
-                'total' => $payments['total'],
+                'total' => $totalEarnings,
                 'verified_payments' => $payments['verified_count'],
                 'pending_payments' => $payments['pending_count']
             ],
             'schemes' => $schemes,
             'wallet' => [
                 'balance' => $wallet['BalanceAmount'] ?? 0,
-                'total_earnings' => $wallet['total_earnings'] ?? 0,
+                'total_earnings' => $totalEarnings,
                 'message' => $wallet['Message'] ?? '',
                 'last_updated' => $wallet['LastUpdated'] ?? null,
                 'recent_transactions' => $walletTransactions
@@ -1229,12 +1289,12 @@ $currentPage = 'dashboard';
 
                 <div class="stat-card">
                     <div class="stat-header">
-                        <div class="stat-icon" style="background: rgba(241, 196, 15, 0.1); color: var(--warning-color);">
-                            <i class="fas fa-file-contract"></i>
+                        <div class="stat-icon" style="background: rgba(46, 204, 113, 0.1); color: #2ecc71;">
+                            <i class="fas fa-coins"></i>
                         </div>
                     </div>
-                    <div class="stat-value"><?php echo number_format($stats['schemes']); ?></div>
-                    <div class="stat-label">Active Schemes</div>
+                    <div class="stat-value">₹<?php echo number_format($stats['wallet']['total_earnings'], 2); ?></div>
+                    <div class="stat-label">Total Earnings</div>
                 </div>
 
                 <div class="stat-card">
