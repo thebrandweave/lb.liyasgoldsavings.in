@@ -42,6 +42,28 @@ try {
     $messageType = "error";
 }
 
+// Calculate total earnings from WalletLogs (all credited commissions & earnings)
+$totalEarnings = 0;
+try {
+    $promoterUID = $promoter['PromoterUniqueID'] ?? '';
+    $stmt = $conn->prepare("
+        SELECT COALESCE(SUM(Amount), 0) as total_earnings
+        FROM WalletLogs
+        WHERE (TRIM(PromoterUniqueID) = TRIM(?) OR TRIM(PromoterUniqueID) = TRIM(?))
+          AND (TransactionType != 'Debit' OR TransactionType IS NULL)
+    ");
+    $stmt->execute([$promoterUID, (string)$_SESSION['promoter_id']]);
+    $walletLogResult = $stmt->fetch(PDO::FETCH_ASSOC);
+    $totalEarnings = floatval($walletLogResult['total_earnings'] ?? 0);
+
+    // Fall back to verified payments calculation if wallet logs are empty
+    if ($totalEarnings <= 0 && !empty($earnings['TotalEarnings'])) {
+        $totalEarnings = floatval($earnings['TotalEarnings']);
+    }
+} catch (PDOException $e) {
+    $totalEarnings = floatval($earnings['TotalEarnings'] ?? 0);
+}
+
 // Get recent earnings transactions
 try {
     $stmt = $conn->prepare("
@@ -533,6 +555,15 @@ try {
             <div class="earnings-sidebar">
                 <h2>Earnings Overview</h2>
                 <div class="earnings-stats">
+                    <div class="stat-card">
+                        <h3>Total Earnings</h3>
+                        <div class="value">₹<?php echo number_format($totalEarnings, 2); ?></div>
+                        <?php if (!empty($earnings['TotalVerifiedPayments']) && $earnings['TotalVerifiedPayments'] > 0): ?>
+                            <div style="color: var(--text-secondary); font-size: 12px; margin-top: 4px;">
+                                From <?php echo number_format($earnings['TotalVerifiedPayments']); ?> verified payment(s)
+                            </div>
+                        <?php endif; ?>
+                    </div>
                     <div class="stat-card">
                         <h3>Commission Rate</h3>
                         <div class="value"><?php echo htmlspecialchars($promoter['Commission'] ?? 0); ?></div>
