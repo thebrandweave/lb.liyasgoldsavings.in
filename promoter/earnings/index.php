@@ -128,12 +128,67 @@ try {
     $stmt = $conn->prepare("
         SELECT Amount, Message, CreatedAt, TransactionType
         FROM WalletLogs 
-        WHERE PromoterUniqueID = ?
+        WHERE (TRIM(PromoterUniqueID) = TRIM(?) OR TRIM(PromoterUniqueID) = TRIM(?))
         ORDER BY CreatedAt DESC
         LIMIT 5
     ");
-    $stmt->execute([$promoter['PromoterUniqueID']]);
+    $stmt->execute([$promoter['PromoterUniqueID'], (string)$_SESSION['promoter_id']]);
     $walletTransactions = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Enrich Parent commission messages with customer's direct promoter name and ID
+    if (!empty($walletTransactions)) {
+        $custUniqueIDs = [];
+        foreach ($walletTransactions as $tx) {
+            $msg = $tx['Message'] ?? '';
+            if (stripos($msg, 'Parent commission') !== false && stripos($msg, ') from ') === false) {
+                if (preg_match('/customer\s+.+?\s*\(([A-Za-z0-9_\s-]+)\)/i', $msg, $m)) {
+                    $custUniqueIDs[] = trim($m[1]);
+                }
+            }
+        }
+
+        if (!empty($custUniqueIDs)) {
+            $custUniqueIDs = array_values(array_unique($custUniqueIDs));
+            $placeholders = implode(',', array_fill(0, count($custUniqueIDs), '?'));
+            $cStmt = $conn->prepare("
+                SELECT c.CustomerUniqueID, p.Name as PromoterName, p.PromoterUniqueID
+                FROM Customers c
+                LEFT JOIN Promoters p ON (TRIM(c.PromoterID) = TRIM(p.PromoterUniqueID) OR TRIM(c.PromoterID) = TRIM(p.PromoterID))
+                WHERE TRIM(c.CustomerUniqueID) IN ($placeholders)
+            ");
+            $cStmt->execute($custUniqueIDs);
+            $custPromoters = [];
+            while ($row = $cStmt->fetch(PDO::FETCH_ASSOC)) {
+                $uid = trim($row['CustomerUniqueID'] ?? '');
+                $pName = trim($row['PromoterName'] ?? '');
+                $pUID = trim($row['PromoterUniqueID'] ?? '');
+                if ($uid !== '' && ($pName !== '' || $pUID !== '')) {
+                    $custPromoters[$uid] = [
+                        'name' => $pName,
+                        'id' => $pUID
+                    ];
+                }
+            }
+
+            foreach ($walletTransactions as &$tx) {
+                $msg = $tx['Message'] ?? '';
+                if (stripos($msg, 'Parent commission') !== false && stripos($msg, ') from ') === false) {
+                    if (preg_match('/^(.*?customer\s+.+?\s*\(([A-Za-z0-9_\s-]+)\))(.*)$/i', $msg, $m)) {
+                        $custPart = $m[1];
+                        $cUID = trim($m[2]);
+                        $rest = $m[3];
+
+                        if (isset($custPromoters[$cUID])) {
+                            $pInfo = $custPromoters[$cUID];
+                            $promoterText = ' from ' . $pInfo['name'] . ($pInfo['id'] !== '' ? ' (' . $pInfo['id'] . ')' : '');
+                            $tx['Message'] = $custPart . $promoterText . $rest;
+                        }
+                    }
+                }
+            }
+            unset($tx);
+        }
+    }
 } catch (PDOException $e) {
     $message = "Error fetching wallet data";
     $messageType = "error";

@@ -182,7 +182,12 @@ function processPromoterCommission($customerUniqueID, $conn)
                         $pinStmt->execute([$parentPromoter['PromoterID'], $parentID, $gapAmount]);
                     }
 
-                    $pLogMsg = "Parent commission earned from customer " . $custName . " (" . $customerUniqueID . ") for " . $schemeName . " scheme";
+                    $directPromoterName = trim($directPromoter['Name'] ?? '');
+                    $directPromoterUID = trim($directPromoter['PromoterUniqueID'] ?? '');
+                    $pPromoterSuffix = ($directPromoterName !== '' || $directPromoterUID !== '') 
+                        ? " from " . $directPromoterName . ($directPromoterUID !== '' ? " (" . $directPromoterUID . ")" : "") 
+                        : "";
+                    $pLogMsg = "Parent commission earned from customer " . $custName . " (" . $customerUniqueID . ")" . $pPromoterSuffix . " for " . $schemeName . " scheme";
                     $plStmt = $conn->prepare("INSERT INTO WalletLogs (PromoterUniqueID, Amount, Message, TransactionType) VALUES (?, ?, ?, 'Credit')");
                     $plStmt->execute([$parentID, $gapAmount, $pLogMsg]);
 
