@@ -65,7 +65,7 @@ function getStats($conn) {
                 pw.BalanceAmount,
                 pw.Message,
                 pw.LastUpdated,
-                COALESCE(SUM(CASE WHEN wl.TransactionType != 'Debit' OR wl.TransactionType IS NULL THEN wl.Amount ELSE 0 END), 0) as total_earnings
+                COALESCE(SUM(CASE WHEN wl.TransactionType = 'Credit' THEN wl.Amount ELSE 0 END), 0) as total_earnings
             FROM PromoterWallet pw
             LEFT JOIN WalletLogs wl ON (TRIM(pw.PromoterUniqueID) = TRIM(wl.PromoterUniqueID))
             WHERE pw.PromoterUniqueID = ?
