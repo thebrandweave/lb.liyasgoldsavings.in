@@ -50,7 +50,7 @@ try {
         SELECT COALESCE(SUM(Amount), 0) as total_earnings
         FROM WalletLogs
         WHERE (TRIM(PromoterUniqueID) = TRIM(?) OR TRIM(PromoterUniqueID) = TRIM(?))
-          AND (TransactionType != 'Debit' OR TransactionType IS NULL)
+          AND TransactionType = 'Credit'
     ");
     $stmt->execute([$promoterUID, (string)$_SESSION['promoter_id']]);
     $walletLogResult = $stmt->fetch(PDO::FETCH_ASSOC);
